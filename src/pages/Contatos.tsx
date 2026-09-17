@@ -138,7 +138,7 @@ const Contatos = () => {
           </div>
 
           {/* Type chips */}
-          <div className="flex gap-2 overflow-x-auto flex-nowrap pb-1 -mx-1 px-1">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-nowrap sm:overflow-x-auto sm:pb-1">
               <button onClick={() => setTypeFilter('')}
                 className={`mobile-touch px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap ${!typeFilter ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
               Todos

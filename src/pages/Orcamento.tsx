@@ -367,7 +367,7 @@ const Orcamento = () => {
 
       {/* Tabs */}
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="w-full overflow-x-auto flex-nowrap justify-start">
+        <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:flex sm:flex-nowrap sm:justify-start sm:overflow-x-auto">
           <TabsTrigger value="arrecadacao" className="whitespace-nowrap text-xs sm:text-sm">💰 Arrecadação</TabsTrigger>
           <TabsTrigger value="ordinarias" className="whitespace-nowrap text-xs sm:text-sm">📋 Ordinárias</TabsTrigger>
           <TabsTrigger value="extraordinarias" className="whitespace-nowrap text-xs sm:text-sm">🔧 Extraordinárias</TabsTrigger>
