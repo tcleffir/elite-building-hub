@@ -113,6 +113,12 @@ export default function ProprietarioContratos() {
   const [statusFilter, setStatusFilter] = useState<ContractStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
+  const [showNewContract, setShowNewContract] = useState(false);
+  const [newContract, setNewContract] = useState({
+    tenant: '', buildingId: '', unit: '', area: '', pricePerM2: '', type: 'net',
+    start: '', end: '', index: 'IPCA', guarantee: 'fianca_bancaria',
+  });
+  const [newContractFile, setNewContractFile] = useState<File | null>(null);
   const [drawerTab, setDrawerTab] = useState('resumo');
   const [drawerAction, setDrawerAction] = useState<'edit' | 'aditivo' | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('monthsRemaining');
