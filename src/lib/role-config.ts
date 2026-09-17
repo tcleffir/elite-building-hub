@@ -169,7 +169,7 @@ export const gestorFundoNav: NavGroup[] = [
   { id: 'operacoes_gf', label: 'Operações', icon: Wrench,
     items: [
       { label: 'Chamados', labelKey: 'nav.chamados', path: '/proprietario/chamados', icon: Ticket, roles: ['gestor_fundo'], locked: true, lockedReason: 'Chamados e SLA não fazem parte do escopo inicial do fundo.' },
-      { label: 'Reservas', labelKey: 'nav.reservas', path: '/proprietario/reservas', icon: CalendarDays, roles: ['gestor_fundo'] },
+      { label: 'Reservas', labelKey: 'nav.reservas', path: '/proprietario/reservas', icon: CalendarDays, roles: ['gestor_fundo'], locked: true, lockedReason: 'Reservas não entram no escopo inicial do fundo.' },
       { label: 'Comunicação', labelKey: 'nav.comunicacao', path: '/proprietario/comunicacao', icon: Megaphone, roles: ['gestor_fundo'] },
       { label: 'CRM Monday', path: '/proprietario/crm-monday', icon: Boxes, roles: ['gestor_fundo'] },
     ] },
