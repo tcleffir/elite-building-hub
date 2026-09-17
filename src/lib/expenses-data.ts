@@ -1,5 +1,8 @@
 // Despesas imobiliárias — base para o cálculo do NOI.
 // NÃO é contas a pagar: aqui só importamos, classificamos e conciliamos despesas.
+import { edificiosRec } from "@/lib/reconciliation-data";
+import { getHGRE11PortfolioBuildings } from "@/lib/mock-data";
+
 
 export type StatusDespesa = 'conciliado' | 'parcial' | 'pendente' | 'divergencia';
 
