@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatusBadge from "@/components/StatusBadge";
 import StackingPlan from "@/components/assets/StackingPlan";
 
-import { mockBuildings, mockTenantContracts, mockTickets, mockUsers, TenantContract } from "@/lib/mock-data";
+import { mockBuildings, mockTenantContracts, mockTickets, mockUsers, isHGRE11Asset, TenantContract } from "@/lib/mock-data";
 import { getContractHealth, getOccupancyStatus, daysUntil, healthColors, healthLabels } from "@/lib/health-utils";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
