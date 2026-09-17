@@ -595,7 +595,13 @@ export default function ProprietarioContratos() {
           <TabsTrigger value="revisionais">Revisionais</TabsTrigger>
           <TabsTrigger value="competencia">Por Competência</TabsTrigger>
           <TabsTrigger value="timeline">Vencimentos</TabsTrigger>
+          <TabsTrigger value="iptu_tab">IPTU</TabsTrigger>
         </TabsList>
+
+        {/* ══════ TAB IPTU ══════ */}
+        <TabsContent value="iptu_tab" className="space-y-4 mt-4">
+          <IptuTab />
+        </TabsContent>
 
         {/* ══════ TAB LOCATÁRIOS ══════ */}
         <TabsContent value="locatarios" className="space-y-4 mt-4">
