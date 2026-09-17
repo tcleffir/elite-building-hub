@@ -65,7 +65,7 @@ const Login = () => {
         />
         <div className="absolute inset-0 premium-gradient opacity-60" />
         <div className="relative z-10 flex flex-col justify-end p-12">
-          <img src={logoBranco} alt="Patria" className="w-72 mb-6" />
+          <img src={logoBranco} alt="Patria" className="w-48 mb-6" />
           <h2 className="text-3xl font-bold text-card mb-2">
             {heroTexts[locale].title}
           </h2>
@@ -103,7 +103,7 @@ const Login = () => {
 
         <div className="w-full max-w-md animate-fade-in">
           <div className="lg:hidden mb-10 flex justify-center">
-            <img src={logoAzul} alt="Patria" className="w-64" />
+            <img src={logoAzul} alt="Patria" className="w-44" />
           </div>
 
           <div className="mb-8">

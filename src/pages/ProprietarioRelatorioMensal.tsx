@@ -115,7 +115,7 @@ export default function ProprietarioRelatorioMensal() {
       subtitle: `Período: ${current.period}`,
       period: current.period,
       module: 'Relatório Mensal',
-      gestorName: 'Gestor Proprietário',
+      gestorName: 'Natalia Landi',
       fundName: 'Safra FII',
       tableOfContents: [
         { page: 2, title: 'Resumo Executivo & Destaques' },

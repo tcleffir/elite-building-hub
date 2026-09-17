@@ -103,7 +103,7 @@ export const outrosRecebimentosSeed: OutroRecebimento[] = [
       { id: 'p-001-3', outroRecebimentoId: 'or-001', numero: 3, valor: 15000, vencimento: '2026-04-15', status: 'a_receber', entradaId: null },
     ],
     audit: [
-      { id: 'a1', acao: 'criado', usuario: 'Gestor Proprietário', data: '2026-02-10T10:00:00Z' },
+      { id: 'a1', acao: 'criado', usuario: 'Natalia Landi', data: '2026-02-10T10:00:00Z' },
     ],
   },
   {
@@ -125,7 +125,7 @@ export const outrosRecebimentosSeed: OutroRecebimento[] = [
       { id: 'p-002-1', outroRecebimentoId: 'or-002', numero: 1, valor: 8200, vencimento: '2026-03-22', status: 'recebido', entradaId: null },
     ],
     audit: [
-      { id: 'a1', acao: 'criado', usuario: 'Gestor Proprietário', data: '2026-03-22T14:00:00Z' },
+      { id: 'a1', acao: 'criado', usuario: 'Natalia Landi', data: '2026-03-22T14:00:00Z' },
     ],
   },
 ];

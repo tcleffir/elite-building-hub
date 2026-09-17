@@ -22,7 +22,7 @@ import {
   type DespesaRec, type CategoriaDespesaConfig,
 } from "@/lib/expenses-data";
 
-const USUARIO = 'Gestor Proprietário';
+const USUARIO = 'Natalia Landi';
 const hojeISO = () => new Date().toISOString().slice(0, 10);
 
 interface FinanceCtx {

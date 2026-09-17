@@ -256,9 +256,9 @@ export function AppSidebar() {
         {/* Logo */}
         <div className="px-4 mb-6 flex items-center justify-center w-full">
           {collapsed ? (
-            <img src={logoBranco} alt="Patria" className="h-10 w-10 object-contain mx-auto" />
+            <img src={logoBranco} alt="Patria" className="h-6 w-6 object-contain mx-auto" />
           ) : (
-            <img src={logoBranco} alt="Patria" className="h-10 w-auto object-contain mx-auto" />
+            <img src={logoBranco} alt="Patria" className="h-7 w-auto object-contain mx-auto" />
           )}
         </div>
 

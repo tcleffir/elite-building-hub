@@ -359,7 +359,7 @@ export default function ProprietarioContratos() {
       subtitle: `Visão Consolidada — ${bldgName}`,
       period: new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
       module: 'Contratos',
-      gestorName: 'Gestor Proprietário',
+      gestorName: 'Natalia Landi',
       fundName: 'Safra FII',
       tableOfContents: [
         { page: 2, title: 'Sumário Executivo' },
