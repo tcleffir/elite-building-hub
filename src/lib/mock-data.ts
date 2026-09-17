@@ -794,11 +794,9 @@ export interface Fund {
 }
 
 export const mockFunds: Fund[] = [
-  { id: 'f1', name: 'Fundo Proprietário Corporativo I', type: 'private_equity', total_aum: 185000000 },
-  { id: 'f2', name: 'Fundo Proprietário Corporativo II', type: 'private_equity', total_aum: 142000000 },
-  { id: 'f3', name: 'Fundo Proprietário Renda Urbana', type: 'private_equity', total_aum: 210000000 },
-  { id: 'f4', name: 'Fundo Proprietário Logística', type: 'private_equity', total_aum: 98000000 },
+  { id: 'f1', name: 'HGRE11 — Patria Escritórios FII', type: 'listed', total_aum: 1466000000 },
 ];
+
 
 // ─── Mock Tickets — 360JK Real ────────────────────────
 export const mockTickets: Ticket[] = [
