@@ -823,6 +823,7 @@ export default function ProprietarioRelatoriosLocacao() {
             </div>
           </div>
         </TabsContent>
+      </Tabs>
 
       {/* Preview Dialog */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
