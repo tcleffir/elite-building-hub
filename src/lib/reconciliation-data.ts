@@ -154,19 +154,20 @@ export interface GrupoCobranca {
 
 // ---------- Seed ----------
 
+export const HGRE11_FUNDO_ID = 'f1';
+
 export const fundos: Fundo[] = [
-  { id: 'f1', nome: 'FUNDO 1 — Corporativo I' },
-  { id: 'f2', nome: 'FUNDO 2 — Corporativo II' },
-  { id: 'f3', nome: 'FUNDO 3 — Renda Urbana' },
+  { id: HGRE11_FUNDO_ID, nome: 'HGRE11 — Patria Escritórios FII' },
 ];
 
-// Reuses building IDs from mockBuildings (b2..b6). b1 (360JK) é oculto para gestor_fundo.
-export const edificiosRec: EdificioRec[] = [
-  { id: 'b2', fundoId: 'f1', nome: 'Ed. Tower Bridge Corporate', endereco: 'Rua Funchal, 418 — Vila Olímpia, SP' },
-  { id: 'b4', fundoId: 'f1', nome: 'Ed. Rochaverá Torre A',     endereco: 'Av. M. Penteado, 939 — Barueri, SP' },
-  { id: 'b5', fundoId: 'f2', nome: 'Ed. Rochaverá Torre B',     endereco: 'Av. Faria Lima, 1.355 — SP' },
-  { id: 'b3', fundoId: 'f3', nome: 'Ed. WTNU',                  endereco: 'Av. Nações Unidas, 14.401 — SP' },
-];
+// Derivado da fonte única de verdade: os 13 ativos do HGRE11.
+export const edificiosRec: EdificioRec[] = getHGRE11PortfolioBuildings().map((b) => ({
+  id: b.id,
+  fundoId: HGRE11_FUNDO_ID,
+  nome: b.name,
+  endereco: b.full_address ?? b.address,
+}));
+
 
 export const unidadesRec: UnidadeRec[] = [
   { id: 'u-b2-701', edificioId: 'b2', identificacao: 'Conjunto 701' },
