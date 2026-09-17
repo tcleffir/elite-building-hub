@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 203 72% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 203 72% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 203 72% 14%;
+
+    --primary: 203 72% 14%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 203 55% 27%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 200 20% 92%;
+    --muted-foreground: 205 12% 48%;
+
+    --accent: 175 60% 14%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 88 50% 53%;
+    --success-foreground: 0 0% 100%;
+
+    --operational: 137 23% 40%;
+    --operational-foreground: 0 0% 100%;
+
+    --interactive: 200 50% 37%;
+    --interactive-foreground: 0 0% 100%;
+
+    --water: 195 70% 55%;
+    --water-foreground: 0 0% 100%;
+
+    --hover: 200 32% 45%;
+    --hover-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 200 20% 88%;
+    --input: 200 20% 88%;
+    --ring: 203 72% 14%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 203 72% 14%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 200 50% 37%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 203 55% 27%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 203 55% 22%;
+    --sidebar-ring: 200 50% 37%;
+    --sidebar-muted: 203 55% 20%;
+
+    --chart-1: 203 72% 14%;
+    --chart-2: 200 50% 37%;
+    --chart-3: 88 50% 53%;
+    --chart-4: 137 23% 40%;
+    --chart-5: 175 60% 14%;
+  }
+
+  .dark {
+    --background: 203 72% 8%;
+    --foreground: 200 20% 92%;
+
+    --card: 203 72% 12%;
+    --card-foreground: 200 20% 92%;
+
+    --popover: 203 72% 12%;
+    --popover-foreground: 200 20% 92%;
+
+    --primary: 200 50% 37%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 203 55% 22%;
+    --secondary-foreground: 200 20% 92%;
+
+    --muted: 203 55% 17%;
+    --muted-foreground: 205 12% 60%;
+
+    --accent: 175 60% 20%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 88 50% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --operational: 137 23% 35%;
+    --operational-foreground: 0 0% 100%;
+
+    --interactive: 200 50% 45%;
+    --interactive-foreground: 0 0% 100%;
+
+    --water: 195 70% 60%;
+    --water-foreground: 0 0% 100%;
+
+    --hover: 200 32% 50%;
+    --hover-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 203 55% 20%;
+    --input: 203 55% 20%;
+    --ring: 200 50% 37%;
+
+    --sidebar-background: 203 72% 8%;
+    --sidebar-foreground: 200 20% 92%;
+    --sidebar-primary: 200 50% 37%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 203 55% 17%;
+    --sidebar-accent-foreground: 200 20% 92%;
+    --sidebar-border: 203 55% 15%;
+    --sidebar-ring: 200 50% 37%;
+    --sidebar-muted: 203 55% 14%;
+
+    --chart-1: 200 50% 45%;
+    --chart-2: 88 50% 53%;
+    --chart-3: 137 23% 45%;
+    --chart-4: 175 60% 30%;
+    --chart-5: 200 32% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body, #root {
+    @apply overflow-x-hidden;
+    max-width: 100vw;
+  }
+
+  body {
+    @apply bg-background text-foreground font-montserrat antialiased;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-border/50 shadow-lg rounded-2xl;
+  }
+
+  .premium-shadow {
+    box-shadow: 0 4px 24px -4px hsl(var(--primary) / 0.08), 0 2px 8px -2px hsl(var(--primary) / 0.04);
+  }
+
+  .premium-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+  }
+
+  .success-gradient {
+    background: linear-gradient(135deg, hsl(var(--operational)), hsl(var(--success)));
+  }
+}
