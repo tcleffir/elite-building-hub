@@ -51,7 +51,7 @@ export const motivoDescricoes: Record<RevisionalMotivo, string> = {
 
 // Histórico de alterações de valor (mock). Reajustes por índice NÃO zeram o prazo.
 export const mockAlteracoesValor: AlteracaoValor[] = [
-  // tc1 — Magazine Luiza (assinado 2022-03-01): só reajustes anuais → ELEGÍVEL
+  // tc1 — Vivo (Telefônica Brasil) (assinado 2022-03-01): só reajustes anuais → ELEGÍVEL
   { id: 'av1', contrato_id: 'tc1', data: '2023-03-01', tipo: 'reajuste_indice', valor_anterior: 180000, valor_novo: 188100, observacao: 'IPCA +4.5%' },
   { id: 'av2', contrato_id: 'tc1', data: '2024-03-01', tipo: 'reajuste_indice', valor_anterior: 188100, valor_novo: 195124, observacao: 'IPCA +3.73%' },
   { id: 'av3', contrato_id: 'tc1', data: '2025-03-01', tipo: 'reajuste_indice', valor_anterior: 195124, valor_novo: 203105, observacao: 'IPCA +4.09%' },
@@ -66,7 +66,7 @@ export const mockAlteracoesValor: AlteracaoValor[] = [
   { id: 'av8', contrato_id: 'tc3', data: '2024-01-01', tipo: 'reajuste_indice', valor_anterior: 162500, valor_novo: 168750 },
   { id: 'av9', contrato_id: 'tc3', data: '2025-01-01', tipo: 'reajuste_indice', valor_anterior: 168750, valor_novo: 175500 },
 
-  // tc4 — Tok&Stok (assinado 2022-11-01): elegível, mas já existe revisional aberta
+  // tc4 — Hospital Sírio-Libanês (assinado 2022-11-01): elegível, mas já existe revisional aberta
   { id: 'av10', contrato_id: 'tc4', data: '2023-11-01', tipo: 'reajuste_indice', valor_anterior: 127600, valor_novo: 132300 },
   { id: 'av11', contrato_id: 'tc4', data: '2024-11-01', tipo: 'reajuste_indice', valor_anterior: 132300, valor_novo: 137600 },
 

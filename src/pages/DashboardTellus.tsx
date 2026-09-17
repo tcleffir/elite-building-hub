@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { getVILG11PortfolioBuildings, mockTenantContracts, mockBuildingDocuments } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts, mockBuildingDocuments } from "@/lib/mock-data";
 import { getContractHealth, getDocumentHealth, getOccupancyStatus, daysUntil, healthColors, HealthStatus } from "@/lib/health-utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -24,7 +24,7 @@ interface Alert {
 const DashboardTellus = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const portfolioBuildings = getVILG11PortfolioBuildings();
+  const portfolioBuildings = getHGRE11PortfolioBuildings();
   const portfolioBuildingIds = new Set(portfolioBuildings.map((b) => b.id));
 
   const totalGla = portfolioBuildings.reduce((s, b) => s + (b.gla_m2 || 0), 0);

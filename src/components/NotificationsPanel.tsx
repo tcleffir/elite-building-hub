@@ -24,7 +24,7 @@ const mockNotifications: Notification[] = [
   { id: '5', type: 'reservation', titleKey: 'notifications.reservationConfirmed', message: 'Sala de Reunião 19º andar — amanhã 14h-16h', time: '5h', read: true, link: '/reservas' },
   { id: '6', type: 'esg', titleKey: 'notifications.esgReportReady', message: 'Relatório de consumo de energia de fevereiro está pronto', time: '1d', read: true, link: '/esg' },
   { id: '7', type: 'ticket', titleKey: 'notifications.ticketCompleted', message: 'CH-006: Lâmpada queimada corredor — concluído com avaliação ⭐⭐⭐⭐⭐', time: '2d', read: true, link: '/chamados' },
-  { id: '8', type: 'announcement', titleKey: 'notifications.announcementPublished', message: '🌱 CD Cariacica renova certificação LEED Gold para o ciclo 2026-2028', time: '3d', read: true, link: '/comunicados' },
+  { id: '8', type: 'announcement', titleKey: 'notifications.announcementPublished', message: '🌱 Sêneca renova certificação LEED Gold para o ciclo 2026-2028', time: '3d', read: true, link: '/comunicados' },
 ];
 
 const iconMap = {

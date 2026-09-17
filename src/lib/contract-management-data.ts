@@ -50,7 +50,7 @@ export interface LogEdicao {
 // ── MOCKS ──────────────────────────────────────────────────────
 
 export const mockAditivos: Aditivo[] = [
-  // tc1 — Magazine Luiza: aditivo de extensão em 2024 + alteração de área em 2025
+  // tc1 — Vivo (Telefônica Brasil): aditivo de extensão em 2024 + alteração de área em 2025
   {
     id: 'ad1', contrato_id: 'tc1', numero: 1,
     tipo: 'extensao_prazo', data_assinatura: '2024-06-15',

@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getVILG11PortfolioBuildings } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings } from "@/lib/mock-data";
 import { useApp } from "@/contexts/AppContext";
 import { toast } from "sonner";
 
 const ProprietarioConfiguracoes = () => {
   const { user } = useApp();
-  const userBuildings = getVILG11PortfolioBuildings();
+  const userBuildings = getHGRE11PortfolioBuildings();
 
   const [notifications, setNotifications] = useState({
     contractCritical: true,

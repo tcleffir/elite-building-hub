@@ -121,7 +121,7 @@ export interface InadimplenciaItem {
 
 const INDICES = ["IPCA", "IGP-M", "IPCA", "IGP-M", "INPC"];
 const GARANTIAS = ["Fiança bancária", "Seguro fiança", "Depósito caução", "Fiador"];
-const SEGMENTOS = ["Logística 3PL", "Varejo", "E-commerce", "Indústria", "Alimentos"];
+const SEGMENTOS = ["Serviços Corporativos", "Varejo", "E-commerce", "Indústria", "Alimentos"];
 
 const monthsBetween = (from: Date, to: Date) =>
   (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth());
@@ -178,7 +178,7 @@ function syntheticContracts(
       id: `${asset.id}-ct${i + 1}`,
       assetId: asset.id,
       assetName: asset.name,
-      unit: `Galpão ${String.fromCharCode(65 + i)}`,
+      unit: `Conjunto ${String.fromCharCode(65 + i)}`,
       tenant: TENANT_POOL[(hh + i) % TENANT_POOL.length],
       segmentoLocatario: SEGMENTOS[hh % SEGMENTOS.length],
       area,
@@ -221,8 +221,8 @@ function syntheticContracts(
 }
 
 const TENANT_POOL = [
-  "Ambev S.A.", "DHL", "Solistica (Grupo FEMSA)", "Magazine Luiza", "Tok&Stok",
-  "Sierra Log", "Caedu", "Supporte", "Mercado Livre", "GPA Logística",
+  "Totvs S.A.", "DHL", "Befly Viagens", "Vivo (Telefônica Brasil)", "Hospital Sírio-Libanês",
+  "WeWork Brasil", "Deloitte Brasil", "BP Brasil", "Mercado Livre", "GPA Logística",
   "Unilever", "Natura", "Grupo Boticário", "JSL Logística",
 ];
 
@@ -258,7 +258,7 @@ export function buildRelationalModel(competencia: string): RelationalModel {
       city: b.city,
       state: b.state,
       segment: b.segment ?? "logistics",
-      fundTicker: (b.fund_name ?? "VILG11").split(" ")[0],
+      fundTicker: (b.fund_name ?? "HGRE11").split(" ")[0],
       areaTotal: gla,
       areaOcupada,
       areaVaga,
@@ -352,7 +352,7 @@ export const PORTFOLIO_OPTIONS = [
 
 export const TIPO_ATIVO_OPTIONS = [
   { value: "all", label: "Todos os tipos" },
-  { value: "logistics", label: "Galpão logístico" },
+  { value: "logistics", label: "Conjunto logístico" },
   { value: "offices", label: "Lajes corporativas" },
   { value: "mixed", label: "Uso misto" },
 ];

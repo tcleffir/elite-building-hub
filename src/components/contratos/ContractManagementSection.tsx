@@ -331,7 +331,7 @@ function EditContractDialog({
     apply('tenant_name', tenantName || null, 'Locatário');
     apply('tenant_cnpj', cnpj || undefined, 'CNPJ');
     apply('building_id', buildingId, 'Ativo');
-    apply('unit_id', unidade, 'Unidade/Galpão');
+    apply('unit_id', unidade, 'Unidade/Conjunto');
     apply('area_m2', Number(area) || contract.area_m2, 'Área (m²)');
     apply('price_per_m2', Number(precoM2) || null, 'R$/m²');
     apply('contract_type', tipo, 'Tipo de contrato');
@@ -393,7 +393,7 @@ function EditContractDialog({
             </Select>
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">Unidade / Galpão</Label>
+            <Label className="text-xs">Unidade / Conjunto</Label>
             <Input value={unidade} onChange={e => setUnidade(e.target.value)} />
           </div>
           <div className="space-y-1">

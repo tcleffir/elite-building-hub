@@ -74,9 +74,9 @@ const EventDetailDrawer = ({ event, open, onClose, onEdit, onDelete, onUpdatePar
       return;
     }
     const emails = participants.map(p => p.email).join(',');
-    const subject = encodeURIComponent(`Convite: ${event.title} — LUXCondo`);
+    const subject = encodeURIComponent(`Convite: ${event.title} — Patria Real Estate`);
     const body = encodeURIComponent(
-      `Você foi convidado para o evento:\n\n${event.title}\nData: ${dateLabel}\nHorário: ${time}\nLocal: ${event.location || 'Não definido'}\n\nDescrição: ${event.description || '-'}\n\nAcesse o LUXCondo para mais detalhes.`
+      `Você foi convidado para o evento:\n\n${event.title}\nData: ${dateLabel}\nHorário: ${time}\nLocal: ${event.location || 'Não definido'}\n\nDescrição: ${event.description || '-'}\n\nAcesse o Patria Real Estate para mais detalhes.`
     );
     window.open(`mailto:${emails}?subject=${subject}&body=${body}`, '_self');
     toast.success(`Cliente de e-mail aberto com convite para ${participants.length} participante(s)`);
@@ -236,7 +236,7 @@ const EventDetailDrawer = ({ event, open, onClose, onEdit, onDelete, onUpdatePar
               <p className="text-xs font-semibold text-muted-foreground uppercase">Sincronização</p>
               <div className="flex items-center gap-2 text-xs">
                 <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                <span>Vinci Compass</span>
+                <span>Patria</span>
                 <Badge variant="outline" className="text-[9px] ml-auto">Sincronizado</Badge>
               </div>
             </div>

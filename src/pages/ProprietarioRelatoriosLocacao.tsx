@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useApp } from "@/contexts/AppContext";
-import { getVILG11PortfolioBuildings, mockTenantContracts } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts } from "@/lib/mock-data";
 import {
   mockGuarantees, mockInsurances, mockIPTUs, mockMonthlyPayments,
   mockInadimplencia, mockReportHistory, type ReportHistoryEntry,
@@ -88,8 +88,8 @@ const allSections = sectionGroups.flatMap(g => g.sections);
 
 export default function ProprietarioRelatoriosLocacao() {
   const { user } = useApp();
-  const buildings = getVILG11PortfolioBuildings();
-  // Ativo padrão: Caxias Park (b12) — possui cadastro completo de locatários
+  const buildings = getHGRE11PortfolioBuildings();
+  // Ativo padrão: Chucri Zaidan (b12) — possui cadastro completo de locatários
   const firstBuildingId = buildings.find(b => b.id === 'b12')?.id || buildings[0]?.id || '';
   const [activeTab, setActiveTab] = useState('gestao');
 
@@ -247,7 +247,7 @@ export default function ProprietarioRelatoriosLocacao() {
     if (format === 'pdf') {
       const doc = new jsPDF();
       doc.setFontSize(22);
-      doc.text('LUXCondo', 105, 50, { align: 'center' });
+      doc.text('Patria Real Estate', 105, 50, { align: 'center' });
       doc.setFontSize(16);
       doc.text('Relatório de Gestão de Locatários', 105, 70, { align: 'center' });
       doc.setFontSize(12);
@@ -307,10 +307,10 @@ export default function ProprietarioRelatoriosLocacao() {
         }
 
         doc.setFontSize(8);
-        doc.text(`Gerado em ${new Date().toLocaleDateString('pt-BR')} — Plataforma LUXCondo | Safra Gestão`, 105, 285, { align: 'center' });
+        doc.text(`Gerado em ${new Date().toLocaleDateString('pt-BR')} — Plataforma Patria Real Estate | Safra Gestão`, 105, 285, { align: 'center' });
       });
 
-      doc.save(`LUXCondo_Gestao_${buildingName.replace(/\s/g, '_')}_${startPeriod}_${endPeriod}.pdf`);
+      doc.save(`Patria Real Estate_Gestao_${buildingName.replace(/\s/g, '_')}_${startPeriod}_${endPeriod}.pdf`);
     } else {
       const wb = XLSX.utils.book_new();
       filteredContracts.forEach(tc => {
@@ -331,7 +331,7 @@ export default function ProprietarioRelatoriosLocacao() {
         const sheetName = (tc.tenant_name || 'Locatário').substring(0, 31);
         XLSX.utils.book_append_sheet(wb, ws, sheetName);
       });
-      XLSX.writeFile(wb, `LUXCondo_Gestao_${buildingName.replace(/\s/g, '_')}_${startPeriod}_${endPeriod}.xlsx`);
+      XLSX.writeFile(wb, `Patria Real Estate_Gestao_${buildingName.replace(/\s/g, '_')}_${startPeriod}_${endPeriod}.xlsx`);
     }
 
     toast.success('Relatório gerado com sucesso!');
@@ -446,9 +446,9 @@ export default function ProprietarioRelatoriosLocacao() {
     const finalY = (doc as any).lastAutoTable?.finalY || 200;
     doc.text(`Resumo: ${criticalCount} críticos | ${attentionCount} atenção | R$ ${inadimValues.toLocaleString('pt-BR')} inadimplente`, 14, finalY + 10);
     doc.setFontSize(8);
-    doc.text(`Gerado em ${new Date().toLocaleDateString('pt-BR')} — LUXCondo | Safra Gestão`, 105, 285, { align: 'center' });
+    doc.text(`Gerado em ${new Date().toLocaleDateString('pt-BR')} — Patria Real Estate | Safra Gestão`, 105, 285, { align: 'center' });
 
-    doc.save(`LUXCondo_Pendencias_${pendBuildingName.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+    doc.save(`Patria Real Estate_Pendencias_${pendBuildingName.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
     toast.success('PDF de pendências gerado!');
 
     setHistory(prev => [{
@@ -462,8 +462,8 @@ export default function ProprietarioRelatoriosLocacao() {
 
   const openEmailModal = () => {
     const month = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-    setEmailSubject(`LUXCondo — Pendências ${pendBuildingName} — ${month}`);
-    setEmailBody(`Segue em anexo o relatório de pendências do ativo ${pendBuildingName} referente ao período ${month}.\n\nResumo: ${criticalCount} itens críticos | ${attentionCount} itens de atenção | R$ ${inadimValues.toLocaleString('pt-BR')} em inadimplência.\n\nAcesse a plataforma LUXCondo para mais detalhes.`);
+    setEmailSubject(`Patria Real Estate — Pendências ${pendBuildingName} — ${month}`);
+    setEmailBody(`Segue em anexo o relatório de pendências do ativo ${pendBuildingName} referente ao período ${month}.\n\nResumo: ${criticalCount} itens críticos | ${attentionCount} itens de atenção | R$ ${inadimValues.toLocaleString('pt-BR')} em inadimplência.\n\nAcesse a plataforma Patria Real Estate para mais detalhes.`);
     setEmailModal(true);
   };
 
@@ -1189,7 +1189,7 @@ export default function ProprietarioRelatoriosLocacao() {
               <h2 className="text-xl font-bold">Relatório de Gestão — {buildingName}</h2>
               <p className="text-muted-foreground">Período: {periodLabel}</p>
               <p className="text-sm text-muted-foreground mt-1">{selectedTenantCount} locatários | {selectedSectionCount} seções</p>
-              <p className="text-xs text-muted-foreground mt-2">LUXCondo — Safra Gestão</p>
+              <p className="text-xs text-muted-foreground mt-2">Patria Real Estate — Safra Gestão</p>
             </div>
 
             {/* First tenant preview */}

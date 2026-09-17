@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getVILG11PortfolioBuildings, mockAnnouncements, Announcement } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockAnnouncements, Announcement } from "@/lib/mock-data";
 import { mockContacts, mockGroups, contactTypeLabels, contactTypeColors, Contact as ContactType } from "@/lib/contacts-data";
 import { useApp } from "@/contexts/AppContext";
 import { toast } from "sonner";
@@ -33,7 +33,7 @@ const priorityLabels: Record<string, string> = {
 
 const recipientOptions = [
   'Todos os Locatários', 'Todos os Proprietários', 'Todos do Ativo',
-  'Magazine Luiza', 'Ambev S.A.', 'Solistica (Grupo FEMSA)', 'Tok&Stok', 'Supporte', 'DHL', 'Sierra Log', 'Caedu',
+  'Vivo (Telefônica Brasil)', 'Totvs S.A.', 'Befly Viagens', 'Hospital Sírio-Libanês', 'BP Brasil', 'DHL', 'WeWork Brasil', 'Deloitte Brasil',
 ];
 
 const categoryOptions = ['ESG', 'Administrativo', 'Manutenção', 'Segurança', 'Financeiro', 'Outros'];
@@ -73,7 +73,7 @@ const ProprietarioComunicacao = () => {
   // Drawer comment
   const [drawerComment, setDrawerComment] = useState('');
 
-  const userBuildings = getVILG11PortfolioBuildings();
+  const userBuildings = getHGRE11PortfolioBuildings();
   const portfolioBuildingIds = new Set(userBuildings.map((b) => b.id));
 
   const allAnnouncements = useMemo(() => {
@@ -107,12 +107,12 @@ const ProprietarioComunicacao = () => {
     return [
       ...localContacts,
       ...reusableContacts,
-      { id: 'pc1', name: 'Recepção CD Cariacica', email: 'portaria@cdcariacica.com.br', phone: '(11) 99999-1010', type: 'security' as const, company: 'CD Cariacica', jobTitle: 'Recepção', isActive: true, groupIds: ['g1', 'g6'], createdAt: '2026-03-18', buildingId: 'b8' },
-      { id: 'pc2', name: 'Mariana Lopes', email: 'mariana.lopes@cdcariacica.com.br', phone: '(11) 99999-1011', type: 'manager' as const, company: 'CD Cariacica', jobTitle: 'Facilities Manager', isActive: true, groupIds: ['g5', 'g6'], createdAt: '2026-03-18', buildingId: 'b8' },
-      { id: 'pc3', name: 'Portaria Airport Town GRU III', email: 'portaria@airportgru3.com.br', phone: '(11) 99999-1012', type: 'security' as const, company: 'Airport Town Guarulhos III', jobTitle: 'Recepção', isActive: true, groupIds: ['g1', 'g6'], createdAt: '2026-03-18', buildingId: 'b7' },
-      { id: 'pc4', name: 'Ricardo Menezes', email: 'ricardo.menezes@airportgru3.com.br', phone: '(11) 99999-1013', type: 'manager' as const, company: 'Airport Town Guarulhos III', jobTitle: 'Coordenador de Operações', isActive: true, groupIds: ['g5', 'g6'], createdAt: '2026-03-18', buildingId: 'b7' },
+      { id: 'pc1', name: 'Recepção Sêneca', email: 'portaria@cdcariacica.com.br', phone: '(11) 99999-1010', type: 'security' as const, company: 'Sêneca', jobTitle: 'Recepção', isActive: true, groupIds: ['g1', 'g6'], createdAt: '2026-03-18', buildingId: 'b8' },
+      { id: 'pc2', name: 'Mariana Lopes', email: 'mariana.lopes@cdcariacica.com.br', phone: '(11) 99999-1011', type: 'manager' as const, company: 'Sêneca', jobTitle: 'Facilities Manager', isActive: true, groupIds: ['g5', 'g6'], createdAt: '2026-03-18', buildingId: 'b8' },
+      { id: 'pc3', name: 'Portaria Martiniano', email: 'portaria@airportgru3.com.br', phone: '(11) 99999-1012', type: 'security' as const, company: 'Martiniano', jobTitle: 'Recepção', isActive: true, groupIds: ['g1', 'g6'], createdAt: '2026-03-18', buildingId: 'b7' },
+      { id: 'pc4', name: 'Ricardo Menezes', email: 'ricardo.menezes@airportgru3.com.br', phone: '(11) 99999-1013', type: 'manager' as const, company: 'Martiniano', jobTitle: 'Coordenador de Operações', isActive: true, groupIds: ['g5', 'g6'], createdAt: '2026-03-18', buildingId: 'b7' },
       { id: 'pc5', name: 'Juliana Prado', email: 'juliana.prado@dhl.com', phone: '(11) 99999-1014', type: 'tenant_admin' as const, company: 'DHL', jobTitle: 'Facilities Coordinator', isActive: true, groupIds: ['g2', 'g6'], createdAt: '2026-03-18', buildingId: 'b8' },
-      { id: 'pc6', name: 'Fernanda Alves', email: 'fernanda.alves@sierralog.com.br', phone: '(11) 99999-1015', type: 'tenant_admin' as const, company: 'Sierra Log', jobTitle: 'Facilities Coordinator', isActive: true, groupIds: ['g2', 'g6'], createdAt: '2026-03-18', buildingId: 'b7' },
+      { id: 'pc6', name: 'Fernanda Alves', email: 'fernanda.alves@sierralog.com.br', phone: '(11) 99999-1015', type: 'tenant_admin' as const, company: 'WeWork Brasil', jobTitle: 'Facilities Coordinator', isActive: true, groupIds: ['g2', 'g6'], createdAt: '2026-03-18', buildingId: 'b7' },
     ];
   }, [localContacts]);
 
@@ -470,7 +470,7 @@ const ProprietarioComunicacao = () => {
               <Label className="text-xs">Título *</Label>
               <Input
                 value={formTitle} onChange={e => setFormTitle(e.target.value)}
-                placeholder="Ex: Manutenção preventiva docas — Caxias Park"
+                placeholder="Ex: Manutenção preventiva docas — Chucri Zaidan"
                 className={formErrors.title ? 'border-red-500' : ''}
               />
               {formErrors.title && <p className="text-xs text-red-500 mt-1">Título é obrigatório</p>}

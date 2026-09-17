@@ -66,7 +66,7 @@ const PERFIL: { categoriaId: string; fornecedor: string; descricao: string; base
   { categoriaId: 'manutencao',          fornecedor: 'TecFacilities',        descricao: 'Manutenção predial preventiva',    base: 12400 },
   { categoriaId: 'seguros',             fornecedor: 'Porto Seguro',         descricao: 'Seguro patrimonial',               base: 4300 },
   { categoriaId: 'utilities',           fornecedor: 'Enel / Sabesp',        descricao: 'Energia e água áreas comuns',      base: 7600 },
-  { categoriaId: 'property_management', fornecedor: 'Vinci Property Mgmt',  descricao: 'Taxa de property management',      base: 6800 },
+  { categoriaId: 'property_management', fornecedor: 'Patria Property Mgmt',  descricao: 'Taxa de property management',      base: 6800 },
   { categoriaId: 'juridico',            fornecedor: 'Vaz & Associados',     descricao: 'Assessoria jurídica de locação',   base: 3100 },
   { categoriaId: 'outros',              fornecedor: 'Diversos',             descricao: 'Despesas diversas do ativo',       base: 2200 },
 ];

@@ -508,10 +508,10 @@ const NotificacoesGlobaisSection = () => {
       </SectionCard>
       <SectionCard title="Templates de E-mail" subtitle="Personalize assunto, corpo e rodapé dos e-mails">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1.5"><Label className="text-xs">Remetente (Nome)</Label><Input defaultValue="Vinci Compass | 360JK" /></div>
+          <div className="space-y-1.5"><Label className="text-xs">Remetente (Nome)</Label><Input defaultValue="Patria | 360JK" /></div>
           <div className="space-y-1.5"><Label className="text-xs">Remetente (E-mail)</Label><Input defaultValue="noreply@luxcondo.com.br" /></div>
         </div>
-        <div className="mt-3 space-y-1.5"><Label className="text-xs">Rodapé padrão</Label><Textarea defaultValue="Vinci Compass — Gestão Predial Inteligente. Este e-mail foi enviado automaticamente." rows={2} /></div>
+        <div className="mt-3 space-y-1.5"><Label className="text-xs">Rodapé padrão</Label><Textarea defaultValue="Patria — Gestão Predial Inteligente. Este e-mail foi enviado automaticamente." rows={2} /></div>
         <div className="flex gap-2 mt-4">
           <Button variant="outline" className="gap-2" onClick={() => toast.success('E-mail de teste enviado!')}><TestTube size={14} />Testar Envio</Button>
           <Button className="premium-gradient gap-2" onClick={() => toast.success('Templates salvos!')}><Save size={14} />Salvar</Button>

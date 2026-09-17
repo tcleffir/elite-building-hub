@@ -100,17 +100,24 @@ const Layout = ({ children }: LayoutProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-72 max-h-96 overflow-y-auto">
-                    {FUNDS.map((f) => (
-                      <DropdownMenuItem
-                        key={f.ticker}
-                        onClick={() => setSelectedFund(f)}
-                        className={`cursor-pointer ${f.ticker === selectedFund.ticker ? "bg-muted" : ""}`}
-                      >
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-sm">{f.ticker}</span>
-                          <span className="text-xs text-muted-foreground">{f.name}</span>
+                    {(["tijolo", "papel"] as const).map((seg) => (
+                      <div key={seg}>
+                        <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                          {seg === "tijolo" ? "Tijolo" : "Papel"}
                         </div>
-                      </DropdownMenuItem>
+                        {FUNDS.filter((f) => (f.segment ?? "tijolo") === seg).map((f) => (
+                          <DropdownMenuItem
+                            key={f.ticker}
+                            onClick={() => setSelectedFund(f)}
+                            className={`cursor-pointer ${f.ticker === selectedFund.ticker ? "bg-muted" : ""}`}
+                          >
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-sm">{f.ticker}</span>
+                              <span className="text-xs text-muted-foreground">{f.name}</span>
+                            </div>
+                          </DropdownMenuItem>
+                        ))}
+                      </div>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -1,4 +1,4 @@
-import { mockReportFolders, ReportFolder, getVILG11PortfolioBuildings } from "@/lib/mock-data";
+import { mockReportFolders, ReportFolder, getHGRE11PortfolioBuildings } from "@/lib/mock-data";
 
 export interface AiField { rotulo: string; valor: string | number | null; grupo: string }
 export interface AiClause { titulo: string; resumo: string }
@@ -51,7 +51,7 @@ export const buildTaxonomy = (folders: ReportFolder[] = mockReportFolders): Taxo
 export const taxonomyAsText = (entries = buildTaxonomy()) =>
   entries.map(e => `- ${e.category} > ${e.subfolder}`).join("\n");
 
-export const assetsAsText = () => getVILG11PortfolioBuildings().map(b => `- ${b.name}`).join("\n");
+export const assetsAsText = () => getHGRE11PortfolioBuildings().map(b => `- ${b.name}`).join("\n");
 
 /** Resolve the AI-suggested destination to a real folder in the library tree. */
 export const resolveDestination = (
@@ -152,13 +152,13 @@ export const mockAnalysisFor = (fileName: string): AiDocumentAnalysis => {
     return {
       docType: "Contrato de Locação Atípico (BTS)",
       docTypeKey: "contrato_locacao",
-      nome: "Contrato de Locação — Ambev S.A. — Caxias Park (Módulo 3)",
+      nome: "Contrato de Locação — Totvs S.A. — Chucri Zaidan (Módulo 3)",
       resumo:
-        "Contrato de locação atípico (built to suit) do Módulo 3 do Caxias Park firmado com Ambev S.A., com prazo de 120 meses, aluguel mensal de R$ 1.180.000,00, reajuste anual pelo IPCA no aniversário de março e garantia por fiança bancária equivalente a 6 aluguéis.",
+        "Contrato de locação atípico (built to suit) do Módulo 3 do Chucri Zaidan firmado com Totvs S.A., com prazo de 120 meses, aluguel mensal de R$ 1.180.000,00, reajuste anual pelo IPCA no aniversário de março e garantia por fiança bancária equivalente a 6 aluguéis.",
       destino: { categoria: "Gestão de Ativos", subpasta: "Contratos de Locação" },
-      ativo: "Caxias Park",
-      empresa: "Vinci Compass / VILG11",
-      contraparte: "Ambev S.A.",
+      ativo: "Chucri Zaidan",
+      empresa: "Patria / HGRE11",
+      contraparte: "Totvs S.A.",
       documentoNumero: "CTR-2024-0187",
       dataEmissao: "2024-03-01",
       dataValidade: "2034-02-28",
@@ -191,10 +191,10 @@ export const mockAnalysisFor = (fileName: string): AiDocumentAnalysis => {
     return {
       docType: "AVCB — Auto de Vistoria do Corpo de Bombeiros",
       docTypeKey: "avcb",
-      nome: "AVCB — Caxias Park 2026",
-      resumo: "Auto de Vistoria do Corpo de Bombeiros do Caxias Park, emitido em 15/01/2026 com validade até 22/05/2026, sem apontamentos pendentes de regularização.",
+      nome: "AVCB — Chucri Zaidan 2026",
+      resumo: "Auto de Vistoria do Corpo de Bombeiros do Chucri Zaidan, emitido em 15/01/2026 com validade até 22/05/2026, sem apontamentos pendentes de regularização.",
       destino: { categoria: "Técnico / Engenharia", subpasta: "Laudos e Inspeções" },
-      ativo: "Caxias Park",
+      ativo: "Chucri Zaidan",
       empresa: "Corpo de Bombeiros — CBMERJ",
       documentoNumero: "AVCB 2026/004512",
       dataEmissao: "2026-01-15",
@@ -213,10 +213,10 @@ export const mockAnalysisFor = (fileName: string): AiDocumentAnalysis => {
   return {
     docType: "Fatura de Energia Elétrica",
     docTypeKey: "fatura_utilities",
-    nome: "Fatura de Energia — Caxias Park — Abr/2026",
-    resumo: "Fatura de energia elétrica da unidade consumidora do Caxias Park referente ao consumo de abril/2026, com 184.320 kWh medidos e valor total de R$ 156.672,00, vencimento em 15/05/2026.",
+    nome: "Fatura de Energia — Chucri Zaidan — Abr/2026",
+    resumo: "Fatura de energia elétrica da unidade consumidora do Chucri Zaidan referente ao consumo de abril/2026, com 184.320 kWh medidos e valor total de R$ 156.672,00, vencimento em 15/05/2026.",
     destino: { categoria: "ESG & Sustentabilidade", subpasta: "Consumo de Energia" },
-    ativo: "Caxias Park",
+    ativo: "Chucri Zaidan",
     empresa: "Light S/A",
     documentoNumero: "UC 3004512889",
     dataEmissao: "2026-04-30",

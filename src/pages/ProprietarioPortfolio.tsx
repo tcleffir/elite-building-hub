@@ -439,6 +439,34 @@ const ProprietarioPortfolio = () => {
         </div>
       </div>
 
+      {/* Fundamentos do fundo (fonte: Relatório Gerencial) */}
+      {selectedFund.fundamentals && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {[
+                { l: "Patrimônio Líquido", v: `R$ ${(selectedFund.fundamentals.patrimonioLiquido / 1_000_000_000).toFixed(2).replace('.', ',')}B` },
+                { l: "VP por Cota", v: `R$ ${selectedFund.fundamentals.vpPorCota.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` },
+                { l: "ABL Total", v: `${selectedFund.fundamentals.ablTotal.toLocaleString('pt-BR')} m²` },
+                { l: "Aluguel Médio", v: `R$ ${selectedFund.fundamentals.aluguelMedioM2.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}/m²` },
+                { l: "WALE", v: `${selectedFund.fundamentals.waleAnos.toFixed(1).replace('.', ',')} anos` },
+                { l: "Dividend Yield", v: `${selectedFund.fundamentals.dividendYield.toFixed(1).replace('.', ',')}% a.a.` },
+              ].map((f) => (
+                <div key={f.l} className="text-left">
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{f.l}</p>
+                  <p className="text-sm font-semibold text-foreground">{f.v}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-[10px] text-muted-foreground">
+              CNPJ {selectedFund.fundamentals.cnpj} · Gestor {selectedFund.fundamentals.gestor} · Administrador {selectedFund.fundamentals.administrador} · Taxa de gestão {selectedFund.fundamentals.taxaGestao} · {selectedFund.fundamentals.tipoAnbima}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+
+
       {/* [1] KPI Cards - 6 cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         {kpiCards.map((kpi, i) => {

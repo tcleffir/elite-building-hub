@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { getVILG11PortfolioBuildings } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings } from "@/lib/mock-data";
 import { mockContacts } from "@/lib/contacts-data";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -59,7 +59,7 @@ const EventForm = ({ open, onClose, onSave, editingEvent, availableBuildings, in
   const [participantSearch, setParticipantSearch] = useState('');
   const [emailInput, setEmailInput] = useState('');
 
-  const portfolioBuildings = getVILG11PortfolioBuildings();
+  const portfolioBuildings = getHGRE11PortfolioBuildings();
   const buildingOptions = availableBuildings?.length ? availableBuildings : portfolioBuildings.map(b => b.name);
 
   const filteredContacts = useMemo(() =>
