@@ -15,7 +15,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { mockBuildingDocuments } from "@/lib/mock-data";
-import { getPortfolioSnapshot, COMPETENCIAS, CURRENT_COMPETENCIA, competenciaLabel } from "@/lib/portfolio-competencia";
+import { getPortfolioSnapshot, COMPETENCIAS, CURRENT_COMPETENCIA, competenciaLabel, getCompetenciaWindow, getCompetenciaRange, periodRangeLabel, PERIOD_PRESETS } from "@/lib/portfolio-competencia";
+import PeriodFilter, { type PeriodFilterValue } from "@/components/filters/PeriodFilter";
 
 import { getContractHealth, getDocumentHealth, getOccupancyStatus, daysUntil, healthColors, healthLabels, HealthStatus } from "@/lib/health-utils";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -42,7 +43,15 @@ const ProprietarioPortfolio = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { selectedFund } = useFund();
-  const [competencia, setCompetencia] = useState<string>(CURRENT_COMPETENCIA);
+  const [period, setPeriod] = useState<PeriodFilterValue>({ preset: '1m', end: CURRENT_COMPETENCIA, start: CURRENT_COMPETENCIA });
+  const competenciaWindow = useMemo(() => (
+    period.preset === 'custom'
+      ? getCompetenciaRange(period.start, period.end)
+      : getCompetenciaWindow(period.end, PERIOD_PRESETS.find(p => p.value === period.preset)?.months ?? 1)
+  ), [period]);
+  /** Competência de fechamento da janela — base dos indicadores pontuais */
+  const competencia = competenciaWindow[competenciaWindow.length - 1];
+  const periodLabel = periodRangeLabel(competenciaWindow);
   const [buildingFilter, setBuildingFilter] = useState('all');
 
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -219,10 +228,10 @@ const ProprietarioPortfolio = () => {
     const config: ReportConfig = {
       title: 'Relatório de Portfólio',
       subtitle: `Visão Consolidada — ${portfolioBuildings.length} Ativos`,
-      period: competenciaLabel(competencia),
+      period: periodLabel,
       module: 'Portfólio',
       gestorName: 'Gestor Proprietário',
-      fundName: 'Safra FII',
+      fundName: selectedFund.ticker,
       tableOfContents: [
         { page: 2, title: 'Sumário Executivo' },
         { page: 3, title: 'Portfólio de Ativos' },
@@ -371,7 +380,7 @@ const ProprietarioPortfolio = () => {
       bg: ocupFinStatus === 'healthy' ? 'bg-emerald-50' : ocupFinStatus === 'warning' ? 'bg-amber-50' : 'bg-rose-50',
       value: ocupacaoFinanceira !== null ? `${ocupacaoFinanceira.toFixed(1)}%` : '—',
       label: 'Ocupação Financeira',
-      subtitle: `Competência ${competenciaLabel(competencia)}`,
+      subtitle: `Competência ${periodLabel}`,
       badge: ocupacaoFinanceira !== null
         ? <Badge className={`${healthColors[ocupFinStatus].badge} text-[10px] mt-1`}>{healthLabels[ocupFinStatus].pt}</Badge>
         : <Badge variant="secondary" className="text-[10px] mt-1">Não apurada</Badge>,
@@ -418,20 +427,10 @@ const ProprietarioPortfolio = () => {
             <h1 className="text-xl md:text-2xl font-bold text-foreground">{selectedFund.ticker}</h1>
             <Badge variant="secondary" className="text-xs">{selectedFund.name}</Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Visão consolidada — {portfolioBuildings.length} ativos</p>
+          <p className="text-sm text-muted-foreground">Visão consolidada — {portfolioBuildings.length} ativos · Período: {periodLabel}</p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Select value={competencia} onValueChange={(v) => { setCompetencia(v); setPage(0); }}>
-            <SelectTrigger className="h-8 w-[168px] text-xs gap-2">
-              <Calendar size={14} className="shrink-0" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {COMPETENCIAS.map(c => (
-                <SelectItem key={c.value} value={c.value} className="text-xs">Período: {c.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <PeriodFilter value={period} onChange={(v) => { setPeriod(v); setPage(0); }} />
 
           <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={handleExportRelatorio}>
             <Download size={14} /> Exportar Relatório
