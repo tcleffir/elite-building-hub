@@ -161,15 +161,35 @@ const ProprietarioDocumentosV2 = () => {
   const [sessionDocs, setSessionDocs] = useState<{ subfolderId: string; file: FileWithMeta }[]>([]);
 
   const libraryFolders = useMemo<ReportFolder[]>(() => {
-    if (sessionDocs.length === 0) return mockReportFolders;
-    return mockReportFolders.map(cat => ({
+    const base = [...mockReportFolders, ...customFolders];
+    return base.map(cat => ({
       ...cat,
-      children: (cat.children || []).map(sub => {
+      children: [...(cat.children || []), ...(customSubfolders[cat.id] || [])].map(sub => {
         const extras = sessionDocs.filter(d => d.subfolderId === sub.id).map(d => d.file as ReportFile);
         return extras.length ? { ...sub, files: [...extras, ...(sub.files || [])] } : sub;
       }),
     }));
-  }, [sessionDocs]);
+  }, [sessionDocs, customFolders, customSubfolders]);
+
+  const createFolder = () => {
+    const name = newFolderName.trim();
+    if (!name) { toast.error('Informe o nome da pasta.'); return; }
+    if (newFolderKind === 'folder') {
+      const id = `cf-${Date.now()}`;
+      setCustomFolders(prev => [...prev, { id, name, icon: '📁', children: [] }]);
+      setExpandedFolders(prev => new Set(prev).add(id));
+      toast.success(`Pasta "${name}" criada`);
+    } else {
+      if (!newFolderParent) { toast.error('Selecione a pasta principal.'); return; }
+      const id = `csf-${Date.now()}`;
+      setCustomSubfolders(prev => ({ ...prev, [newFolderParent]: [...(prev[newFolderParent] || []), { id, name, icon: '📂', files: [] }] }));
+      setExpandedFolders(prev => new Set(prev).add(newFolderParent));
+      setSelectedFolder({ id, name, icon: '📂', files: [] });
+      toast.success(`Subpasta "${name}" criada`);
+    }
+    setNewFolderName('');
+    setShowNewFolder(false);
+  };
 
   const activeFolder = useMemo<ReportFolder | null>(() => {
     if (!selectedFolder) return null;
