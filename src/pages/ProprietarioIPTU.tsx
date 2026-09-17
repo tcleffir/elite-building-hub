@@ -82,24 +82,29 @@ const ProprietarioIPTU = () => {
   const handleExport = () => {
     exportExcel({
       fileName: `iptu-${competencia}`,
-      sheetName: "IPTU",
-      columns: [
-        { key: "building", header: "Ativo" },
-        { key: "city", header: "Município" },
-        { key: "inscricao", header: "Inscrição imobiliária" },
-        { key: "areaM2", header: "Área (m²)" },
-        { key: "valorAnual", header: "IPTU anual (R$)" },
-        { key: "valorParcela", header: "Parcela (R$)" },
-        { key: "parcelaAtual", header: "Parcela nº" },
-        { key: "parcelas", header: "Total parcelas" },
-        { key: "status", header: "Status" },
-        { key: "vencimento", header: "Vencimento" },
-        { key: "origem", header: "Origem do dado" },
+      sheets: [
+        {
+          sheetName: "IPTU",
+          columns: [
+            { header: "Ativo", get: (r: IptuRow) => r.building },
+            { header: "Município", get: (r: IptuRow) => r.city },
+            { header: "Inscrição imobiliária", get: (r: IptuRow) => r.inscricao },
+            { header: "Área (m²)", get: (r: IptuRow) => r.areaM2 },
+            { header: "IPTU anual (R$)", get: (r: IptuRow) => r.valorAnual },
+            { header: "Parcela (R$)", get: (r: IptuRow) => r.valorParcela },
+            { header: "Parcela nº", get: (r: IptuRow) => r.parcelaAtual },
+            { header: "Total parcelas", get: (r: IptuRow) => r.parcelas },
+            { header: "Status", get: (r: IptuRow) => statusBadge[r.status].label },
+            { header: "Vencimento", get: (r: IptuRow) => r.vencimento },
+            { header: "Origem do dado", get: (r: IptuRow) => r.origem },
+          ],
+          rows: filtered,
+        },
       ],
-      rows: filtered,
     });
     toast.success("Planilha de IPTU exportada");
   };
+
 
   return (
     <div className="space-y-6">
