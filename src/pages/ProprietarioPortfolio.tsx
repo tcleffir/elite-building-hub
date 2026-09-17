@@ -217,50 +217,60 @@ const ProprietarioPortfolio = () => {
     setTimeout(() => scrollToUnits(), 100);
   };
 
-  // FIX 9: Export PDF — Premium system
-  const handleExportRelatorio = async () => {
-    toast.info("Gerando relatório PDF premium...");
+  // Export PDF — seleção do conteúdo (padrão Patria)
+  const [exportOpen, setExportOpen] = useState(false);
 
-    // Capture charts
-    const chartReceita = await captureChartAsBase64('chart-receita-edificio');
-    const chartTenant = await captureChartAsBase64('chart-tenant-concentration');
-
-    const config: ReportConfig = {
-      title: 'Relatório de Portfólio',
-      subtitle: `Visão Consolidada — ${portfolioBuildings.length} Ativos`,
-      period: periodLabel,
-      module: 'Portfólio',
-      gestorName: 'Gestor Proprietário',
-      fundName: selectedFund.ticker,
-      tableOfContents: [
-        { page: 2, title: 'Sumário Executivo' },
-        { page: 3, title: 'Portfólio de Ativos' },
-        { page: 4, title: 'Análise de Receita' },
-        { page: 5, title: 'Alertas Críticos' },
-        { page: 6, title: 'Unidades do Portfólio' },
-      ],
-      previewKpis: [
-        { value: String(portfolioBuildings.length), label: 'Ativos' },
-        { value: `${totalGla.toLocaleString('pt-BR')} m²`, label: 'GLA Total' },
-        { value: `${avgOccupancy.toFixed(1)}%`, label: 'Ocupação' },
-        { value: fmt(totalRevenue), label: 'NOI Mensal' },
-      ],
-    };
-
-    const sections: ReportSection[] = [
-      {
+  const exportSections: ExportSectionOption[] = useMemo(() => [
+    {
+      id: 'sumario',
+      label: 'Sumário executivo (KPIs)',
+      hint: 'Ativos, GLA, vacância, ocupação, WAULT e receita mensal',
+      build: () => ({
         title: 'Sumário Executivo',
         type: 'kpi-cards',
         kpis: [
-          { value: String(portfolioBuildings.length), label: 'Total de Ativos', sub: `${portfolioBuildings.length} ativos gerenciados`, color: [15, 22, 41] },
-          { value: `${totalGla.toLocaleString('pt-BR')} m²`, label: 'GLA Total', sub: 'Área total sob gestão', color: [30, 58, 95] },
+          { value: String(portfolioBuildings.length), label: 'Total de Ativos', sub: `${portfolioBuildings.length} ativos gerenciados`, color: [10, 22, 110] },
+          { value: `${totalGla.toLocaleString('pt-BR')} m²`, label: 'GLA Total', sub: 'Área total sob gestão', color: [27, 54, 214] },
           { value: `${vacanciaM2.toLocaleString('pt-BR')} m²`, label: 'Vacância', sub: `${vacantUnitsArr.length} unidades disponíveis`, color: [139, 92, 246] },
           { value: `${avgOccupancy.toFixed(1)}%`, label: 'Taxa de Ocupação', sub: 'Portfólio consolidado', color: [16, 185, 129] },
-          { value: `${(avgWault / 12).toFixed(1)} anos`, label: 'WAULT Médio', sub: 'Prazo médio ponderado', color: [59, 130, 246] },
-          { value: fmt(totalRevenue), label: 'NOI Mensal', sub: `R$/m² médio: R$ ${avgPricePerM2}`, color: [15, 22, 41] },
+          { value: `${(avgWault / 12).toFixed(1)} anos`, label: 'WAULT Médio', sub: 'Prazo médio ponderado', color: [27, 54, 214] },
+          { value: fmt(totalRevenue), label: 'Receita Mensal', sub: `R$/m² médio: R$ ${avgPricePerM2}`, color: [10, 22, 110] },
         ],
+      }),
+    },
+    {
+      id: 'fundamentos',
+      label: 'Fundamentos do fundo',
+      hint: 'PL, VP por cota, ABL, WALE, dividend yield, gestor e administrador',
+      build: () => {
+        const f = selectedFund.fundamentals;
+        if (!f) return null;
+        return {
+          title: 'Fundamentos do Fundo',
+          type: 'table',
+          tableHeaders: ['Indicador', 'Valor'],
+          tableRows: [
+            ['Patrimônio Líquido', `R$ ${(f.patrimonioLiquido / 1_000_000_000).toFixed(2).replace('.', ',')} B`],
+            ['VP por cota', `R$ ${f.vpPorCota.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`],
+            ['ABL total', `${f.ablTotal.toLocaleString('pt-BR')} m²`],
+            ['Aluguel médio', `R$ ${f.aluguelMedioM2.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}/m²`],
+            ['WALE', `${f.waleAnos.toFixed(1).replace('.', ',')} anos`],
+            ['Dividend Yield', `${f.dividendYield.toFixed(1).replace('.', ',')}% a.a.`],
+            ['CNPJ', f.cnpj],
+            ['Gestor', f.gestor],
+            ['Administrador', f.administrador],
+            ['Taxa de gestão', f.taxaGestao],
+            ['Categoria Anbima', f.tipoAnbima],
+          ],
+          columnWidths: [70, 104],
+        } as ReportSection;
       },
-      {
+    },
+    {
+      id: 'ativos',
+      label: 'Portfólio de ativos',
+      hint: 'GLA, ocupação, receita e WAULT por ativo',
+      build: () => ({
         title: 'Portfólio de Ativos',
         type: 'table',
         tableHeaders: ['Ativo', 'GLA (m²)', 'Ocupação', 'Receita/mês', 'WAULT'],
@@ -274,18 +284,74 @@ const ProprietarioPortfolio = () => {
         columnWidths: [55, 28, 22, 35, 28],
         totalRow: ['TOTAL', `${totalGla.toLocaleString('pt-BR')}`, `${avgOccupancy.toFixed(1)}%`, fmt(totalRevenue), `${(avgWault / 12).toFixed(1)} anos`],
         footnote: 'GLA = Gross Leasable Area | WAULT = Weighted Average Unexpired Lease Term',
+      }),
+    },
+    {
+      id: 'geografia',
+      label: 'Distribuição geográfica',
+      hint: 'Ativos e GLA por estado',
+      build: () => {
+        const byState = new Map<string, { n: number; gla: number; receita: number }>();
+        portfolioBuildings.forEach(b => {
+          const cur = byState.get(b.state) || { n: 0, gla: 0, receita: 0 };
+          byState.set(b.state, { n: cur.n + 1, gla: cur.gla + (b.gla_m2 || 0), receita: cur.receita + (b.monthly_revenue || 0) });
+        });
+        return {
+          title: 'Distribuição Geográfica',
+          type: 'table',
+          tableHeaders: ['Estado', 'Ativos', 'GLA (m²)', 'Receita/mês'],
+          tableRows: Array.from(byState.entries()).map(([st, v]) => [st, String(v.n), v.gla.toLocaleString('pt-BR'), fmt(v.receita)]),
+          columnWidths: [50, 30, 45, 49],
+        } as ReportSection;
       },
-      {
-        title: 'Análise de Receita',
-        type: 'chart-image',
-        chartImageBase64: chartReceita || undefined,
-        footnote: 'Ativos em laranja apresentam WAULT < 2 anos.',
+    },
+    {
+      id: 'receita-chart',
+      label: 'Gráfico de receita por ativo',
+      hint: 'Imagem do gráfico exibido na tela',
+      build: async () => {
+        const img = await captureChartAsBase64('chart-receita-edificio');
+        if (!img) return null;
+        return {
+          title: 'Análise de Receita',
+          type: 'chart-image',
+          chartImageBase64: img,
+          footnote: 'Ativos em laranja apresentam WAULT < 2 anos.',
+        } as ReportSection;
       },
-      {
+    },
+    {
+      id: 'leakage',
+      label: 'Análise de leakage',
+      hint: 'Receita perdida e custos fixos das áreas vagas',
+      build: () => {
+        if (vacantUnitsArr.length === 0) return null;
+        const rows = vacantUnitsArr.map(c => {
+          const bldg = portfolioBuildings.find(b => b.id === c.building_id);
+          const bContracts = snapContracts.filter(bc => bc.building_id === c.building_id && bc.status === 'active' && bc.price_per_m2);
+          const avgPrice = bContracts.length > 0 ? bContracts.reduce((s, bc) => s + (bc.price_per_m2 || 0), 0) / bContracts.length : 0;
+          const receitaPerdida = c.area_m2 * avgPrice;
+          return [bldg?.short_name || bldg?.name || '', c.unit_id, c.area_m2.toLocaleString('pt-BR'), fmt(receitaPerdida)];
+        });
+        return {
+          title: 'Análise de Leakage',
+          type: 'table',
+          tableHeaders: ['Ativo', 'Unidade', 'Área (m²)', 'Receita potencial perdida'],
+          tableRows: rows,
+          columnWidths: [48, 30, 34, 62],
+          totalRow: ['TOTAL', `${vacantUnitsArr.length} und.`, `${vacanciaM2.toLocaleString('pt-BR')}`, fmt(vacantPotentialRevenue)],
+        } as ReportSection;
+      },
+    },
+    {
+      id: 'alertas',
+      label: 'Alertas de contrato e documento',
+      hint: `${allAlerts.length} alertas ativos`,
+      build: () => ({
         title: 'Alertas Críticos',
         type: 'table',
         tableHeaders: ['Prioridade', 'Tipo', 'Ativo', 'Item / Contrato', 'Status'],
-        tableRows: allAlerts.slice(0, 10).map(a => [
+        tableRows: allAlerts.slice(0, 20).map(a => [
           a.severity === 'critical' ? 'CRÍTICO' : a.severity === 'warning' ? 'ATENÇÃO' : 'INFO',
           a.type,
           a.building,
@@ -293,11 +359,16 @@ const ProprietarioPortfolio = () => {
           a.daysLeft > 0 ? `${a.daysLeft}d restantes` : `Vencido há ${Math.abs(a.daysLeft)}d`
         ]),
         columnWidths: [24, 24, 40, 55, 30],
-        rowHealthCodes: allAlerts.slice(0, 10).map(a =>
+        rowHealthCodes: allAlerts.slice(0, 20).map(a =>
           a.severity === 'critical' ? 'C' : a.severity === 'warning' ? 'A' : 'S'
         ),
-      },
-      {
+      }),
+    },
+    {
+      id: 'unidades',
+      label: 'Unidades e locatários',
+      hint: 'Respeita os filtros aplicados na tela',
+      build: () => ({
         title: 'Unidades do Portfólio',
         type: 'table',
         tableHeaders: ['Ativo', 'Unidade', 'Locatário', 'Área (m²)', 'R$/m²', 'Total/mês'],
@@ -315,12 +386,10 @@ const ProprietarioPortfolio = () => {
         ),
         totalRow: ['TOTAIS', `${allUnits.length} und.`, '—', `${totalAreaAll.toLocaleString('pt-BR')}`, `R$ ${avgPriceAll}/m²`, fmt(totalRevenueAll)],
         footnote: 'Unidades em roxo estão disponíveis para locação.',
-      },
-    ];
+      }),
+    },
+  ], [portfolioBuildings, totalGla, vacanciaM2, vacantUnitsArr, avgOccupancy, avgWault, totalRevenue, avgPricePerM2, allAlerts, allUnits, snapContracts, selectedFund, vacantPotentialRevenue, totalAreaAll, avgPriceAll, totalRevenueAll]);
 
-    await generateReport(config, sections);
-    toast.success("Relatório PDF exportado com sucesso!");
-  };
 
   // Alert row renderer (shared between page and sheet)
   const renderAlertRow = (alert: Alert, i: number) => (
