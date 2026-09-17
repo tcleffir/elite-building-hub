@@ -588,9 +588,34 @@ const ProprietarioDocumentosV2 = () => {
         </div>
 
         {!selectedBuildingId ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <FileText size={48} className="text-muted-foreground/30 mb-4" />
-            <p className="text-muted-foreground">Selecione um ativo para gerenciar documentos</p>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Selecione um ativo abaixo para gerenciar a documentação — {userBuildings.length} ativos no portfólio.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {userBuildings.map(b => (
+                <button
+                  key={b.id}
+                  onClick={() => setSelectedBuildingId(b.id)}
+                  className="text-left bg-card rounded-2xl p-4 premium-shadow border hover:border-interactive transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-foreground flex items-center gap-2">
+                        <Building2 size={15} /> {b.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{b.city}/{b.state}</p>
+                    </div>
+                    <Badge className={`${healthColors[getOccupancyStatus(b.occupancy_pct || 0)].badge} text-[10px]`}>
+                      {b.occupancy_pct}% ocup.
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    {(b.gla_m2 || b.total_area_m2 || 0).toLocaleString('pt-BR')} m² · {b.total_floors || 0} andares
+                  </p>
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
