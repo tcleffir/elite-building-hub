@@ -61,7 +61,7 @@ export const mockUsers: User[] = [
   {
     id: '9', email: 'gestao@proprietario.com.br', password: 'Prop@2026',
     full_name: 'Natalia Landi', role: 'gestor_fundo',
-    building_ids: ['b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12'],
+    building_ids: ['b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14'],
     company: 'Sr. Vice President - Real Estate', position: 'Sr. Vice President - Real Estate',
     avatar_bg: '#4338CA', avatar_initials: 'NL',
   },
