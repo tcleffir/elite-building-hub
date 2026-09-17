@@ -209,7 +209,7 @@ export default function ProprietarioOutrosRecebimentos() {
             </Select>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b text-xs text-muted-foreground">
@@ -266,6 +266,7 @@ export default function ProprietarioOutrosRecebimentos() {
               </tbody>
             </table>
           </div>
+          <div className="divide-y md:hidden">{lista.map(r => { const cfg = categoriaConfig[r.categoria]; const pagas = r.parcelas.filter(p => p.status === 'recebido').length; return <button key={r.id} onClick={() => setDetalhe(r)} className="block w-full space-y-3 p-4 text-left"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{r.descricao}</p><p className="mt-1 text-xs text-muted-foreground">{nomeEdificio(r.edificioId)} · {nomeContraparte(r)}</p></div><Badge variant="outline" className={STATUS_META[r.status].cls}>{STATUS_META[r.status].label}</Badge></div><div className="grid grid-cols-3 gap-2 text-xs"><div><span className="block text-muted-foreground">Categoria</span><strong>{cfg.label}</strong></div><div><span className="block text-muted-foreground">Valor</span><strong>{fmtBRL(r.valorTotal)}</strong></div><div><span className="block text-muted-foreground">Parcelas</span><strong>{pagas}/{r.parcelas.length}</strong></div></div></button>;})}{lista.length === 0 && <p className="p-8 text-center text-sm text-muted-foreground">Nenhum recebimento encontrado.</p>}</div>
         </CardContent>
       </Card>
 

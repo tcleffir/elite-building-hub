@@ -139,13 +139,13 @@ const Contatos = () => {
 
           {/* Type chips */}
           <div className="flex gap-2 overflow-x-auto flex-nowrap pb-1 -mx-1 px-1">
-            <button onClick={() => setTypeFilter('')}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap ${!typeFilter ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+              <button onClick={() => setTypeFilter('')}
+                className={`mobile-touch px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap ${!typeFilter ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
               Todos
             </button>
             {contactTypes.map(t => (
               <button key={t} onClick={() => setTypeFilter(typeFilter === t ? '' : t)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap ${typeFilter === t ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
+                className={`mobile-touch px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap ${typeFilter === t ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
                 {contactTypeLabels[t]}
               </button>
             ))}
@@ -155,7 +155,7 @@ const Contatos = () => {
           <div className="flex flex-wrap gap-2">
             {(['all', 'active', 'inactive'] as const).map(s => (
               <button key={s} onClick={() => setStatusFilter(s)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${statusFilter === s ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground'}`}>
+                className={`mobile-touch px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${statusFilter === s ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground'}`}>
                 {s === 'all' ? 'Todos' : s === 'active' ? '🟢 Ativos' : '⚫ Inativos'}
               </button>
             ))}
