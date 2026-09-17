@@ -24,6 +24,8 @@ import { toast } from "sonner";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { generateReport, ReportConfig, ReportSection } from "@/lib/pdf-report-service";
+import ReportExportDialog, { type ExportSectionOption } from "@/components/reports/ReportExportDialog";
+
 import { captureChartAsBase64 } from "@/lib/chart-capture";
 import PortfolioAnalytics from "@/components/portfolio/PortfolioAnalytics";
 import BrazilAssetsMap from "@/components/portfolio/BrazilAssetsMap";
@@ -501,9 +503,10 @@ const ProprietarioPortfolio = () => {
         <div className="flex gap-2 flex-wrap">
           <PeriodFilter value={period} onChange={(v) => { setPeriod(v); setPage(0); }} />
 
-          <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={handleExportRelatorio}>
+          <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={() => setExportOpen(true)}>
             <Download size={14} /> Exportar Relatório
           </Button>
+
         </div>
       </div>
 
