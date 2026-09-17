@@ -758,7 +758,32 @@ const ProprietarioDocumentosV2 = () => {
             <TabsContent value="biblioteca" className="mt-4">
               <div className="flex flex-col lg:flex-row gap-4">
                 <div className="w-full lg:w-64 bg-card rounded-xl border p-3">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Pastas</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase">Pastas</p>
+                  </div>
+                  <div className="flex gap-1 mb-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 h-7 text-[11px] gap-1"
+                      onClick={() => { setNewFolderKind('folder'); setNewFolderName(''); setShowNewFolder(true); }}
+                    >
+                      <FolderPlus size={12} /> Nova pasta
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 h-7 text-[11px] gap-1"
+                      onClick={() => {
+                        setNewFolderKind('subfolder');
+                        setNewFolderName('');
+                        setNewFolderParent(prev => prev || libraryFolders[0]?.id || '');
+                        setShowNewFolder(true);
+                      }}
+                    >
+                      <Plus size={12} /> Subpasta
+                    </Button>
+                  </div>
                   <FolderTree folders={libraryFolders} />
                 </div>
                 <div className="flex-1 bg-card rounded-xl border p-4">
