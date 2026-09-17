@@ -58,7 +58,6 @@ import ProprietarioMetricasKPIs from "@/pages/ProprietarioMetricasKPIs";
 import ProprietarioDespesas from "@/pages/ProprietarioDespesas";
 import ProprietarioAlertas from "@/pages/ProprietarioAlertas";
 import ProprietarioRelatorioMensal from "@/pages/ProprietarioRelatorioMensal";
-import ProprietarioIPTU from "@/pages/ProprietarioIPTU";
 import ProprietarioCrmMonday from "@/pages/ProprietarioCrmMonday";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -101,7 +100,6 @@ const App = () => (
           <Route path="/proprietario/despesas" element={<AppLayout><ProprietarioDespesas /></AppLayout>} />
           <Route path="/proprietario/alertas" element={<AppLayout><ProprietarioAlertas /></AppLayout>} />
           <Route path="/proprietario/relatorio-mensal" element={<AppLayout><ProprietarioRelatorioMensal /></AppLayout>} />
-          <Route path="/proprietario/iptu" element={<AppLayout><ProprietarioIPTU /></AppLayout>} />
           <Route path="/proprietario/crm-monday" element={<AppLayout><ProprietarioCrmMonday /></AppLayout>} />
           <Route path="/proprietario/configuracoes" element={<AppLayout><ProprietarioConfiguracoes /></AppLayout>} />
           <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />

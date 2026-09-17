@@ -157,7 +157,6 @@ export const gestorFundoNav: NavGroup[] = [
       { label: 'Conciliação Financeira', path: '/proprietario/conciliacao-financeira', icon: Banknote, roles: ['gestor_fundo'] },
       { label: 'Outros Recebimentos', path: '/proprietario/outros-recebimentos', icon: Receipt, roles: ['gestor_fundo'] },
       { label: 'Despesas & NOI', path: '/proprietario/despesas', icon: Wallet, roles: ['gestor_fundo'] },
-      { label: 'IPTU', path: '/proprietario/iptu', icon: Landmark, roles: ['gestor_fundo'] },
 
       { label: 'Métricas e KPIs', path: '/proprietario/metricas-kpis', icon: TrendingUp, roles: ['gestor_fundo'] },
       { label: 'Relatórios', path: '/proprietario/relatorios-locacao', icon: BarChart3, roles: ['gestor_fundo'] },
@@ -251,7 +250,6 @@ export const routeAccess: Record<string, UserRole[]> = {
   '/proprietario/metricas-kpis': ['gestor_fundo'],
   '/proprietario/configuracoes': ['gestor_fundo'],
   '/proprietario/relatorio-mensal': ['gestor_fundo'],
-  '/proprietario/iptu': ['gestor_fundo'],
   '/proprietario/crm-monday': ['gestor_fundo'],
   '/proprietario/alertas': ['gestor_fundo'],
   '/portfolio':       ['gestor_fundo'],
