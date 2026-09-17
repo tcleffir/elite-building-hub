@@ -79,7 +79,7 @@ export const mockAditivos: Aditivo[] = [
 export const mockLogsEdicao: LogEdicao[] = [
   {
     id: 'le1', contrato_id: 'tc1',
-    usuario: 'Gestor Proprietário',
+    usuario: 'Natalia Landi',
     data: '2025-09-02T14:23:00Z',
     campos_alterados: [
       { campo: 'dia_vencimento', antes: '5', depois: '10' },
@@ -87,7 +87,7 @@ export const mockLogsEdicao: LogEdicao[] = [
   },
   {
     id: 'le2', contrato_id: 'tc2',
-    usuario: 'Gestor Proprietário',
+    usuario: 'Natalia Landi',
     data: '2024-11-18T10:05:00Z',
     campos_alterados: [
       { campo: 'observacoes', antes: '—', depois: 'Cliente solicitou nota fiscal eletrônica via portal.' },
@@ -241,7 +241,7 @@ export function buildHistoricoContratual(
       valor_novo: a.valor_novo,
       percentual: pct,
       motivo: a.observacao,
-      usuario: 'Gestor Proprietário',
+      usuario: 'Natalia Landi',
     });
   }
 
@@ -255,7 +255,7 @@ export function buildHistoricoContratual(
       valor_novo: a.novo_valor,
       motivo: a.observacao,
       documento: a.documento,
-      usuario: 'Gestor Proprietário',
+      usuario: 'Natalia Landi',
       detalhes: [
         ...(a.nova_area_m2 != null ? [{ campo: 'Área', antes: `${contract.area_m2.toLocaleString('pt-BR')} m²`, depois: `${a.nova_area_m2.toLocaleString('pt-BR')} m²` }] : []),
         ...(a.nova_vigencia_fim ? [{ campo: 'Vigência fim', antes: contract.contract_end || '—', depois: a.nova_vigencia_fim }] : []),

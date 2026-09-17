@@ -367,7 +367,7 @@ export const cobrancasSeed: CobrancaRec[] = [
 export const acoesSeed: AcaoRegistro[] = [
   {
     id: 'a1', cobrancaId: 'c4-2026-04', tipoAcao: 'Enviar para jurídico',
-    responsavel: 'Gestor Proprietário', data: '2026-04-12',
+    responsavel: 'Natalia Landi', data: '2026-04-12',
     observacao: 'Terceira competência consecutiva sem pagamento.',
   },
 ];

@@ -170,7 +170,7 @@ const Layout = ({ children }: LayoutProps) => {
                 </div>
                 <div className="hidden lg:block">
                   <p className="text-sm font-medium text-foreground leading-tight">{user.full_name}</p>
-                  <p className="text-xs text-muted-foreground">{user.company} • {t(`role.${user.role}` as any)}</p>
+                  <p className="text-xs text-muted-foreground">{user.company}</p>
                 </div>
               </div>
             </div>

@@ -33,7 +33,7 @@ const STATUS_META: Record<StatusRecebimento, { label: string; cls: string }> = {
   recebido: { label: "Recebido", cls: "bg-emerald-100 text-emerald-700 border-emerald-200" },
 };
 
-const USUARIO = "Gestor Proprietário";
+const USUARIO = "Natalia Landi";
 const COMPETENCIAS = competenciasAte(COMPETENCIA_ATUAL, 12).reverse();
 
 export default function ProprietarioOutrosRecebimentos() {
