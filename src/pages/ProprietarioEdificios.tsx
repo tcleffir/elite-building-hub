@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Building2, Upload, Download, Edit, RefreshCw, Info, FileText, Ticket as TicketIcon, Wrench, Mail, ListChecks } from "lucide-react";
+import { ArrowLeft, Building2, Upload, Download, Edit, RefreshCw, Info, FileText, Ticket as TicketIcon, Wrench, Mail, ListChecks, Plus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -70,6 +70,10 @@ const ProprietarioEdificios = () => {
   // Dialogs
   const [showEdit, setShowEdit] = useState(false);
   const [showRenew, setShowRenew] = useState(false);
+  const [showNewBuilding, setShowNewBuilding] = useState(false);
+  const [showNewTenant, setShowNewTenant] = useState(false);
+  const [newBuilding, setNewBuilding] = useState({ name: '', city: '', state: '', segment: 'office', floors: '', gla: '', address: '' });
+  const [newTenant, setNewTenant] = useState({ name: '', unit: '', floor: '', area: '', pricePerM2: '', start: '', end: '', contact: '', email: '' });
   const [editForm, setEditForm] = useState({ tenant: '', type: 'net', area: '', price: '', start: '', end: '' });
   const [renewForm, setRenewForm] = useState({ endDate: '', value: '', index: '4.82' });
 
@@ -175,18 +179,52 @@ const ProprietarioEdificios = () => {
               {building.occupancy_pct}% ocupação
             </Badge>
           )}
-          {building && (
-            <Button variant="outline" size="sm" className="ml-auto text-xs gap-1 h-7" onClick={() => navigate('/proprietario/contratos')}>
-              <ListChecks size={12} /> Ver Lista de Contratos
+          <div className="ml-auto flex items-center gap-2 flex-wrap">
+            <Button size="sm" className="text-xs gap-1 h-8" onClick={() => setShowNewBuilding(true)}>
+              <Plus size={12} /> Adicionar Ativo
             </Button>
-          )}
+            {building && (
+              <Button variant="outline" size="sm" className="text-xs gap-1 h-8" onClick={() => setShowNewTenant(true)}>
+                <UserPlus size={12} /> Adicionar Locatário
+              </Button>
+            )}
+            {building && (
+              <Button variant="outline" size="sm" className="text-xs gap-1 h-8" onClick={() => navigate('/proprietario/contratos')}>
+                <ListChecks size={12} /> Ver Lista de Contratos
+              </Button>
+            )}
+          </div>
         </div>
 
         {!building ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <Building2 size={48} className="text-muted-foreground/30 mb-4" />
-            <h3 className="text-lg font-medium text-muted-foreground">Selecione um ativo</h3>
-            <p className="text-sm text-muted-foreground">Escolha um ativo para visualizar o mapa de unidades</p>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Selecione um ativo abaixo para abrir o mapa de unidades — {userBuildings.length} ativos no portfólio.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {userBuildings.map(b => (
+                <button
+                  key={b.id}
+                  onClick={() => setSelectedBuildingId(b.id)}
+                  className="text-left bg-card rounded-2xl p-4 premium-shadow border hover:border-interactive transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-foreground flex items-center gap-2">
+                        <Building2 size={15} /> {b.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{b.city}/{b.state}</p>
+                    </div>
+                    <Badge className={`${healthColors[getOccupancyStatus(b.occupancy_pct || 0)].badge} text-[10px]`}>
+                      {b.occupancy_pct}% ocup.
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    {(b.gla_m2 || b.total_area_m2 || 0).toLocaleString('pt-BR')} m² · {b.total_floors || 0} andares
+                  </p>
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           <>
@@ -494,6 +532,73 @@ const ProprietarioEdificios = () => {
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowRenew(false)}>Cancelar</Button>
               <Button onClick={() => { setShowRenew(false); toast.success("Contrato renovado com sucesso!"); }}>Confirmar Renovação</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Novo Ativo */}
+        <Dialog open={showNewBuilding} onOpenChange={setShowNewBuilding}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Adicionar ativo</DialogTitle>
+              <DialogDescription>Cadastre um novo ativo no portfólio do fundo.</DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2"><Label className="text-xs">Nome do ativo</Label><Input value={newBuilding.name} onChange={e => setNewBuilding(p => ({ ...p, name: e.target.value }))} placeholder="Ex.: Edifício Faria Lima 3477" /></div>
+              <div className="col-span-2"><Label className="text-xs">Endereço</Label><Input value={newBuilding.address} onChange={e => setNewBuilding(p => ({ ...p, address: e.target.value }))} /></div>
+              <div><Label className="text-xs">Município</Label><Input value={newBuilding.city} onChange={e => setNewBuilding(p => ({ ...p, city: e.target.value }))} /></div>
+              <div><Label className="text-xs">UF</Label><Input value={newBuilding.state} onChange={e => setNewBuilding(p => ({ ...p, state: e.target.value }))} maxLength={2} /></div>
+              <div><Label className="text-xs">Segmento</Label>
+                <Select value={newBuilding.segment} onValueChange={v => setNewBuilding(p => ({ ...p, segment: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="office">Escritório</SelectItem>
+                    <SelectItem value="logistics">Logística</SelectItem>
+                    <SelectItem value="retail">Varejo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div><Label className="text-xs">Andares / conjuntos</Label><Input type="number" value={newBuilding.floors} onChange={e => setNewBuilding(p => ({ ...p, floors: e.target.value }))} /></div>
+              <div className="col-span-2"><Label className="text-xs">ABL / GLA (m²)</Label><Input type="number" value={newBuilding.gla} onChange={e => setNewBuilding(p => ({ ...p, gla: e.target.value }))} /></div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNewBuilding(false)}>Cancelar</Button>
+              <Button
+                disabled={!newBuilding.name}
+                onClick={() => { setShowNewBuilding(false); toast.success(`Ativo ${newBuilding.name} cadastrado.`); setNewBuilding({ name: '', city: '', state: '', segment: 'office', floors: '', gla: '', address: '' }); }}
+              >
+                Salvar ativo
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Novo Locatário */}
+        <Dialog open={showNewTenant} onOpenChange={setShowNewTenant}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Adicionar locatário — {building?.name}</DialogTitle>
+              <DialogDescription>Vincule um locatário a uma unidade do ativo selecionado.</DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2"><Label className="text-xs">Locatário</Label><Input value={newTenant.name} onChange={e => setNewTenant(p => ({ ...p, name: e.target.value }))} /></div>
+              <div><Label className="text-xs">Unidade</Label><Input value={newTenant.unit} onChange={e => setNewTenant(p => ({ ...p, unit: e.target.value }))} placeholder="Ex.: 1201" /></div>
+              <div><Label className="text-xs">Andar / conjunto</Label><Input type="number" value={newTenant.floor} onChange={e => setNewTenant(p => ({ ...p, floor: e.target.value }))} /></div>
+              <div><Label className="text-xs">Área (m²)</Label><Input type="number" value={newTenant.area} onChange={e => setNewTenant(p => ({ ...p, area: e.target.value }))} /></div>
+              <div><Label className="text-xs">R$/m²</Label><Input type="number" value={newTenant.pricePerM2} onChange={e => setNewTenant(p => ({ ...p, pricePerM2: e.target.value }))} /></div>
+              <div><Label className="text-xs">Início do contrato</Label><Input type="date" value={newTenant.start} onChange={e => setNewTenant(p => ({ ...p, start: e.target.value }))} /></div>
+              <div><Label className="text-xs">Fim do contrato</Label><Input type="date" value={newTenant.end} onChange={e => setNewTenant(p => ({ ...p, end: e.target.value }))} /></div>
+              <div><Label className="text-xs">Contato</Label><Input value={newTenant.contact} onChange={e => setNewTenant(p => ({ ...p, contact: e.target.value }))} /></div>
+              <div><Label className="text-xs">E-mail</Label><Input type="email" value={newTenant.email} onChange={e => setNewTenant(p => ({ ...p, email: e.target.value }))} /></div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNewTenant(false)}>Cancelar</Button>
+              <Button
+                disabled={!newTenant.name || !newTenant.unit}
+                onClick={() => { setShowNewTenant(false); toast.success(`Locatário ${newTenant.name} vinculado à unidade ${newTenant.unit}.`); setNewTenant({ name: '', unit: '', floor: '', area: '', pricePerM2: '', start: '', end: '', contact: '', email: '' }); }}
+              >
+                Salvar locatário
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

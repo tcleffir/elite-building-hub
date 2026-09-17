@@ -113,6 +113,12 @@ export default function ProprietarioContratos() {
   const [statusFilter, setStatusFilter] = useState<ContractStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
+  const [showNewContract, setShowNewContract] = useState(false);
+  const [newContract, setNewContract] = useState({
+    tenant: '', buildingId: '', unit: '', area: '', pricePerM2: '', type: 'net',
+    start: '', end: '', index: 'IPCA', guarantee: 'fianca_bancaria',
+  });
+  const [newContractFile, setNewContractFile] = useState<File | null>(null);
   const [drawerTab, setDrawerTab] = useState('resumo');
   const [drawerAction, setDrawerAction] = useState<'edit' | 'aditivo' | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('monthsRemaining');
@@ -543,6 +549,9 @@ export default function ProprietarioContratos() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button size="sm" className="gap-2" onClick={() => setShowNewContract(true)}>
+            <Plus className="h-4 w-4" /> Adicionar Contrato
+          </Button>
           <Button variant="outline" size="sm" onClick={handleExportPDF} className="gap-2">
             <Download className="h-4 w-4" /> Exportar PDF
           </Button>
@@ -1531,6 +1540,109 @@ export default function ProprietarioContratos() {
               onClick={handleRenewalSave}
             >
               Salvar Renovação
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── NOVO CONTRATO ── */}
+      <Dialog open={showNewContract} onOpenChange={setShowNewContract}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Adicionar contrato</DialogTitle>
+            <DialogDescription>
+              Cadastre manualmente ou anexe o PDF para leitura automática dos dados pela IA.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2">
+              <Label className="text-xs">Locatário</Label>
+              <Input value={newContract.tenant} onChange={e => setNewContract(p => ({ ...p, tenant: e.target.value }))} placeholder="Razão social do locatário" />
+            </div>
+            <div>
+              <Label className="text-xs">Ativo</Label>
+              <Select value={newContract.buildingId} onValueChange={v => setNewContract(p => ({ ...p, buildingId: v }))}>
+                <SelectTrigger><SelectValue placeholder="Selecione o ativo" /></SelectTrigger>
+                <SelectContent>
+                  {buildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Unidade / conjunto</Label>
+              <Input value={newContract.unit} onChange={e => setNewContract(p => ({ ...p, unit: e.target.value }))} placeholder="Ex.: 1201" />
+            </div>
+            <div>
+              <Label className="text-xs">Área (m²)</Label>
+              <Input type="number" value={newContract.area} onChange={e => setNewContract(p => ({ ...p, area: e.target.value }))} />
+            </div>
+            <div>
+              <Label className="text-xs">R$/m²</Label>
+              <Input type="number" value={newContract.pricePerM2} onChange={e => setNewContract(p => ({ ...p, pricePerM2: e.target.value }))} />
+            </div>
+            <div>
+              <Label className="text-xs">Tipo de contrato</Label>
+              <Select value={newContract.type} onValueChange={v => setNewContract(p => ({ ...p, type: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="net">Net</SelectItem>
+                  <SelectItem value="gross">Gross</SelectItem>
+                  <SelectItem value="semi-gross">Semi-gross</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Índice de reajuste</Label>
+              <Select value={newContract.index} onValueChange={v => setNewContract(p => ({ ...p, index: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="IPCA">IPCA</SelectItem>
+                  <SelectItem value="IGP-M">IGP-M</SelectItem>
+                  <SelectItem value="INPC">INPC</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Início</Label>
+              <Input type="date" value={newContract.start} onChange={e => setNewContract(p => ({ ...p, start: e.target.value }))} />
+            </div>
+            <div>
+              <Label className="text-xs">Fim</Label>
+              <Input type="date" value={newContract.end} onChange={e => setNewContract(p => ({ ...p, end: e.target.value }))} />
+            </div>
+            <div className="col-span-2">
+              <Label className="text-xs">Garantia</Label>
+              <Select value={newContract.guarantee} onValueChange={v => setNewContract(p => ({ ...p, guarantee: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {Object.entries(guaranteeTypeLabels).map(([k, l]) => (
+                    <SelectItem key={k} value={k}>{l}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="col-span-2">
+              <Label className="text-xs">Contrato em PDF (opcional — leitura por IA)</Label>
+              <Input type="file" accept="application/pdf" onChange={e => {
+                const f = e.target.files?.[0] || null;
+                setNewContractFile(f);
+                if (f) toast.success(`${f.name} anexado — os campos podem ser preenchidos pela leitura automática.`);
+              }} />
+              {newContractFile && <p className="text-xs text-muted-foreground mt-1">{newContractFile.name}</p>}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowNewContract(false)}>Cancelar</Button>
+            <Button
+              disabled={!newContract.tenant || !newContract.buildingId}
+              onClick={() => {
+                setShowNewContract(false);
+                toast.success(`Contrato de ${newContract.tenant} cadastrado.`);
+                setNewContract({ tenant: '', buildingId: '', unit: '', area: '', pricePerM2: '', type: 'net', start: '', end: '', index: 'IPCA', guarantee: 'fianca_bancaria' });
+                setNewContractFile(null);
+              }}
+            >
+              Salvar contrato
             </Button>
           </DialogFooter>
         </DialogContent>
