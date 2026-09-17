@@ -22,6 +22,9 @@ export interface NavItem {
   path: string;
   icon: LucideIcon;
   roles: UserRole[];
+  /** Módulo existente porém não habilitado para o cliente (exibe cadeado e bloqueia navegação) */
+  locked?: boolean;
+  lockedReason?: string;
 }
 
 export interface NavGroup {
@@ -31,7 +34,10 @@ export interface NavGroup {
   icon: LucideIcon;
   items: NavItem[];
   section?: 'main' | 'footer';
+  locked?: boolean;
+  lockedReason?: string;
 }
+
 
 export const navGroups: NavGroup[] = [
   {
