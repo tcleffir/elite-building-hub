@@ -338,6 +338,31 @@ function InadimplenciaPanel({ rows, indice, metodologia, setMetodologia }: {
   const toggle = (id: string) => setSel(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
   const toggleTodos = () => setSel(p => p.length === rows.length ? [] : rows.map(r => r.id));
 
+  /** Monta o e-mail de UM único locatário — sem qualquer dado de terceiros. */
+  function mailtoIndividual(r: InadimplenciaRow) {
+    const assunto = `Cobrança de aluguel em aberto — ${compLabel(r.competencia)}`;
+    const corpo = [
+      `Prezado(a) ${r.inquilinoNome},`,
+      ``,
+      `Identificamos valor em aberto referente ao seu contrato de locação:`,
+      ``,
+      `Imóvel: ${r.edificioNome}${r.unidade ? ` — ${r.unidade}` : ""}`,
+      `Competência: ${compLabel(r.competencia)}`,
+      `Vencimento: ${fmtDateBR(r.dataVencimento)}`,
+      `Dias em atraso: ${r.diasAtraso}`,
+      `Valor em aberto: ${fmtBRL(r.valorAberto)}`,
+      `Multa: ${fmtBRL(r.multa)}`,
+      `Juros: ${fmtBRL(r.juros)}`,
+      `Total devido: ${fmtBRL(r.totalDevido)}`,
+      ``,
+      `Caso o pagamento já tenha sido efetuado, favor desconsiderar e encaminhar o comprovante.`,
+      ``,
+      `Atenciosamente,`,
+      `Patria Real Estate`,
+    ].join("\n");
+    return `mailto:${r.inquilinoEmail}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+  }
+
   function cobrarSelecionados() {
     if (sel.length === 0) { toast.error("Selecione pelo menos um inadimplente."); return; }
     const alvo = rows.filter(r => sel.includes(r.id));
@@ -351,19 +376,27 @@ function InadimplenciaPanel({ rows, indice, metodologia, setMetodologia }: {
       const next = { ...prev };
       alvo.forEach(r => {
         next[r.inquilinoId] = [{
-          id: `ct-${Date.now()}-${r.id}`, data: hoje, canal: "E-mail (lote)",
-          texto: `Cobrança enviada — ${compLabel(r.competencia)}, ${fmtBRL(r.totalDevido)}.`,
+          id: `ct-${Date.now()}-${r.id}`, data: hoje, canal: "E-mail individual",
+          texto: `Cobrança individual enviada — ${compLabel(r.competencia)}, ${fmtBRL(r.totalDevido)}.`,
         }, ...(next[r.inquilinoId] ?? [])];
       });
       return next;
     });
-    const emails = [...new Set(alvo.map(r => r.inquilinoEmail).filter(Boolean))].join(",");
-    if (emails) {
-      window.location.href = `mailto:${emails}?subject=${encodeURIComponent("Cobrança de aluguel em aberto")}`
-        + `&body=${encodeURIComponent(alvo.map(r =>
-          `${r.inquilinoNome} — ${r.edificioNome} — ${compLabel(r.competencia)} — total devido ${fmtBRL(r.totalDevido)} (vencimento ${fmtDateBR(r.dataVencimento)})`).join("\n"))}`;
-    }
-    toast.success(`Cobrança registrada para ${alvo.length} locatário(s).`);
+
+    // Um e-mail por locatário: cada destinatário recebe apenas os próprios dados.
+    const comEmail = alvo.filter(r => !!r.inquilinoEmail);
+    const semEmail = alvo.length - comEmail.length;
+    comEmail.forEach((r, i) => {
+      window.setTimeout(() => {
+        const w = window.open(mailtoIndividual(r), "_blank");
+        if (!w) window.location.href = mailtoIndividual(r);
+      }, i * 700);
+    });
+
+    toast.success(
+      `${comEmail.length} e-mail(s) individual(is) preparado(s) — um por locatário, sem cópia entre eles.`
+      + (semEmail > 0 ? ` ${semEmail} locatário(s) sem e-mail cadastrado.` : ""),
+    );
     setSel([]);
   }
 
