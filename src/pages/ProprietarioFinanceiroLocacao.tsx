@@ -103,7 +103,7 @@ export default function ProprietarioFinanceiroLocacao() {
   }
 
   return (
-    <div className="p-4 sm:p-6 space-y-5 max-w-[1400px] mx-auto">
+    <div className="mx-auto max-w-[1400px] space-y-5 py-1 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Fechamento Mensal</h1>
@@ -111,23 +111,23 @@ export default function ProprietarioFinanceiroLocacao() {
             Esperado (contratos) x Recebido (conciliação) por competência, com a inadimplência derivada da diferença vencida.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:w-auto sm:flex-wrap">
           <Select value={fundoId} onValueChange={v => { setFundoId(v); setEdificioId("all"); }}>
-            <SelectTrigger className="w-[190px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[190px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os fundos</SelectItem>
               {fundos.map(f => <SelectItem key={f.id} value={f.id}>{f.nome}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={edificioId} onValueChange={setEdificioId}>
-            <SelectTrigger className="w-[190px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[190px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os ativos</SelectItem>
               {edificiosOpts.map(e => <SelectItem key={e.id} value={e.id}>{e.nome}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={competencia} onValueChange={setCompetencia}>
-            <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[150px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               {competenciaOpts.slice().reverse().map(c => (
                 <SelectItem key={c} value={c}>{compLabel(c)}</SelectItem>
@@ -210,8 +210,8 @@ export default function ProprietarioFinanceiroLocacao() {
                 <FileSpreadsheet className="w-4 h-4 mr-1.5" /> Exportar Excel
               </Button>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
+            <CardContent className="p-3 sm:p-0">
+              <div className="hidden sm:block">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-xs text-muted-foreground">
@@ -241,6 +241,21 @@ export default function ProprietarioFinanceiroLocacao() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+              <div className="space-y-2 sm:hidden">
+                {serie.slice().reverse().map(m => (
+                  <button key={m.competencia} onClick={() => setMesDetalhe(m)} className="w-full rounded-md border p-3 text-left active:bg-muted/50">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold">{m.label}</span>
+                      <span className="text-sm font-medium">{m.futuro ? "Projetado" : `${m.pctRecebido.toFixed(1)}% recebido`}</span>
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+                      <div><span className="block text-muted-foreground">Esperado</span><strong>{fmtBRL(m.esperado.total)}</strong></div>
+                      <div><span className="block text-muted-foreground">Recebido</span><strong className="text-emerald-600">{m.futuro ? "—" : fmtBRL(m.recebido.aluguel + m.recebido.iptu)}</strong></div>
+                      <div className="col-span-2"><span className="block text-muted-foreground">Em aberto</span><strong className="text-rose-600">{m.futuro ? "—" : fmtBRL(m.aberto)}</strong></div>
+                    </div>
+                  </button>
+                ))}
               </div>
             </CardContent>
           </Card>

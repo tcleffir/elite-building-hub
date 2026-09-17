@@ -85,7 +85,7 @@ const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], leve
   return (
     <div className="space-y-4">
       {/* Resumo de áreas e custos */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+      <div className="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         {[
           { l: "Área NBR 12721", v: `${totals.nbr.toLocaleString("pt-BR")} m²` },
           { l: "Área BOMA (rentável)", v: `${totals.boma.toLocaleString("pt-BR")} m²` },
@@ -109,8 +109,8 @@ const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], leve
         <div className="flex flex-col gap-1">
           <div className="h-3 rounded-t-xl premium-gradient" />
           {floors.map((f) => (
-            <div key={f.floor} className="flex items-stretch gap-2">
-              <div className="w-14 shrink-0 flex items-center justify-center rounded-md bg-muted/60 text-xs font-bold text-foreground">
+            <div key={f.floor} className="flex items-stretch gap-1.5 sm:gap-2">
+              <div className="w-10 shrink-0 flex items-center justify-center rounded-md bg-muted/60 text-xs font-bold text-foreground sm:w-14">
                 {f.floor}º
               </div>
               {f.units.length === 0 ? (
@@ -118,7 +118,7 @@ const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], leve
                   Sem unidade cadastrada neste {levelLabel}
                 </div>
               ) : (
-                <div className="flex-1 flex gap-1">
+                <div className="grid min-w-0 flex-1 grid-cols-1 gap-1 sm:flex">
                   {f.units.map((u) => {
                     const d = getUnitStackingData(u);
                     const isVacant = u.status === "vacant" || !u.tenant_name;
@@ -127,7 +127,7 @@ const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], leve
                         key={u.id}
                         onClick={() => setSelected(u)}
                         style={{ flexGrow: Math.max(u.area_m2, 1), flexBasis: 0 }}
-                        className={`min-w-0 rounded-md border px-2.5 py-2 text-left transition-all hover:shadow-md ${unitColor(u)}`}
+                        className={`min-h-11 min-w-[60px] rounded-md border px-2.5 py-2 text-left transition-all hover:shadow-md ${unitColor(u)}`}
                       >
                         <p className="text-[11px] font-semibold truncate">
                           {isVacant ? "DISPONÍVEL" : u.tenant_name}
@@ -143,7 +143,7 @@ const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], leve
                   })}
                 </div>
               )}
-              <div className="w-16 shrink-0 flex items-center justify-end">
+              <div className="hidden w-16 shrink-0 items-center justify-end sm:flex">
                 {f.tickets > 0 && (
                   <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-full">
                     {f.tickets} chamado{f.tickets > 1 ? "s" : ""}

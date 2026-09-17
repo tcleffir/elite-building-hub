@@ -73,7 +73,7 @@ export function NotificationsPanel() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-96 p-0">
+      <PopoverContent align="end" className="w-[calc(100vw-1rem)] max-w-96 p-0">
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h3 className="font-semibold text-sm text-foreground">{t("notifications.title")}</h3>
           {unreadCount > 0 && (

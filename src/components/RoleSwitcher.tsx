@@ -13,7 +13,7 @@ export function RoleSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2 text-xs border-dashed border-destructive/40 text-destructive">
+        <Button variant="outline" size="icon" aria-label="Trocar perfil" className="shrink-0 border-dashed border-destructive/40 text-destructive sm:h-9 sm:w-auto sm:px-3">
           <UserCog size={14} />
           <span className="hidden sm:inline">DEV: {roleLabels[user.role]}</span>
         </Button>

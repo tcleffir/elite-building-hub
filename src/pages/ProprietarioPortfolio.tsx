@@ -500,7 +500,7 @@ const ProprietarioPortfolio = () => {
           </div>
           <p className="text-sm text-muted-foreground">Visão consolidada — {portfolioBuildings.length} ativos · Período: {periodLabel}</p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="grid w-full grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:w-auto sm:flex-wrap">
           <PeriodFilter value={period} onChange={(v) => { setPeriod(v); setPage(0); }} />
 
           <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={() => setExportOpen(true)}>
@@ -694,7 +694,7 @@ const ProprietarioPortfolio = () => {
                 </div>
               </div>
 
-              <Table>
+              <div className="hidden sm:block"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-xs">Ativo</TableHead>
@@ -719,7 +719,15 @@ const ProprietarioPortfolio = () => {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
+              <div className="space-y-2 sm:hidden">
+                {leakageData.map((l, i) => (
+                  <div key={i} className="rounded-md border p-3">
+                    <div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{l.building}</p><p className="text-xs text-muted-foreground">{l.unitId} · {l.area.toLocaleString('pt-BR')} m²</p></div><strong className="text-sm text-rose-700">{fmt(l.total)}</strong></div>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]"><span>Receita<br/><strong>{fmt(l.receitaPerdida)}</strong></span><span>IPTU<br/><strong>{fmt(l.iptuVacancia)}</strong></span><span>Condomínio<br/><strong>{fmt(l.condVacancia)}</strong></span></div>
+                  </div>
+                ))}
+              </div>
               <p className="text-xs text-muted-foreground">Leakage = receita que o fundo deixa de receber + custos fixos arcados sem receita correspondente. Base: R$/m² médio por ativo.</p>
             </CardContent>
           </Card>
@@ -792,15 +800,15 @@ const ProprietarioPortfolio = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 flex-wrap gap-2">
             <CardTitle className="text-base">Unidades do Portfólio</CardTitle>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center sm:flex-wrap">
               <Select value={buildingFilter} onValueChange={(v) => { setBuildingFilter(v); setPage(0); }}>
-                <SelectTrigger className="w-[180px] h-8 text-xs"><SelectValue placeholder="Todos os ativos" /></SelectTrigger>
+                <SelectTrigger className="col-span-2 w-full text-xs sm:h-8 sm:w-[180px]"><SelectValue placeholder="Todos os ativos" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos os ativos</SelectItem>
                   {portfolioBuildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
                 </SelectContent>
               </Select>
-              <div className="flex gap-1">
+              <div className="col-span-2 flex flex-wrap gap-1">
                 {[
                   { key: 'all', label: 'Todos' },
                   { key: 'occupied', label: 'Ocupadas' },
@@ -809,7 +817,7 @@ const ProprietarioPortfolio = () => {
                   { key: 'warning', label: 'Atenção' },
                   { key: 'healthy', label: 'Saudável' },
                 ].map(f => (
-                  <Button key={f.key} variant={statusFilter === f.key ? 'default' : 'outline'} size="sm" className="text-[10px] h-7 px-2"
+                  <Button key={f.key} variant={statusFilter === f.key ? 'default' : 'outline'} size="sm" className="h-9 flex-1 px-2 text-[10px] sm:h-7 sm:flex-none"
                     onClick={() => { setStatusFilter(f.key); setPage(0); }}>
                     {f.label}
                   </Button>
@@ -827,7 +835,7 @@ const ProprietarioPortfolio = () => {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
+            <div className="hidden md:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -886,6 +894,24 @@ const ProprietarioPortfolio = () => {
                   </TableRow>
                 </TableFooter>
               </Table>
+            </div>
+            <div className="divide-y md:hidden">
+              {pagedUnits.map(u => {
+                const isVacant = u.status === 'vacant';
+                return (
+                  <button key={u.id} onClick={() => toast.info(isVacant ? "Formulário de novo contrato em breve" : "Detalhe do contrato em breve")} className="block min-h-11 w-full space-y-3 p-4 text-left active:bg-muted/50">
+                    <div className="flex items-start justify-between gap-2">
+                      <div><p className="text-sm font-semibold">{u.buildingShort} · {u.unit_id}</p><p className="mt-1 text-xs text-muted-foreground">{isVacant ? 'Área disponível' : u.tenant_name}</p></div>
+                      <Badge className={isVacant ? 'bg-violet-100 text-violet-700' : u.health ? healthColors[u.health].badge : ''}>{isVacant ? 'Disponível' : u.health ? healthLabels[u.health].pt : '—'}</Badge>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      <div><span className="block text-muted-foreground">Área</span><strong>{u.area_m2.toLocaleString('pt-BR')} m²</strong></div>
+                      <div><span className="block text-muted-foreground">R$/m²</span><strong>{u.price_per_m2 ? `R$ ${u.price_per_m2}` : '—'}</strong></div>
+                      <div><span className="block text-muted-foreground">Prazo</span><strong>{u.monthsLeft !== undefined ? (u.monthsLeft > 0 ? `${u.monthsLeft}m` : 'Vencido') : '—'}</strong></div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
             {totalPages > 1 && (
               <div className="flex items-center justify-between px-4 py-3 border-t">

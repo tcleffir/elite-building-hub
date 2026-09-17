@@ -76,7 +76,7 @@ const Login = () => {
       </div>
 
       {/* Right side - Login form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-primary-foreground relative">
+      <div className="relative flex flex-1 items-center justify-center bg-primary-foreground px-5 py-16 sm:p-8">
         {/* Language switcher */}
         <div className="absolute top-4 right-4">
           <DropdownMenu>

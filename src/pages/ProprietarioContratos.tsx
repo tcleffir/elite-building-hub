@@ -548,7 +548,7 @@ export default function ProprietarioContratos() {
             {showAllBuildings ? `Portfólio completo — ${buildings.length} ativos` : 'Gestão de contratos de locação e áreas comuns'}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center">
           <Button size="sm" className="gap-2" onClick={() => setShowNewContract(true)}>
             <Plus className="h-4 w-4" /> Adicionar Contrato
           </Button>
@@ -556,7 +556,7 @@ export default function ProprietarioContratos() {
             <Download className="h-4 w-4" /> Exportar PDF
           </Button>
           <Select value={selectedBuildingId} onValueChange={setSelectedBuildingId}>
-            <SelectTrigger className="w-64"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="col-span-2 w-full sm:w-64"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">
                 <div className="flex items-center gap-2"><Building2 className="h-4 w-4" /> Todos os ativos</div>
@@ -598,7 +598,7 @@ export default function ProprietarioContratos() {
 
       {/* ── TABS ── */}
       <Tabs defaultValue="locatarios">
-        <TabsList>
+        <TabsList className="grid grid-cols-2 min-[360px]:grid-cols-3 sm:flex">
           <TabsTrigger value="locatarios">Locatários</TabsTrigger>
           <TabsTrigger value="reajustes">Reajustes</TabsTrigger>
           <TabsTrigger value="garantias_tab">Garantias</TabsTrigger>
@@ -621,15 +621,15 @@ export default function ProprietarioContratos() {
                 {f.label}
               </Button>
             ))}
-            <div className="relative ml-auto">
+            <div className="relative w-full sm:ml-auto sm:w-auto">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Buscar locatário, CNPJ ou unidade..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 w-72" />
+              <Input placeholder="Buscar locatário, CNPJ ou unidade..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-9 sm:w-72" />
             </div>
           </div>
 
           <Card>
-            <CardContent className="p-0 overflow-x-auto">
-              <Table>
+            <CardContent className="p-0">
+              <div className="hidden md:block"><Table>
                 <TableHeader>
                   <TableRow>
                     {showAllBuildings && <TableHead>Ativo</TableHead>}
@@ -761,7 +761,28 @@ export default function ProprietarioContratos() {
                     </TableRow>
                   )}
                 </TableBody>
-              </Table>
+              </Table></div>
+              <div className="divide-y md:hidden">
+                {tenantContracts.map(c => {
+                  const info = getContractStatusInfo(c);
+                  const monthsRem = c.contract_end ? monthsDiff(c.contract_end) : -999;
+                  return (
+                    <button key={c.id} onClick={() => { setSelectedContractId(c.id); setDrawerTab('resumo'); }} className="block min-h-11 w-full space-y-3 p-4 text-left active:bg-muted/50">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0"><p className="break-words text-sm font-semibold">{c.tenant_name}</p><p className="mt-1 text-xs text-muted-foreground">{getBuildingName(c.building_id)} · {c.unit_id}</p></div>
+                        <Badge className={`${healthColors[info.status].badge} shrink-0`}>{info.label}</Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div><span className="block text-muted-foreground">Valor mensal</span><strong>R$ {getContractMonthlyValue(c).toLocaleString('pt-BR')}</strong></div>
+                        <div><span className="block text-muted-foreground">Área</span><strong>{c.area_m2.toLocaleString('pt-BR')} m²</strong></div>
+                        <div><span className="block text-muted-foreground">Vencimento</span><strong>{c.contract_end ? new Date(c.contract_end).toLocaleDateString('pt-BR') : '—'}</strong></div>
+                        <div><span className="block text-muted-foreground">Prazo restante</span><strong>{monthsRem < 0 ? 'Vencido' : `${monthsRem} meses`}</strong></div>
+                      </div>
+                    </button>
+                  );
+                })}
+                {tenantContracts.length === 0 && <p className="p-8 text-center text-sm text-muted-foreground">Nenhum contrato encontrado</p>}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

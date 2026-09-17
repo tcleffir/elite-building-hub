@@ -228,9 +228,9 @@ export default function ProprietarioRelatorioMensal() {
           </h1>
           <p className="text-sm text-muted-foreground">Performance consolidada com destaques, gráficos e narrativa para exportação em PDF</p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <Select value={String(selectedPeriod)} onValueChange={(v) => setSelectedPeriod(Number(v))}>
-            <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
             <SelectContent>
               {monthlySnapshots.map((s, i) => (
                 <SelectItem key={i} value={String(i)}>{s.period}</SelectItem>
@@ -244,7 +244,7 @@ export default function ProprietarioRelatorioMensal() {
       </div>
 
       {/* Hero banner */}
-      <div className="rounded-2xl bg-gradient-to-br from-[#0B2A3D] to-[#1e3a5f] text-white p-6 shadow-lg">
+      <div className="rounded-xl bg-primary p-4 text-primary-foreground shadow-lg sm:p-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs text-white/70 mb-1">
@@ -253,7 +253,7 @@ export default function ProprietarioRelatorioMensal() {
             <h2 className="text-3xl font-bold">{current.period}</h2>
             {previous && <p className="text-sm text-white/70 mt-1">Comparativo com {previous.period}</p>}
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid w-full grid-cols-2 gap-4 md:w-auto md:grid-cols-4">
             <div>
               <p className="text-[11px] text-white/60">Ocupação</p>
               <p className="text-2xl font-bold">{current.occupancy.toFixed(1)}%</p>
@@ -322,7 +322,7 @@ export default function ProprietarioRelatorioMensal() {
 
       {/* Tabs: Gráficos / Detalhes / Narrativa */}
       <Tabs defaultValue="charts">
-        <TabsList>
+          <TabsList className="grid grid-cols-3">
           <TabsTrigger value="charts" className="gap-2"><BarChart3 size={14} /> Gráficos</TabsTrigger>
           <TabsTrigger value="details" className="gap-2"><FileText size={14} /> Detalhes</TabsTrigger>
           <TabsTrigger value="narrative" className="gap-2"><Sparkles size={14} /> Narrativa</TabsTrigger>
@@ -395,8 +395,8 @@ export default function ProprietarioRelatorioMensal() {
         <TabsContent value="details" className="mt-4 space-y-4">
           <Card>
             <CardHeader className="pb-2"><CardTitle className="text-sm">Comparativo detalhado</CardTitle></CardHeader>
-            <CardContent>
-              <Table>
+             <CardContent>
+               <div className="hidden sm:block"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-left">Indicador</TableHead>
@@ -431,7 +431,17 @@ export default function ProprietarioRelatorioMensal() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+               </Table></div>
+               <div className="divide-y sm:hidden">
+                 {[
+                   { l: 'Ocupação', c: `${current.occupancy.toFixed(1)}%`, p: previous ? `${previous.occupancy.toFixed(1)}%` : '—' },
+                   { l: 'Receita', c: fmt(current.revenue), p: previous ? fmt(previous.revenue) : '—' },
+                   { l: 'Despesa', c: fmt(current.expenses), p: previous ? fmt(previous.expenses) : '—' },
+                   { l: 'NOI', c: fmt(current.revenue - current.expenses), p: previous ? fmt(previous.revenue - previous.expenses) : '—' },
+                   { l: 'WAULT', c: `${current.wault.toFixed(1)} m`, p: previous ? `${previous.wault.toFixed(1)} m` : '—' },
+                   { l: 'SLA Compliance', c: `${current.sla_compliance.toFixed(1)}%`, p: previous ? `${previous.sla_compliance.toFixed(1)}%` : '—' },
+                 ].map(r => <div key={r.l} className="py-3"><p className="text-sm font-semibold">{r.l}</p><div className="mt-1 flex justify-between text-xs"><span>Atual: <strong>{r.c}</strong></span><span className="text-muted-foreground">Anterior: {r.p}</span></div></div>)}
+               </div>
             </CardContent>
           </Card>
         </TabsContent>
