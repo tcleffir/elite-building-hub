@@ -1111,6 +1111,51 @@ const ProprietarioDocumentosV2 = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Nova Pasta / Subpasta */}
+        <Dialog open={showNewFolder} onOpenChange={setShowNewFolder}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{newFolderKind === 'folder' ? 'Nova pasta' : 'Nova subpasta'}</DialogTitle>
+              <DialogDescription>
+                {newFolderKind === 'folder'
+                  ? 'Cria uma pasta principal na biblioteca de documentos.'
+                  : 'Cria uma subpasta dentro de uma pasta principal existente.'}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div>
+                <Label className="text-xs">Tipo</Label>
+                <Select value={newFolderKind} onValueChange={v => setNewFolderKind(v as 'folder' | 'subfolder')}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="folder">Pasta principal</SelectItem>
+                    <SelectItem value="subfolder">Subpasta</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {newFolderKind === 'subfolder' && (
+                <div>
+                  <Label className="text-xs">Pasta principal</Label>
+                  <Select value={newFolderParent} onValueChange={setNewFolderParent}>
+                    <SelectTrigger><SelectValue placeholder="Selecione a pasta" /></SelectTrigger>
+                    <SelectContent>
+                      {libraryFolders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              <div>
+                <Label className="text-xs">Nome</Label>
+                <Input value={newFolderName} onChange={e => setNewFolderName(e.target.value)} placeholder="Ex.: Jurídico e Compliance" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNewFolder(false)}>Cancelar</Button>
+              <Button onClick={createFolder}>Criar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Rename Dialog */}
         <Dialog open={!!renameFile} onOpenChange={() => setRenameFile(null)}>
           <DialogContent>
