@@ -284,7 +284,7 @@ const Relatorios = () => {
 
             {/* Summary Table */}
             <div className="bg-card rounded-2xl premium-shadow overflow-hidden">
-              <div className="overflow-x-auto">
+              <div className="hidden overflow-x-auto md:block">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b bg-muted/30">
@@ -366,6 +366,9 @@ const Relatorios = () => {
                     })}
                   </tbody>
                 </table>
+              </div>
+              <div className="divide-y md:hidden">
+                {filteredSummaryFiles.map(file => { const status = getDocStatus(file); const StatusIcon = status.icon; return <div key={file.id} className="space-y-3 p-4"><div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="text-sm font-semibold">{fileTypeIcons[file.type] || '📄'} {file.name}</p><p className="mt-1 text-xs text-muted-foreground">{file.categoryName}</p></div><span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold ${status.color}`}><StatusIcon size={12}/>{status.label}</span></div><div className="grid grid-cols-2 gap-2 text-xs"><div><span className="block text-muted-foreground">Responsável</span><strong>{file.responsible_company || '—'}</strong></div><div><span className="block text-muted-foreground">Vencimento</span><strong>{file.expires_at ? new Date(file.expires_at).toLocaleDateString('pt-BR') : '—'}</strong></div></div><div className="flex justify-end gap-1"><Button variant="ghost" size="icon" aria-label="Baixar documento"><Download size={16}/></Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Mais ações"><MoreHorizontal size={16}/></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem>Renomear</DropdownMenuItem><DropdownMenuItem>Mover para...</DropdownMenuItem><DropdownMenuItem>Compartilhar</DropdownMenuItem><DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></div>; })}
               </div>
               {filteredSummaryFiles.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">

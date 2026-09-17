@@ -74,7 +74,7 @@ const ProprietarioConfiguracoes = () => {
 
         <TabsContent value="edificios" className="space-y-4">
           <div className="bg-card rounded-xl border overflow-hidden">
-            <Table>
+            <div className="hidden md:block"><Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs">Ativo</TableHead>
@@ -99,7 +99,8 @@ const ProprietarioConfiguracoes = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table></div>
+            <div className="divide-y md:hidden">{userBuildings.map(b => <div key={b.id} className="space-y-2 p-4"><div className="flex items-start justify-between gap-2"><p className="text-sm font-semibold">{b.name}</p><Badge className={`text-[10px] ${b.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-muted text-muted-foreground'}`}>{b.status === 'active' ? 'Ativo' : 'Inativo'}</Badge></div><p className="text-xs text-muted-foreground">{b.address}</p><div className="grid grid-cols-2 text-xs"><div><span className="block text-muted-foreground">GLA</span><strong>{(b.gla_m2 || b.total_area_m2).toLocaleString('pt-BR')} m²</strong></div><div><span className="block text-muted-foreground">Ocupação</span><strong>{b.occupancy_pct || b.occupancy_rate}%</strong></div></div></div>)}</div>
           </div>
           <p className="text-xs text-muted-foreground italic">Lista somente leitura — entre em contato com o administrador para alterações.</p>
         </TabsContent>

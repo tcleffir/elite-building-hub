@@ -130,7 +130,7 @@ const Contatos = () => {
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input placeholder="Buscar por nome ou e-mail..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
             </div>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:flex">
               <input ref={fileInputRef} type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={handleImportCSV} />
               <Button variant="outline" className="gap-2" onClick={() => fileInputRef.current?.click()}><Upload size={14} />Importar CSV</Button>
               <Button className="premium-gradient gap-2" onClick={() => setNewContactOpen(true)}><Plus size={14} />Novo Contato</Button>
@@ -152,7 +152,7 @@ const Contatos = () => {
           </div>
 
           {/* Status filter */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {(['all', 'active', 'inactive'] as const).map(s => (
               <button key={s} onClick={() => setStatusFilter(s)}
                 className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${statusFilter === s ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground'}`}>
@@ -164,7 +164,7 @@ const Contatos = () => {
 
           {/* Table */}
           <div className="bg-card rounded-2xl premium-shadow overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="hidden overflow-x-auto md:block">
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-muted/30">
@@ -213,6 +213,7 @@ const Contatos = () => {
                 </tbody>
               </table>
             </div>
+            <div className="divide-y md:hidden">{filteredContacts.map(c => <div key={c.id} className="space-y-3 p-4"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-interactive/10 text-sm font-bold text-interactive">{c.name.split(' ').map(n => n[0]).join('').slice(0,2)}</div><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{c.name}</p><p className="break-all text-xs text-muted-foreground">{c.email}</p></div><span className={c.isActive ? 'text-success' : 'text-muted-foreground'}>●</span></div><div className="flex items-center justify-between gap-2"><span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${contactTypeColors[c.type]}`}>{contactTypeLabels[c.type]}</span><div className="flex gap-1"><Button variant="ghost" size="icon" aria-label="Editar contato" onClick={() => setEditContact({...c})}><Edit2 size={15}/></Button><Button variant="ghost" size="icon" aria-label="Excluir contato" onClick={() => setDeleteConfirm(c)}><Trash2 size={15}/></Button></div></div></div>)}</div>
           </div>
         </TabsContent>
 

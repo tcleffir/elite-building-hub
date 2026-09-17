@@ -116,9 +116,9 @@ const ProprietarioChamados = () => {
 
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-xl md:text-2xl font-bold text-foreground">Chamados</h1>
-        <div className="flex gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[160px]"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[160px]"><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
               <SelectItem value="aberto">Abertos</SelectItem>
@@ -128,7 +128,7 @@ const ProprietarioChamados = () => {
             </SelectContent>
           </Select>
           <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-            <SelectTrigger className="w-[160px]"><SelectValue placeholder="Prioridade" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[160px]"><SelectValue placeholder="Prioridade" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas prioridades</SelectItem>
               <SelectItem value="normal">Normal</SelectItem>
@@ -177,7 +177,7 @@ const ProprietarioChamados = () => {
       )}
 
       {/* Table */}
-      <div className="bg-card rounded-xl border overflow-hidden">
+      <div className="hidden bg-card rounded-xl border overflow-hidden md:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -231,6 +231,14 @@ const ProprietarioChamados = () => {
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="space-y-3 md:hidden">
+        {tickets.map(t => {
+          const sla = getSlaStatus(t);
+          const isResolved = t.status === 'resolvido';
+          return <Card key={t.id} className="p-4" onClick={() => setSelectedTicket(t)}><div className="flex items-start gap-3"><div onClick={e => e.stopPropagation()}>{!isResolved && <Checkbox checked={selectedChamados.has(t.id)} onCheckedChange={checked => { const next = new Set(selectedChamados); checked ? next.add(t.id) : next.delete(t.id); setSelectedChamados(next); }} />}</div><div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{t.title}</p><p className="mt-1 text-xs text-muted-foreground">{t.building} · {t.unit}</p></div><Badge className={`${statusColors[t.status]} shrink-0 text-[10px]`}>{statusLabels[t.status]}</Badge></div><div className="mt-3 grid grid-cols-3 gap-2 text-xs"><div><span className="block text-muted-foreground">Prioridade</span><strong>{priorityLabels[t.priority]}</strong></div><div><span className="block text-muted-foreground">SLA</span><strong className={sla.color}>{sla.label}</strong></div><div><span className="block text-muted-foreground">Custo</span><strong>R$ {t.estimatedCost.toLocaleString('pt-BR')}</strong></div></div></div></div></Card>;
+        })}
+        {tickets.length === 0 && <p className="py-8 text-center text-sm text-muted-foreground">Nenhum chamado encontrado.</p>}
       </div>
 
       {/* Batch resolve dialog */}
