@@ -294,7 +294,7 @@ const Encomendas = () => {
                     </SelectContent>
                   </Select>
                   <Select value={histCompany} onValueChange={setHistCompany}>
-                    <SelectTrigger className="w-[170px] h-8 text-xs"><SelectValue placeholder="Empresa" /></SelectTrigger>
+                    <SelectTrigger className="w-full text-xs sm:h-8 sm:w-[170px]"><SelectValue placeholder="Empresa" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todas as empresas</SelectItem>
                       {[...new Set(filtered.map(p => p.recipientCompany))].sort().map(c => (
@@ -303,7 +303,7 @@ const Encomendas = () => {
                     </SelectContent>
                   </Select>
                   <Select value={histMonth} onValueChange={setHistMonth}>
-                    <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue placeholder="Mês" /></SelectTrigger>
+                    <SelectTrigger className="w-full text-xs sm:h-8 sm:w-[140px]"><SelectValue placeholder="Mês" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos os meses</SelectItem>
                       {[...new Set(filtered.map(p => {
@@ -317,7 +317,7 @@ const Encomendas = () => {
                     </SelectContent>
                   </Select>
                   <Select value={histSort} onValueChange={v => setHistSort(v as 'newest' | 'oldest')}>
-                    <SelectTrigger className="w-[160px] h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full text-xs sm:h-8 sm:w-[160px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="newest">Mais recente primeiro</SelectItem>
                       <SelectItem value="oldest">Mais antigo primeiro</SelectItem>

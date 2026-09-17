@@ -43,7 +43,7 @@ const ProprietarioSustentabilidade = () => {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-xl md:text-2xl font-bold text-foreground">Sustentabilidade</h1>
         <Select value={selectedBuildingId} onValueChange={setSelectedBuildingId}>
-          <SelectTrigger className="w-[280px]"><SelectValue placeholder="Selecione o ativo" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[280px]"><SelectValue placeholder="Selecione o ativo" /></SelectTrigger>
           <SelectContent>
             {userBuildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
           </SelectContent>

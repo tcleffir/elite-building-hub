@@ -259,7 +259,7 @@ const ProprietarioComunicacao = () => {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-xl md:text-2xl font-bold text-foreground">Comunicação</h1>
         <Select value={selectedBuildingId} onValueChange={setSelectedBuildingId}>
-          <SelectTrigger className="w-[220px]"><SelectValue placeholder="Todos os ativos" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[220px]"><SelectValue placeholder="Todos os ativos" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos os ativos</SelectItem>
             {userBuildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
@@ -282,7 +282,7 @@ const ProprietarioComunicacao = () => {
             </Button>
           </div>
           <div className="bg-card rounded-xl border overflow-hidden">
-            <Table>
+            <div className="hidden md:block"><Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs">Título</TableHead>
@@ -328,7 +328,8 @@ const ProprietarioComunicacao = () => {
                   <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Nenhum comunicado encontrado.</TableCell></TableRow>
                 )}
               </TableBody>
-            </Table>
+            </Table></div>
+            <div className="divide-y md:hidden">{filteredAnnouncements.map(a => { const readPct = a.total_recipients > 0 ? Math.round((a.read_count/a.total_recipients)*100) : 0; return <div key={a.id} className="space-y-3 p-4"><button className="w-full text-left" onClick={() => setSelectedAnnouncement(a)}><div className="flex items-start justify-between gap-2"><p className="text-sm font-semibold">{a.title}</p><Badge className={`${priorityColors[a.priority]} shrink-0 text-[10px]`}>{priorityLabels[a.priority]}</Badge></div><p className="mt-1 text-xs text-muted-foreground">{getBuildingName(a.building_id)} · {a.category} · {new Date(a.published_at).toLocaleDateString('pt-BR')}</p></button><div><div className="mb-1 flex justify-between text-xs text-muted-foreground"><span>Leituras</span><span>{a.read_count}/{a.total_recipients} ({readPct}%)</span></div><Progress value={readPct} className="h-1.5" /></div><div className="flex justify-end gap-1"><Button variant="ghost" size="icon" aria-label="Ver comunicado" onClick={() => setSelectedAnnouncement(a)}><Eye size={16}/></Button><Button variant="ghost" size="icon" aria-label="Editar comunicado" onClick={() => openEditDialog(a)}><Edit2 size={16}/></Button><Button variant="ghost" size="icon" aria-label="Duplicar comunicado" onClick={() => handleDuplicate(a)}><Copy size={16}/></Button><Button variant="ghost" size="icon" aria-label="Excluir comunicado" onClick={() => setDeleteAnnouncement(a)}><Trash2 size={16}/></Button></div></div>;})}</div>
           </div>
         </TabsContent>
 
@@ -340,7 +341,7 @@ const ProprietarioComunicacao = () => {
               <Input placeholder="Buscar contato..." value={contactSearch} onChange={e => setContactSearch(e.target.value)} className="pl-9 h-9" />
             </div>
             <Select value={contactGroupFilter} onValueChange={setContactGroupFilter}>
-              <SelectTrigger className="w-[200px]"><SelectValue placeholder="Todos os grupos" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-[200px]"><SelectValue placeholder="Todos os grupos" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os contatos</SelectItem>
                 {mockGroups.map(g => <SelectItem key={g.id} value={g.id}>{g.icon} {g.name}</SelectItem>)}
@@ -350,7 +351,7 @@ const ProprietarioComunicacao = () => {
             <Button size="sm" className="gap-1" onClick={() => setShowNovoContato(true)}><Plus size={14} /> Novo Contato</Button>
           </div>
           <div className="bg-card rounded-xl border overflow-hidden">
-            <Table>
+            <div className="hidden md:block"><Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs cursor-pointer" onClick={() => handleContactSort('name')}>
@@ -386,7 +387,8 @@ const ProprietarioComunicacao = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table></div>
+            <div className="divide-y md:hidden">{filteredContacts.map(c => <div key={c.id} className="space-y-2 p-4"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{c.name}</p><p className="text-xs text-muted-foreground">{c.jobTitle || '—'} · {c.company || '—'}</p></div><Badge className={`${contactTypeColors[c.type]} text-[10px]`}>{contactTypeLabels[c.type]}</Badge></div><p className="break-all text-xs text-muted-foreground">{c.email}</p><div className="flex justify-end gap-1"><Button variant="ghost" size="icon" asChild><a href={`mailto:${c.email}`} aria-label="Enviar e-mail"><Mail size={16}/></a></Button>{c.phone && <Button variant="ghost" size="icon" asChild><a href={`tel:${c.phone}`} aria-label="Ligar"><Phone size={16}/></a></Button>}</div></div>)}</div>
           </div>
         </TabsContent>
       </Tabs>

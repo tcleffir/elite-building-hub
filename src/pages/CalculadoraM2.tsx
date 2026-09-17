@@ -50,7 +50,7 @@ const CalculadoraM2 = () => {
                 {occupancyTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-3">
               <div>
                 <label className="text-[10px] text-muted-foreground">Colaboradores fixos</label>
                 <Input type="number" value={fixedPeople} onChange={e => setFixedPeople(+e.target.value)} min={0} />
@@ -68,7 +68,7 @@ const CalculadoraM2 = () => {
         </Card>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-3">
             <Card className="border-success/30">
               <CardContent className="pt-6 text-center">
                 <p className="text-3xl font-bold text-success">{comfortable}</p>

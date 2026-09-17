@@ -153,6 +153,40 @@
 }
 
 @layer utilities {
+  @media (max-width: 639px) {
+    .mobile-touch {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    .mobile-stack-kanban {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      margin-left: 0;
+      margin-right: 0;
+      overflow-x: visible;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .mobile-stack-kanban > * {
+      min-width: 0;
+      max-width: none;
+      width: 100%;
+    }
+
+    .mobile-annual-table th:not(:first-child):not(:last-child),
+    .mobile-annual-table td:not(:first-child):not(:last-child) {
+      display: none;
+    }
+
+    .mobile-annual-table th:first-child,
+    .mobile-annual-table td:first-child {
+      min-width: 0 !important;
+      white-space: normal;
+    }
+  }
+
   .glass-card {
     @apply bg-card/80 backdrop-blur-md border border-border/50 shadow-lg rounded-2xl;
   }

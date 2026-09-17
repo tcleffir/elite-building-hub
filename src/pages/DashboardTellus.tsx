@@ -182,14 +182,14 @@ const DashboardTellus = () => {
           </div>
           <div className="divide-y">
             {allAlerts.slice(0, 6).map((alert, i) => (
-              <div key={i} className="px-5 py-3 flex items-center gap-3 hover:bg-muted/50">
+              <div key={i} className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 px-4 py-3 hover:bg-muted/50 sm:flex sm:items-center sm:px-5">
                 <span className={`w-2 h-2 rounded-full ${healthColors[alert.severity].dot}`} />
-                <span className={`text-xs font-medium w-20 ${healthColors[alert.severity].text}`}>
+                <span className={`text-xs font-medium sm:w-20 ${healthColors[alert.severity].text}`}>
                   {alert.type}
                 </span>
-                <span className="text-sm text-foreground flex-1 truncate">{alert.building}</span>
-                <span className="text-sm text-muted-foreground truncate max-w-[200px]">{alert.item}</span>
-                <span className={`text-xs font-medium whitespace-nowrap ${healthColors[alert.severity].text}`}>
+                <span className="col-start-2 text-sm text-foreground sm:flex-1 sm:truncate">{alert.building}</span>
+                <span className="col-start-2 text-sm text-muted-foreground sm:max-w-[200px] sm:truncate">{alert.item}</span>
+                <span className={`col-start-2 text-xs font-medium sm:whitespace-nowrap ${healthColors[alert.severity].text}`}>
                   {alert.daysLeft > 0 ? `${alert.daysLeft}d restantes` : `Vencido há ${Math.abs(alert.daysLeft)}d`}
                 </span>
               </div>

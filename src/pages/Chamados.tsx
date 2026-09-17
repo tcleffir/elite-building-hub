@@ -104,7 +104,8 @@ function SortableTicketCard({ ticket, onClick, getSlaColor, getSlaPercent }: {
           <Popover>
             <PopoverTrigger asChild>
               <button
-                className="p-1 rounded hover:bg-interactive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Notificar contatos"
+                className="mobile-touch flex items-center justify-center rounded hover:bg-interactive/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                 onClick={e => e.stopPropagation()}
                 onPointerDown={e => e.stopPropagation()}
               >
@@ -127,7 +128,7 @@ function KanbanColumn({ col, tickets, children }: { col: { key: string; label: s
   const { t } = useLanguage();
   const { setNodeRef, isOver } = useDroppable({ id: col.key });
   return (
-    <div className="min-w-[260px] sm:min-w-[280px] max-w-[320px] flex flex-col shrink-0">
+    <div className="min-w-0 w-full sm:min-w-[280px] sm:max-w-[320px] flex flex-col shrink-0">
       <div className={`flex items-center gap-2 mb-3 pb-2 border-b-2 ${col.color}`}>
         <h3 className="text-xs font-semibold text-foreground whitespace-nowrap">{col.label}</h3>
         <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{tickets.length}</span>
@@ -333,7 +334,7 @@ const Chamados = () => {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder={t('chamados.searchPlaceholder')} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 rounded-lg" />
         </div>
-        <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-nowrap sm:overflow-x-auto sm:pb-1">
           <button onClick={() => setStatusFilter('')} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${!statusFilter ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>{t('common.all')}</button>
           {columns.slice(0, 5).map(col => (
             <button key={col.key} onClick={() => setStatusFilter(col.key)} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${statusFilter === col.key ? 'bg-interactive text-interactive-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
@@ -345,7 +346,7 @@ const Chamados = () => {
 
       {view === "kanban" ? (
         <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={handleDragCancel}>
-          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="mobile-stack-kanban flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory sm:-mx-0 sm:px-0">
             {columns.map((col) => {
               const colTickets = filteredTickets.filter((t) => t.status === col.key);
               return (

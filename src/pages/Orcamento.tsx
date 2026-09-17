@@ -217,7 +217,7 @@ const Orcamento = () => {
   };
 
   const renderExpenseTable = (categories: ExpenseCategory[], tableKey: string, setter: React.Dispatch<React.SetStateAction<ExpenseCategory[]>>) => (
-    <table className="w-full text-sm">
+    <table className="mobile-annual-table w-full text-sm">
       <thead>
         <tr className="border-b">
           <th className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground min-w-[220px]">Item</th>
@@ -271,7 +271,7 @@ const Orcamento = () => {
             <span className="text-xs text-muted-foreground">360JK — Administradora</span>
           </div>
         </div>
-        <div className="flex gap-2 items-center flex-wrap">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center sm:flex-wrap">
           <select value={year} onChange={e => setYear(+e.target.value)} className="border rounded-lg px-3 py-2 text-sm bg-card">
             {[2024,2025,2026,2027].map(y => <option key={y} value={y}>{y}</option>)}
           </select>
@@ -367,7 +367,7 @@ const Orcamento = () => {
 
       {/* Tabs */}
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="w-full overflow-x-auto flex-nowrap justify-start">
+        <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:flex sm:flex-nowrap sm:justify-start sm:overflow-x-auto">
           <TabsTrigger value="arrecadacao" className="whitespace-nowrap text-xs sm:text-sm">💰 Arrecadação</TabsTrigger>
           <TabsTrigger value="ordinarias" className="whitespace-nowrap text-xs sm:text-sm">📋 Ordinárias</TabsTrigger>
           <TabsTrigger value="extraordinarias" className="whitespace-nowrap text-xs sm:text-sm">🔧 Extraordinárias</TabsTrigger>
@@ -385,8 +385,8 @@ const Orcamento = () => {
               </CardTitle>
               <p className="text-xs text-muted-foreground">Rateio da cota condominial paga mensalmente por cada locatário</p>
             </CardHeader>
-            <CardContent className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <CardContent className="overflow-hidden sm:overflow-x-auto">
+              <table className="mobile-annual-table w-full text-sm">
                 <thead>
                   <tr className="border-b">
                     <th className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground min-w-[220px]">Locatário</th>
@@ -423,7 +423,7 @@ const Orcamento = () => {
               </CardTitle>
               <p className="text-xs text-muted-foreground">Despesas mensais de operação do condomínio</p>
             </CardHeader>
-            <CardContent className="overflow-x-auto">
+            <CardContent className="overflow-hidden sm:overflow-x-auto">
               {renderExpenseTable(despOrdinarias, 'ord', setDespOrdinarias)}
             </CardContent>
           </Card>
@@ -438,7 +438,7 @@ const Orcamento = () => {
               </CardTitle>
               <p className="text-xs text-muted-foreground">Investimentos de grande porte e obras planejadas</p>
             </CardHeader>
-            <CardContent className="overflow-x-auto">
+            <CardContent className="overflow-hidden sm:overflow-x-auto">
               {renderExpenseTable(despExtraordinarias, 'extra', setDespExtraordinarias)}
             </CardContent>
           </Card>

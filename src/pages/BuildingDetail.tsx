@@ -191,7 +191,7 @@ const BuildingDetail = () => {
             {floors.map(([floor, units]) => (
               <div key={floor} className="mb-4">
                 <p className="text-xs text-muted-foreground font-medium mb-2">{floor}º Andar</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 min-[400px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
                   {units.map(unit => {
                     const health = unit.contract_end ? getContractHealth(unit.contract_end) : undefined;
                     const isVacant = unit.status === 'vacant';
@@ -220,18 +220,18 @@ const BuildingDetail = () => {
 
           {/* Contracts Table */}
           <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
-            <div className="p-4 border-b flex items-center justify-between">
+            <div className="flex flex-col items-start gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="text-sm font-semibold">Contratos</h3>
-              <div className="flex gap-2">
+              <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
                 {['all', 'critical', 'active', 'vacant'].map(f => (
-                  <Button key={f} variant={contractFilter === f ? 'default' : 'outline'} size="sm" className="text-xs h-7"
+                  <Button key={f} variant={contractFilter === f ? 'default' : 'outline'} size="sm" className="text-xs"
                     onClick={() => setContractFilter(f)}>
                     {f === 'all' ? 'Todos' : f === 'critical' ? '🔴 Críticos' : f === 'active' ? 'Ativos' : 'Vagos'}
                   </Button>
                 ))}
               </div>
             </div>
-            <Table>
+            <div className="hidden md:block"><Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs">Unidade</TableHead>
@@ -265,7 +265,8 @@ const BuildingDetail = () => {
                   );
                 })}
               </TableBody>
-            </Table>
+            </Table></div>
+            <div className="divide-y md:hidden">{filteredContracts.map(c => { const health = c.contract_end ? getContractHealth(c.contract_end) : undefined; const vacant = c.status === 'vacant'; return <button key={c.id} onClick={() => !vacant && setSelectedContract(c)} className="block w-full space-y-3 p-4 text-left"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{c.unit_id}</p><p className="text-xs text-muted-foreground">{vacant ? 'Área disponível' : c.tenant_name}</p></div>{health && <Badge className={`${healthColors[health].badge} text-[9px]`}>{healthLabels[health].pt}</Badge>}</div><div className="grid grid-cols-3 gap-2 text-xs"><div><span className="block text-muted-foreground">Área</span><strong>{c.area_m2} m²</strong></div><div><span className="block text-muted-foreground">Valor</span><strong>{c.price_per_m2 ? fmt(c.area_m2*c.price_per_m2) : '—'}</strong></div><div><span className="block text-muted-foreground">Vencimento</span><strong>{c.contract_end ? new Date(c.contract_end).toLocaleDateString('pt-BR') : '—'}</strong></div></div></button>;})}</div>
           </div>
         </TabsContent>
 

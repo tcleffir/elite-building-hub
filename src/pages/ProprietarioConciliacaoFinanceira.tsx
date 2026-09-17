@@ -358,7 +358,7 @@ export default function ProprietarioConciliacaoFinanceira() {
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Fundo</span>
             <Select value={fundoId} onValueChange={(v) => { setFundoId(v); setEdificioId('all'); }}>
-              <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-56"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os Fundos</SelectItem>
                 {fundos.map(f => <SelectItem key={f.id} value={f.id}>{f.nome}</SelectItem>)}
@@ -368,7 +368,7 @@ export default function ProprietarioConciliacaoFinanceira() {
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Ativo</span>
             <Select value={edificioId} onValueChange={setEdificioId}>
-              <SelectTrigger className="w-64"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-64"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os Ativos</SelectItem>
                 {edificiosDoFundo.map(e => <SelectItem key={e.id} value={e.id}>{e.nome}</SelectItem>)}
@@ -377,7 +377,7 @@ export default function ProprietarioConciliacaoFinanceira() {
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Competência</span>
-            <div className="flex items-center gap-1 border rounded-md px-2 h-10">
+            <div className="flex h-11 w-full items-center justify-between gap-1 rounded-md border px-2 sm:h-10 sm:w-auto">
               <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedMonth(m => Math.max(0, m - 1))}>
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -448,7 +448,7 @@ export default function ProprietarioConciliacaoFinanceira() {
               <div className="flex flex-col gap-1">
                 <span className="text-xs text-muted-foreground">Categoria</span>
                 <Select value={categoriaFiltro} onValueChange={(v) => setCategoriaFiltro(v as Categoria | 'all')}>
-                  <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Aluguel + IPTU</SelectItem>
                     <SelectItem value="aluguel">Somente Aluguel</SelectItem>
@@ -459,7 +459,7 @@ export default function ProprietarioConciliacaoFinanceira() {
               <div className="flex flex-col gap-1">
                 <span className="text-xs text-muted-foreground">Status</span>
                 <Select value={statusFiltro} onValueChange={(v) => setStatusFiltro(v as StatusCobranca | 'all')}>
-                  <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-48"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos os status</SelectItem>
                     {(Object.keys(STATUS_META) as StatusCobranca[]).map(s => (
@@ -471,7 +471,7 @@ export default function ProprietarioConciliacaoFinanceira() {
               <div className="flex flex-col gap-1">
                 <span className="text-xs text-muted-foreground">Ação</span>
                 <Select value={acaoFiltro} onValueChange={(v) => setAcaoFiltro(v as typeof acaoFiltro)}>
-                  <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-56"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todas</SelectItem>
                     <SelectItem value="sem_acao">Sem ação registrada</SelectItem>
@@ -485,7 +485,7 @@ export default function ProprietarioConciliacaoFinanceira() {
               <div className="flex flex-col gap-1">
                 <span className="text-xs text-muted-foreground">Ordenar por Inquilino</span>
                 <Select value={ordenarInquilino} onValueChange={(v) => setOrdenarInquilino(v as 'asc' | 'desc')}>
-                  <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-32"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="asc">A → Z</SelectItem>
                     <SelectItem value="desc">Z → A</SelectItem>

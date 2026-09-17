@@ -415,7 +415,7 @@ const Ativos = () => {
 
       {/* Tabela */}
       <Card className="rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="hidden overflow-x-auto md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -487,6 +487,10 @@ const Ativos = () => {
               })}
             </TableBody>
           </Table>
+        </div>
+        <div className="divide-y md:hidden">
+          {sorted.map(a => { const Icon = getCategoryIcon(a.category); const w = getWarrantyStatus(a); const m = getMaintenanceStatus(a); const ticketCount = ticketsByAsset.get(a.id) ?? 0; return <button key={a.id} onClick={() => handleRowClick(a)} className="block min-h-11 w-full space-y-3 p-4 text-left active:bg-muted/50"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-interactive"><Icon className="h-5 w-5" /></div><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{a.name}</p><p className="text-xs text-muted-foreground">{a.brand} · {a.model}</p></div><Badge variant="outline">{categoryLabels[a.category] ?? a.category}</Badge></div><div className="grid grid-cols-2 gap-2 text-xs"><div><span className="block text-muted-foreground">Localização</span><strong>{formatFloor(a.floor)}</strong></div><div><span className="block text-muted-foreground">Valor</span><strong>{formatBRLFull(a.purchasePrice)}</strong></div><div><span className="block text-muted-foreground">Garantia</span><Badge className={`${warrantyChip[w].className} mt-1`}>{warrantyChip[w].label}</Badge></div><div><span className="block text-muted-foreground">Manutenção</span><Badge className={`${maintChip[m].className} mt-1`}>{maintChip[m].label}</Badge></div></div>{ticketCount > 0 && <p className="text-xs text-muted-foreground">{ticketCount} chamado{ticketCount > 1 ? 's' : ''} aberto{ticketCount > 1 ? 's' : ''}</p>}</button>; })}
+          {sorted.length === 0 && <p className="p-8 text-center text-sm text-muted-foreground">Nenhum ativo encontrado com os filtros atuais.</p>}
         </div>
       </Card>
 
