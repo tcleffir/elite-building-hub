@@ -3,7 +3,7 @@ import {
   CalendarDays, ShoppingCart, Leaf, Users, BarChart3, Settings,
   DollarSign, ClipboardList, Shield, Store, Search,
   Vote, Calculator, BookOpen, Receipt, Banknote, HardHat, Contact, Package,
-  PieChart, Calendar, TrendingUp, Wrench, Boxes, Wallet
+  PieChart, Calendar, TrendingUp, Wrench, Boxes, Wallet, Landmark
 } from "lucide-react";
 import { UserRole } from "./mock-data";
 import { LucideIcon } from "lucide-react";
@@ -22,6 +22,9 @@ export interface NavItem {
   path: string;
   icon: LucideIcon;
   roles: UserRole[];
+  /** Módulo existente porém não habilitado para o cliente (exibe cadeado e bloqueia navegação) */
+  locked?: boolean;
+  lockedReason?: string;
 }
 
 export interface NavGroup {
@@ -31,7 +34,10 @@ export interface NavGroup {
   icon: LucideIcon;
   items: NavItem[];
   section?: 'main' | 'footer';
+  locked?: boolean;
+  lockedReason?: string;
 }
+
 
 export const navGroups: NavGroup[] = [
   {
@@ -151,6 +157,7 @@ export const gestorFundoNav: NavGroup[] = [
       { label: 'Conciliação Financeira', path: '/proprietario/conciliacao-financeira', icon: Banknote, roles: ['gestor_fundo'] },
       { label: 'Outros Recebimentos', path: '/proprietario/outros-recebimentos', icon: Receipt, roles: ['gestor_fundo'] },
       { label: 'Despesas & NOI', path: '/proprietario/despesas', icon: Wallet, roles: ['gestor_fundo'] },
+      { label: 'IPTU', path: '/proprietario/iptu', icon: Landmark, roles: ['gestor_fundo'] },
 
       { label: 'Métricas e KPIs', path: '/proprietario/metricas-kpis', icon: TrendingUp, roles: ['gestor_fundo'] },
       { label: 'Relatórios', path: '/proprietario/relatorios-locacao', icon: BarChart3, roles: ['gestor_fundo'] },
@@ -162,19 +169,25 @@ export const gestorFundoNav: NavGroup[] = [
     ] },
   { id: 'operacoes_gf', label: 'Operações', icon: Wrench,
     items: [
-      { label: 'Chamados', labelKey: 'nav.chamados', path: '/proprietario/chamados', icon: Ticket, roles: ['gestor_fundo'] },
+      { label: 'Chamados', labelKey: 'nav.chamados', path: '/proprietario/chamados', icon: Ticket, roles: ['gestor_fundo'], locked: true, lockedReason: 'Chamados e SLA não fazem parte do escopo inicial do fundo.' },
       { label: 'Reservas', labelKey: 'nav.reservas', path: '/proprietario/reservas', icon: CalendarDays, roles: ['gestor_fundo'] },
       { label: 'Comunicação', labelKey: 'nav.comunicacao', path: '/proprietario/comunicacao', icon: Megaphone, roles: ['gestor_fundo'] },
+      { label: 'CRM Monday', path: '/proprietario/crm-monday', icon: Boxes, roles: ['gestor_fundo'] },
     ] },
-  { id: 'calendario_gf', label: 'Calendário', labelKey: 'nav.calendario', icon: Calendar,
-    items: [{ label: 'Calendário', labelKey: 'nav.calendario', path: '/proprietario/calendario', icon: Calendar, roles: ['gestor_fundo'] }] },
-  { id: 'sustentabilidade_gf', label: 'Sustentabilidade', labelKey: 'nav.sustentabilidade', icon: Leaf,
-    items: [{ label: 'Sustentabilidade', labelKey: 'nav.sustentabilidade', path: '/proprietario/sustentabilidade', icon: Leaf, roles: ['gestor_fundo'] }] },
+  { id: 'calendario_gf', label: 'Calendário', labelKey: 'nav.calendario', icon: Calendar, locked: true, lockedReason: 'Integração de calendário (Google/Outlook) não entra nesta primeira fase.',
+    items: [{ label: 'Calendário', labelKey: 'nav.calendario', path: '/proprietario/calendario', icon: Calendar, roles: ['gestor_fundo'], locked: true, lockedReason: 'Integração de calendário (Google/Outlook) não entra nesta primeira fase.' }] },
+  { id: 'sustentabilidade_gf', label: 'Sustentabilidade', labelKey: 'nav.sustentabilidade', icon: Leaf, locked: true, lockedReason: 'Módulo ESG disponível, porém sem integração contratada.',
+    items: [{ label: 'Sustentabilidade', labelKey: 'nav.sustentabilidade', path: '/proprietario/sustentabilidade', icon: Leaf, roles: ['gestor_fundo'], locked: true, lockedReason: 'Módulo ESG disponível, porém sem integração contratada.' }] },
   { id: 'relatorio_mensal_gf', label: 'Relatório Mensal', icon: TrendingUp,
     items: [{ label: 'Relatório Mensal', path: '/proprietario/relatorio-mensal', icon: TrendingUp, roles: ['gestor_fundo'] }] },
+  { id: 'marketplace_gf', label: 'Marketplace', labelKey: 'nav.marketplace', icon: ShoppingCart, locked: true, lockedReason: 'Marketplace de fornecedores não será implementado nesta fase.',
+    items: [{ label: 'Marketplace', labelKey: 'nav.marketplace', path: '/marketplace', icon: ShoppingCart, roles: ['gestor_fundo'], locked: true, lockedReason: 'Marketplace de fornecedores não será implementado nesta fase.' }] },
+  { id: 'apoio_gf', label: 'Apoio ao Gestor', labelKey: 'nav.apoio', icon: BookOpen, section: 'footer' as const, locked: true, lockedReason: 'Treinamentos e padronização de processos não entram nesta fase.',
+    items: [{ label: 'Apoio ao Gestor', labelKey: 'nav.apoio', path: '/apoio', icon: BookOpen, roles: ['gestor_fundo'], locked: true, lockedReason: 'Treinamentos e padronização de processos não entram nesta fase.' }] },
   { id: 'configuracoes_gf', label: 'Configurações', labelKey: 'nav.configuracoes', icon: Settings, section: 'footer' as const,
     items: [{ label: 'Configurações', labelKey: 'nav.configuracoes', path: '/proprietario/configuracoes', icon: Settings, roles: ['gestor_fundo'] }] },
 ];
+
 
 /** Map group IDs to premium module keys (only groups that can be blocked) */
 export const moduleKeyForGroup: Record<string, string> = {
@@ -238,6 +251,8 @@ export const routeAccess: Record<string, UserRole[]> = {
   '/proprietario/metricas-kpis': ['gestor_fundo'],
   '/proprietario/configuracoes': ['gestor_fundo'],
   '/proprietario/relatorio-mensal': ['gestor_fundo'],
+  '/proprietario/iptu': ['gestor_fundo'],
+  '/proprietario/crm-monday': ['gestor_fundo'],
   '/proprietario/alertas': ['gestor_fundo'],
   '/portfolio':       ['gestor_fundo'],
   '/portfolio/:buildingId': ['gestor_fundo'],

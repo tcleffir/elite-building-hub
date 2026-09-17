@@ -65,10 +65,44 @@ export function AppSidebar() {
     const isSolo = group.items.length === 1;
     const soloItem = group.items[0];
     const premiumKey = moduleKeyForGroup[group.id];
-    const isBlocked = premiumKey ? isModuleBlocked(premiumKey) : false;
+    const lockedReason = group.lockedReason ?? soloItem?.lockedReason;
+    const isLocked = !!group.locked || (isSolo && !!soloItem?.locked);
+    const isBlocked = (premiumKey ? isModuleBlocked(premiumKey) : false) || isLocked;
+
+    if (isSolo && isLocked) {
+      return (
+        <SidebarMenuItem key={group.id}>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  aria-disabled
+                  className={cn(
+                    "flex items-center rounded-lg text-sm font-medium cursor-not-allowed text-sidebar-foreground/40",
+                    collapsed ? "justify-center" : "gap-3 px-3 h-11"
+                  )}
+                >
+                  <soloItem.icon size={20} className="w-5 h-5 shrink-0" />
+                  {!collapsed && (
+                    <>
+                      <span className="truncate flex-1">{tLabel(soloItem.labelKey, soloItem.label)}</span>
+                      <Lock size={14} className="w-3.5 h-3.5 shrink-0 text-amber-400/80" />
+                    </>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p className="text-xs max-w-[220px]">{lockedReason ?? 'Módulo não habilitado.'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </SidebarMenuItem>
+      );
+    }
 
     if (isSolo) {
       const active = isItemActive(soloItem.path);
+
       return (
         <SidebarMenuItem key={group.id}>
           <SidebarMenuButton asChild>
@@ -166,7 +200,31 @@ export function AppSidebar() {
           <div className="overflow-hidden">
             {group.items.map(item => {
               const active = isItemActive(item.path);
+              if (item.locked) {
+                return (
+                  <SidebarMenuItem key={item.path}>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div
+                            aria-disabled
+                            className="flex items-center gap-2.5 pl-9 pr-3 h-[38px] rounded-lg text-sm cursor-not-allowed text-sidebar-foreground/40"
+                          >
+                            <item.icon size={16} className="w-4 h-4 shrink-0" />
+                            <span className="truncate flex-1">{tLabel(item.labelKey, item.label)}</span>
+                            <Lock size={13} className="w-3.5 h-3.5 shrink-0 text-amber-400/80" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                          <p className="text-xs max-w-[220px]">{item.lockedReason ?? 'Módulo não habilitado.'}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </SidebarMenuItem>
+                );
+              }
               return (
+
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton asChild>
                     <NavLink
