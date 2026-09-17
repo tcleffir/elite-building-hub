@@ -535,6 +535,73 @@ const ProprietarioEdificios = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Novo Ativo */}
+        <Dialog open={showNewBuilding} onOpenChange={setShowNewBuilding}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Adicionar ativo</DialogTitle>
+              <DialogDescription>Cadastre um novo ativo no portfólio do fundo.</DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2"><Label className="text-xs">Nome do ativo</Label><Input value={newBuilding.name} onChange={e => setNewBuilding(p => ({ ...p, name: e.target.value }))} placeholder="Ex.: Edifício Faria Lima 3477" /></div>
+              <div className="col-span-2"><Label className="text-xs">Endereço</Label><Input value={newBuilding.address} onChange={e => setNewBuilding(p => ({ ...p, address: e.target.value }))} /></div>
+              <div><Label className="text-xs">Município</Label><Input value={newBuilding.city} onChange={e => setNewBuilding(p => ({ ...p, city: e.target.value }))} /></div>
+              <div><Label className="text-xs">UF</Label><Input value={newBuilding.state} onChange={e => setNewBuilding(p => ({ ...p, state: e.target.value }))} maxLength={2} /></div>
+              <div><Label className="text-xs">Segmento</Label>
+                <Select value={newBuilding.segment} onValueChange={v => setNewBuilding(p => ({ ...p, segment: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="office">Escritório</SelectItem>
+                    <SelectItem value="logistics">Logística</SelectItem>
+                    <SelectItem value="retail">Varejo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div><Label className="text-xs">Andares / conjuntos</Label><Input type="number" value={newBuilding.floors} onChange={e => setNewBuilding(p => ({ ...p, floors: e.target.value }))} /></div>
+              <div className="col-span-2"><Label className="text-xs">ABL / GLA (m²)</Label><Input type="number" value={newBuilding.gla} onChange={e => setNewBuilding(p => ({ ...p, gla: e.target.value }))} /></div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNewBuilding(false)}>Cancelar</Button>
+              <Button
+                disabled={!newBuilding.name}
+                onClick={() => { setShowNewBuilding(false); toast.success(`Ativo ${newBuilding.name} cadastrado.`); setNewBuilding({ name: '', city: '', state: '', segment: 'office', floors: '', gla: '', address: '' }); }}
+              >
+                Salvar ativo
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Novo Locatário */}
+        <Dialog open={showNewTenant} onOpenChange={setShowNewTenant}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Adicionar locatário — {building?.name}</DialogTitle>
+              <DialogDescription>Vincule um locatário a uma unidade do ativo selecionado.</DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2"><Label className="text-xs">Locatário</Label><Input value={newTenant.name} onChange={e => setNewTenant(p => ({ ...p, name: e.target.value }))} /></div>
+              <div><Label className="text-xs">Unidade</Label><Input value={newTenant.unit} onChange={e => setNewTenant(p => ({ ...p, unit: e.target.value }))} placeholder="Ex.: 1201" /></div>
+              <div><Label className="text-xs">Andar / conjunto</Label><Input type="number" value={newTenant.floor} onChange={e => setNewTenant(p => ({ ...p, floor: e.target.value }))} /></div>
+              <div><Label className="text-xs">Área (m²)</Label><Input type="number" value={newTenant.area} onChange={e => setNewTenant(p => ({ ...p, area: e.target.value }))} /></div>
+              <div><Label className="text-xs">R$/m²</Label><Input type="number" value={newTenant.pricePerM2} onChange={e => setNewTenant(p => ({ ...p, pricePerM2: e.target.value }))} /></div>
+              <div><Label className="text-xs">Início do contrato</Label><Input type="date" value={newTenant.start} onChange={e => setNewTenant(p => ({ ...p, start: e.target.value }))} /></div>
+              <div><Label className="text-xs">Fim do contrato</Label><Input type="date" value={newTenant.end} onChange={e => setNewTenant(p => ({ ...p, end: e.target.value }))} /></div>
+              <div><Label className="text-xs">Contato</Label><Input value={newTenant.contact} onChange={e => setNewTenant(p => ({ ...p, contact: e.target.value }))} /></div>
+              <div><Label className="text-xs">E-mail</Label><Input type="email" value={newTenant.email} onChange={e => setNewTenant(p => ({ ...p, email: e.target.value }))} /></div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNewTenant(false)}>Cancelar</Button>
+              <Button
+                disabled={!newTenant.name || !newTenant.unit}
+                onClick={() => { setShowNewTenant(false); toast.success(`Locatário ${newTenant.name} vinculado à unidade ${newTenant.unit}.`); setNewTenant({ name: '', unit: '', floor: '', area: '', pricePerM2: '', start: '', end: '', contact: '', email: '' }); }}
+              >
+                Salvar locatário
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
