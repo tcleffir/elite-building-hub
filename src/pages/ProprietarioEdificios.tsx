@@ -203,7 +203,7 @@ const ProprietarioEdificios = () => {
               totalFloors={building.total_floors}
               contracts={contracts}
               tickets={buildingTickets as any}
-              levelLabel={building.segment === 'logistico' ? 'conjunto' : 'andar'}
+              levelLabel={building.segment === 'logistics' ? 'conjunto' : 'andar'}
               onOpenContract={(c) => setSelectedContract(c)}
             />
 
