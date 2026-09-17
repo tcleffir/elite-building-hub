@@ -275,10 +275,10 @@ export default function AIChatAssistant() {
   return (
     <>
       {!open && (
-        <button onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all flex items-center justify-center hover:scale-105">
+        <Button size="icon" aria-label="Abrir assistente" onClick={() => setOpen(true)}
+          className="fixed bottom-4 right-4 z-50 h-12 w-12 rounded-full shadow-lg transition-all hover:shadow-xl sm:bottom-6 sm:right-6 sm:h-14 sm:w-14 sm:hover:scale-105">
           <Bot size={24} />
-        </button>
+        </Button>
       )}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent className="w-full sm:max-w-[400px] flex flex-col p-0">

@@ -37,8 +37,8 @@ const Layout = ({ children }: LayoutProps) => {
 
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
-          <header className="h-14 md:h-16 border-b bg-card flex items-center justify-between px-3 md:px-4 lg:px-6 sticky top-0 z-30">
-            <div className="flex items-center gap-3">
+          <header className="h-14 md:h-16 border-b bg-card flex items-center justify-between gap-1 px-2 md:px-4 lg:px-6 sticky top-0 z-30 overflow-hidden">
+            <div className="flex min-w-0 items-center gap-1 sm:gap-3">
               <SidebarTrigger className="text-muted-foreground hover:text-foreground">
                 <Menu size={20} />
               </SidebarTrigger>
@@ -124,15 +124,15 @@ const Layout = ({ children }: LayoutProps) => {
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
               {/* Role Switcher (DEV) */}
               <RoleSwitcher />
 
               {/* Search */}
-              <GlobalSearch />
+              <div className="hidden sm:block"><GlobalSearch /></div>
 
               {/* Language Switcher */}
-              <DropdownMenu>
+              <div className="hidden md:block"><DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                     <Globe size={18} />
@@ -150,10 +150,10 @@ const Layout = ({ children }: LayoutProps) => {
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu></div>
 
               {/* Dark mode */}
-              <Button variant="ghost" size="icon" onClick={toggleDark} className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="icon" onClick={toggleDark} className="hidden text-muted-foreground hover:text-foreground sm:inline-flex">
                 {isDark ? <Sun size={18} /> : <Moon size={18} />}
               </Button>
 
@@ -177,7 +177,7 @@ const Layout = ({ children }: LayoutProps) => {
           </header>
 
           {/* Main content */}
-          <main className="flex-1 px-4 md:px-6 lg:px-8 py-4 lg:py-6 overflow-auto max-w-full">
+          <main className="flex-1 min-w-0 max-w-full overflow-x-hidden px-3 py-4 sm:px-4 md:px-6 lg:px-8 lg:py-6">
             {children}
           </main>
         </div>

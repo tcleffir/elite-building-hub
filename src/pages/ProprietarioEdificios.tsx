@@ -161,7 +161,7 @@ const ProprietarioEdificios = () => {
   return (
     <TooltipProvider>
       <div className="space-y-6">
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:flex-wrap">
           {building && (
             <Button variant="ghost" size="sm" onClick={() => setSelectedBuildingId('')} className="gap-1">
               <ArrowLeft size={16} /> Portfólio
@@ -169,7 +169,7 @@ const ProprietarioEdificios = () => {
           )}
           <h2 className="text-lg font-semibold">Mapa de Ativos</h2>
           <Select value={selectedBuildingId} onValueChange={setSelectedBuildingId}>
-            <SelectTrigger className="w-[280px]"><SelectValue placeholder="Selecione o ativo" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[280px]"><SelectValue placeholder="Selecione o ativo" /></SelectTrigger>
             <SelectContent>
               {userBuildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
             </SelectContent>
@@ -179,17 +179,17 @@ const ProprietarioEdificios = () => {
               {building.occupancy_pct}% ocupação
             </Badge>
           )}
-          <div className="ml-auto flex items-center gap-2 flex-wrap">
-            <Button size="sm" className="text-xs gap-1 h-8" onClick={() => setShowNewBuilding(true)}>
+          <div className="grid grid-cols-1 gap-2 sm:ml-auto sm:flex sm:items-center sm:flex-wrap">
+            <Button size="sm" className="text-xs gap-1" onClick={() => setShowNewBuilding(true)}>
               <Plus size={12} /> Adicionar Ativo
             </Button>
             {building && (
-              <Button variant="outline" size="sm" className="text-xs gap-1 h-8" onClick={() => setShowNewTenant(true)}>
+              <Button variant="outline" size="sm" className="text-xs gap-1" onClick={() => setShowNewTenant(true)}>
                 <UserPlus size={12} /> Adicionar Locatário
               </Button>
             )}
             {building && (
-              <Button variant="outline" size="sm" className="text-xs gap-1 h-8" onClick={() => navigate('/proprietario/contratos')}>
+              <Button variant="outline" size="sm" className="text-xs gap-1" onClick={() => navigate('/proprietario/contratos')}>
                 <ListChecks size={12} /> Ver Lista de Contratos
               </Button>
             )}
