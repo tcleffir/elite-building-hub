@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { FileText, Upload, Download, Trash2, Plus, BarChart3, FolderOpen, CheckCircle2, Clock, AlertCircle, Search, ChevronRight, FolderClosed, Edit, MoreVertical, LayoutGrid, LayoutList, RefreshCw, X, ArrowUp, ArrowDown, Bot, Loader2, Pencil } from "lucide-react";
+import { FileText, Upload, Download, Trash2, Plus, BarChart3, FolderOpen, CheckCircle2, Clock, AlertCircle, Search, ChevronRight, FolderClosed, Edit, MoreVertical, LayoutGrid, LayoutList, RefreshCw, X, ArrowUp, ArrowDown, Bot, Loader2, Pencil, FolderPlus, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -16,10 +16,10 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getHGRE11PortfolioBuildings, mockBuildingDocuments, mockEnergyData, mockReportFolders, ReportFolder, ReportFile } from "@/lib/mock-data";
-import { getDocumentHealth, daysUntil, healthColors, healthLabels, HealthStatus } from "@/lib/health-utils";
+import { getDocumentHealth, daysUntil, healthColors, healthLabels, HealthStatus, getOccupancyStatus } from "@/lib/health-utils";
 import { toast } from "sonner";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { generateReport, ReportConfig, ReportSection, PDF_COLORS } from "@/lib/pdf-report-service";
+import { exportExcel } from "@/lib/export-service";
 import { supabase } from "@/integrations/supabase/client";
 import AiDocumentReview from "@/components/documents/AiDocumentReview";
 import { AiDocumentAnalysis, taxonomyAsText, assetsAsText, mockAnalysisFor, resolveDestination } from "@/lib/document-ai";
@@ -90,6 +90,14 @@ const ProprietarioDocumentosV2 = () => {
   const [renameFile, setRenameFile] = useState<ReportFile | null>(null);
   const [renameValue, setRenameValue] = useState('');
 
+  // Pastas criadas pelo usuário (nesta sessão)
+  const [customFolders, setCustomFolders] = useState<ReportFolder[]>([]);
+  const [customSubfolders, setCustomSubfolders] = useState<Record<string, ReportFolder[]>>({});
+  const [showNewFolder, setShowNewFolder] = useState(false);
+  const [newFolderKind, setNewFolderKind] = useState<'folder' | 'subfolder'>('folder');
+  const [newFolderName, setNewFolderName] = useState('');
+  const [newFolderParent, setNewFolderParent] = useState('');
+
   // Report generation state
   const [reportStart, setReportStart] = useState('2026-01');
   const [reportEnd, setReportEnd] = useState('2026-04');
@@ -153,15 +161,35 @@ const ProprietarioDocumentosV2 = () => {
   const [sessionDocs, setSessionDocs] = useState<{ subfolderId: string; file: FileWithMeta }[]>([]);
 
   const libraryFolders = useMemo<ReportFolder[]>(() => {
-    if (sessionDocs.length === 0) return mockReportFolders;
-    return mockReportFolders.map(cat => ({
+    const base = [...mockReportFolders, ...customFolders];
+    return base.map(cat => ({
       ...cat,
-      children: (cat.children || []).map(sub => {
+      children: [...(cat.children || []), ...(customSubfolders[cat.id] || [])].map(sub => {
         const extras = sessionDocs.filter(d => d.subfolderId === sub.id).map(d => d.file as ReportFile);
         return extras.length ? { ...sub, files: [...extras, ...(sub.files || [])] } : sub;
       }),
     }));
-  }, [sessionDocs]);
+  }, [sessionDocs, customFolders, customSubfolders]);
+
+  const createFolder = () => {
+    const name = newFolderName.trim();
+    if (!name) { toast.error('Informe o nome da pasta.'); return; }
+    if (newFolderKind === 'folder') {
+      const id = `cf-${Date.now()}`;
+      setCustomFolders(prev => [...prev, { id, name, icon: '📁', children: [] }]);
+      setExpandedFolders(prev => new Set(prev).add(id));
+      toast.success(`Pasta "${name}" criada`);
+    } else {
+      if (!newFolderParent) { toast.error('Selecione a pasta principal.'); return; }
+      const id = `csf-${Date.now()}`;
+      setCustomSubfolders(prev => ({ ...prev, [newFolderParent]: [...(prev[newFolderParent] || []), { id, name, icon: '📂', files: [] }] }));
+      setExpandedFolders(prev => new Set(prev).add(newFolderParent));
+      setSelectedFolder({ id, name, icon: '📂', files: [] });
+      toast.success(`Subpasta "${name}" criada`);
+    }
+    setNewFolderName('');
+    setShowNewFolder(false);
+  };
 
   const activeFolder = useMemo<ReportFolder | null>(() => {
     if (!selectedFolder) return null;
@@ -353,31 +381,71 @@ const ProprietarioDocumentosV2 = () => {
     toast.success(`Arquivado em ${dest.category} › ${dest.subfolder}`);
   };
 
-  const generatePDF = (type: string) => {
-    setGeneratingReport(type);
-    setTimeout(() => {
-      const doc = new jsPDF();
-      const bName = building?.name || 'Portfólio';
+  const reportTitles: Record<string, string> = {
+    utilities: 'Relatório de Consumo',
+    docs_critical: 'Documentos Críticos',
+    docs_attention: 'Documentos de Atenção',
+    docs_general: 'Relatório Geral de Documentação',
+  };
 
-      doc.setDrawColor(15, 56, 52);
-      doc.setFillColor(15, 56, 52);
-      doc.rect(0, 0, 210, 35, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(8);
-      doc.text('[LOGO]', 14, 15);
-      doc.setFontSize(16);
-      const titles: Record<string, string> = {
-        utilities: 'Relatório de Consumo',
-        docs_critical: 'Documentos Críticos',
-        docs_attention: 'Documentos de Atenção',
-        docs_general: 'Relatório Geral de Documentação',
-      };
-      doc.text(titles[type] || 'Relatório', 14, 25);
-      doc.setFontSize(9);
-      doc.text(bName, 14, 31);
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(9);
-      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, 14, 42);
+  const monthLabel = (v: string) => monthOptions.find(o => o.value === v)?.label || v;
+
+  const generatePDF = async (type: string) => {
+    setGeneratingReport(type);
+    const bName = building?.name || 'Portfólio HGRE11';
+    const title = reportTitles[type] || 'Relatório';
+    const period = type === 'utilities'
+      ? `${monthLabel(reportStart)} — ${monthLabel(reportEnd)}`
+      : new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+    try {
+      const docStatusRows = (files: FileWithMeta[]) => files.map(f => {
+        const s = getDocStatus(f);
+        return [
+          f.name,
+          f.categoryName,
+          s.label,
+          f.expires_at ? new Date(f.expires_at).toLocaleDateString('pt-BR') : '—',
+          f.responsible_company || '—',
+        ];
+      });
+
+      const relevantFiles = type === 'docs_critical'
+        ? criticalDocs
+        : type === 'docs_attention'
+        ? allFiles.filter(f => { const d = getDocStatus(f).daysLeft; return d !== null && d > 30 && d <= attentionDays[0]; })
+        : allFiles;
+
+      // Exportação Excel do Relatório Geral
+      if (type === 'docs_general' && generalFormat === 'excel') {
+        const sorted = [...relevantFiles].sort((a, b) => {
+          if (generalGroupBy === 'status') return getDocStatus(a).statusKey.localeCompare(getDocStatus(b).statusKey);
+          if (generalGroupBy === 'expires') return (a.expires_at || '9999').localeCompare(b.expires_at || '9999');
+          return a.categoryName.localeCompare(b.categoryName, 'pt-BR');
+        });
+        exportExcel({
+          fileName: `Patria_${title.replace(/\s/g, '_')}_${bName.replace(/\s/g, '-')}.xlsx`,
+          sheets: [{
+            sheetName: 'Documentos',
+            columns: [
+              { header: 'Documento', get: (r: FileWithMeta) => r.name },
+              { header: 'Categoria', get: (r: FileWithMeta) => r.categoryName },
+              { header: 'Subpasta', get: (r: FileWithMeta) => r.subfolderName },
+              { header: 'Status', get: (r: FileWithMeta) => getDocStatus(r).label },
+              { header: 'Emissão', get: (r: FileWithMeta) => r.issued_at || '' },
+              { header: 'Vencimento', get: (r: FileWithMeta) => r.expires_at || '' },
+              { header: 'Empresa responsável', get: (r: FileWithMeta) => r.responsible_company || '' },
+            ],
+            rows: sorted,
+          }],
+        });
+        toast.success('Planilha gerada com sucesso');
+        setLastGenerated(prev => ({ ...prev, [type]: new Date().toLocaleString('pt-BR') }));
+        setGeneratingReport(null);
+        return;
+      }
+
+      const sections: ReportSection[] = [];
 
       if (type === 'utilities') {
         const headers: string[] = ['Mês'];
@@ -386,34 +454,80 @@ const ProprietarioDocumentosV2 = () => {
         if (utilityToggles.gas) headers.push('Gás (m³)', 'Custo');
         if (utilityToggles.waste) headers.push('Resíduos (ton)');
         const rows = mockEnergyData.map(d => {
-          const row: string[] = [d.month];
-          if (utilityToggles.energy) { row.push(d.kwh.toLocaleString('pt-BR'), `R$ ${(d.kwh * 0.85).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`); }
-          if (utilityToggles.water) { row.push(d.water.toLocaleString('pt-BR'), `R$ ${(d.water * 12.5).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`); }
-          if (utilityToggles.gas) { row.push(d.gas.toLocaleString('pt-BR'), `R$ ${(d.gas * 4.2).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`); }
-          if (utilityToggles.waste) { row.push((2.5 + Math.random() * 0.8).toFixed(1)); }
+          const row: (string | number)[] = [d.month];
+          if (utilityToggles.energy) row.push(d.kwh.toLocaleString('pt-BR'), `R$ ${(d.kwh * 0.85).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`);
+          if (utilityToggles.water) row.push(d.water.toLocaleString('pt-BR'), `R$ ${(d.water * 12.5).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`);
+          if (utilityToggles.gas) row.push(d.gas.toLocaleString('pt-BR'), `R$ ${(d.gas * 4.2).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`);
+          if (utilityToggles.waste) row.push('2,8');
           return row;
         });
-        autoTable(doc, { head: [headers], body: rows, startY: 55, styles: { fontSize: 8 }, headStyles: { fillColor: [15, 56, 52] } });
-      } else {
-        const relevantFiles = type === 'docs_critical'
-          ? allFiles.filter(f => getDocStatus(f).statusKey === 'expired' || (getDocStatus(f).daysLeft !== null && getDocStatus(f).daysLeft! <= 30 && getDocStatus(f).daysLeft! >= 0))
-          : type === 'docs_attention'
-          ? allFiles.filter(f => { const d = getDocStatus(f).daysLeft; return d !== null && d > 30 && d <= attentionDays[0]; })
-          : allFiles;
-        const headers = ['Documento', 'Categoria', 'Status', 'Vencimento', 'Empresa'];
-        const rows = relevantFiles.map(f => {
-          const s = getDocStatus(f);
-          return [f.name, f.categoryName, s.label, f.expires_at ? new Date(f.expires_at).toLocaleDateString('pt-BR') : '—', f.responsible_company || '—'];
+        sections.push({
+          title: 'Consumo por competência',
+          type: 'table',
+          tableHeaders: headers,
+          tableRows: rows,
+          footnote: 'Valores de consumo e custo estimados a partir das medições registradas na plataforma.',
         });
-        autoTable(doc, { head: [headers], body: rows.length > 0 ? rows : [['Nenhum documento', '', '', '', '']], startY: 55, styles: { fontSize: 8 }, headStyles: { fillColor: [15, 56, 52] } });
+      } else {
+        sections.push({
+          title: 'Panorama da documentação',
+          type: 'kpi-cards',
+          kpis: [
+            { value: String(okCount), label: 'Atualizados', color: PDF_COLORS.green },
+            { value: String(expiringCount), label: 'A vencer', color: PDF_COLORS.amber },
+            { value: String(expiredCount), label: 'Vencidos', color: PDF_COLORS.red },
+            { value: String(relevantFiles.length), label: 'Neste relatório' },
+          ],
+        });
+
+        const sorted = [...relevantFiles].sort((a, b) => {
+          if (type === 'docs_general' && generalGroupBy === 'status') return getDocStatus(a).statusKey.localeCompare(getDocStatus(b).statusKey);
+          if (type === 'docs_general' && generalGroupBy === 'expires') return (a.expires_at || '9999').localeCompare(b.expires_at || '9999');
+          return a.categoryName.localeCompare(b.categoryName, 'pt-BR');
+        });
+
+        sections.push({
+          title: type === 'docs_attention' ? `Documentos com vencimento em até ${attentionDays[0]} dias` : 'Relação de documentos',
+          type: 'table',
+          tableHeaders: ['Documento', 'Categoria', 'Status', 'Vencimento', 'Empresa'],
+          tableRows: sorted.length ? docStatusRows(sorted) : [['Nenhum documento encontrado', '—', '—', '—', '—']],
+          columnWidths: [58, 38, 26, 24, 28],
+          rowHealthCodes: sorted.map(f => {
+            const k = getDocStatus(f).statusKey;
+            return k === 'expired' ? 'critical' : k === 'expiring' ? 'warning' : 'healthy';
+          }),
+        });
       }
 
-      const fileName = `Patria Real Estate_${titles[type]?.replace(/\s/g, '_') || type}_${bName.replace(/\s/g, '-')}.pdf`;
-      doc.save(fileName);
-      toast.success(`Relatório gerado: ${fileName}`);
+      const config: ReportConfig = {
+        title,
+        subtitle: bName,
+        period,
+        module: 'Documentos',
+        gestorName: 'Patria Investimentos',
+        fundName: 'HGRE11',
+        tableOfContents: sections.map((s, i) => ({ page: i + 2, title: s.title })),
+        previewKpis: type === 'utilities'
+          ? [
+              { value: `${mockEnergyData.length}`, label: 'Competências' },
+              { value: `${Object.values(utilityToggles).filter(Boolean).length}`, label: 'Indicadores' },
+            ]
+          : [
+              { value: String(relevantFiles.length), label: 'Documentos' },
+              { value: String(expiredCount), label: 'Vencidos' },
+              { value: String(expiringCount), label: 'A vencer' },
+            ],
+      };
+
+      await generateReport(config, sections);
+      toast.success(`Relatório Patria gerado: ${title}`);
       setLastGenerated(prev => ({ ...prev, [type]: new Date().toLocaleString('pt-BR') }));
+    } catch (e) {
+      console.error(e);
+      toast.error('Não foi possível gerar o relatório.');
+    } finally {
       setGeneratingReport(null);
-    }, 1500);
+    }
   };
 
   // Critical/attention doc counts for report tab
@@ -474,9 +588,34 @@ const ProprietarioDocumentosV2 = () => {
         </div>
 
         {!selectedBuildingId ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <FileText size={48} className="text-muted-foreground/30 mb-4" />
-            <p className="text-muted-foreground">Selecione um ativo para gerenciar documentos</p>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Selecione um ativo abaixo para gerenciar a documentação — {userBuildings.length} ativos no portfólio.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {userBuildings.map(b => (
+                <button
+                  key={b.id}
+                  onClick={() => setSelectedBuildingId(b.id)}
+                  className="text-left bg-card rounded-2xl p-4 premium-shadow border hover:border-interactive transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-foreground flex items-center gap-2">
+                        <Building2 size={15} /> {b.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{b.city}/{b.state}</p>
+                    </div>
+                    <Badge className={`${healthColors[getOccupancyStatus(b.occupancy_pct || 0)].badge} text-[10px]`}>
+                      {b.occupancy_pct}% ocup.
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    {(b.gla_m2 || b.total_area_m2 || 0).toLocaleString('pt-BR')} m² · {b.total_floors || 0} andares
+                  </p>
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -619,7 +758,32 @@ const ProprietarioDocumentosV2 = () => {
             <TabsContent value="biblioteca" className="mt-4">
               <div className="flex flex-col lg:flex-row gap-4">
                 <div className="w-full lg:w-64 bg-card rounded-xl border p-3">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Pastas</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase">Pastas</p>
+                  </div>
+                  <div className="flex gap-1 mb-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 h-7 text-[11px] gap-1"
+                      onClick={() => { setNewFolderKind('folder'); setNewFolderName(''); setShowNewFolder(true); }}
+                    >
+                      <FolderPlus size={12} /> Nova pasta
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 h-7 text-[11px] gap-1"
+                      onClick={() => {
+                        setNewFolderKind('subfolder');
+                        setNewFolderName('');
+                        setNewFolderParent(prev => prev || libraryFolders[0]?.id || '');
+                        setShowNewFolder(true);
+                      }}
+                    >
+                      <Plus size={12} /> Subpasta
+                    </Button>
+                  </div>
                   <FolderTree folders={libraryFolders} />
                 </div>
                 <div className="flex-1 bg-card rounded-xl border p-4">
@@ -943,6 +1107,51 @@ const ProprietarioDocumentosV2 = () => {
             <DialogFooter>
               <Button variant="outline" onClick={() => setDeleteDoc(null)}>Cancelar</Button>
               <Button variant="destructive" onClick={() => { setDeleteDoc(null); toast.success("Documento excluído"); }}>Excluir</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Nova Pasta / Subpasta */}
+        <Dialog open={showNewFolder} onOpenChange={setShowNewFolder}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{newFolderKind === 'folder' ? 'Nova pasta' : 'Nova subpasta'}</DialogTitle>
+              <DialogDescription>
+                {newFolderKind === 'folder'
+                  ? 'Cria uma pasta principal na biblioteca de documentos.'
+                  : 'Cria uma subpasta dentro de uma pasta principal existente.'}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div>
+                <Label className="text-xs">Tipo</Label>
+                <Select value={newFolderKind} onValueChange={v => setNewFolderKind(v as 'folder' | 'subfolder')}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="folder">Pasta principal</SelectItem>
+                    <SelectItem value="subfolder">Subpasta</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {newFolderKind === 'subfolder' && (
+                <div>
+                  <Label className="text-xs">Pasta principal</Label>
+                  <Select value={newFolderParent} onValueChange={setNewFolderParent}>
+                    <SelectTrigger><SelectValue placeholder="Selecione a pasta" /></SelectTrigger>
+                    <SelectContent>
+                      {libraryFolders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              <div>
+                <Label className="text-xs">Nome</Label>
+                <Input value={newFolderName} onChange={e => setNewFolderName(e.target.value)} placeholder="Ex.: Jurídico e Compliance" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNewFolder(false)}>Cancelar</Button>
+              <Button onClick={createFolder}>Criar</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
