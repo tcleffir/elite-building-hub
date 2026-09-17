@@ -11,6 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatusBadge from "@/components/StatusBadge";
+import StackingPlan from "@/components/assets/StackingPlan";
+
 import { mockBuildings, mockTenantContracts, mockTickets, mockUsers, TenantContract } from "@/lib/mock-data";
 import { getContractHealth, getOccupancyStatus, daysUntil, healthColors, healthLabels } from "@/lib/health-utils";
 import { toast } from "sonner";
@@ -195,62 +197,31 @@ const ProprietarioEdificios = () => {
               </p>
             </div>
 
-            {/* Legend */}
-            <div className="flex flex-wrap gap-4">
-              {legendItems.map(l => (
-                <div key={l.status} className="flex items-center gap-2 text-sm">
-                  <div className={`w-4 h-4 rounded border ${l.color}`} />
-                  <span className="text-foreground">{l.label}</span>
-                </div>
-              ))}
-            </div>
+            {/* Stacking Plan — andar por andar, com áreas BOMA/NBR e custos por m² */}
+            <StackingPlan
+              buildingName={building.name}
+              totalFloors={building.total_floors}
+              contracts={contracts}
+              tickets={buildingTickets as any}
+              levelLabel={building.segment === 'logistics' ? 'conjunto' : 'andar'}
+              onOpenContract={(c) => setSelectedContract(c)}
+            />
 
-            {/* Stacked Floor Map (same structure as admin /edificio) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-card rounded-2xl p-6 premium-shadow animate-fade-in">
-                <div className="flex flex-col items-center gap-1 max-w-lg mx-auto">
-                  <div className="w-full h-3 rounded-t-xl premium-gradient" />
-                  {synthFloors.map((f) => (
-                    <div
-                      key={f.floor}
-                      className={`w-full flex items-center justify-between px-4 py-2 rounded-md border cursor-pointer hover:shadow-md transition-all text-sm ${floorStatusColors[f.status]}`}
-                      onClick={() => setSelectedFloor(f)}
-                    >
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <span className="font-bold w-10 text-xs shrink-0">{f.label}</span>
-                        <span className="font-medium text-xs truncate">
-                          {f.status === 'vacant' ? 'Disponível' : f.tenantSummary}
-                        </span>
-                        {f.area_m2 > 0 && (
-                          <span className="text-[10px] bg-foreground/5 px-1.5 py-0.5 rounded-full shrink-0">{f.area_m2} m²</span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        {f.tickets_count > 0 && <span className="text-xs bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-full">{f.tickets_count} 🎫</span>}
-                      </div>
-                    </div>
-                  ))}
-                  <div className="w-full h-4 rounded-b-xl bg-foreground/10 flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Base</span>
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-card rounded-2xl p-5 premium-shadow text-center">
+                <p className="text-3xl font-bold text-success">{occupiedCount}</p>
+                <p className="text-sm text-muted-foreground mt-1">Andares Ocupados</p>
               </div>
-
-              <div className="space-y-4">
-                <div className="bg-card rounded-2xl p-5 premium-shadow text-center">
-                  <p className="text-3xl font-bold text-success">{occupiedCount}</p>
-                  <p className="text-sm text-muted-foreground mt-1">Andares Ocupados</p>
-                </div>
-                <div className="bg-card rounded-2xl p-5 premium-shadow text-center">
-                  <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{partialCount}</p>
-                  <p className="text-sm text-muted-foreground mt-1">Parcialmente Ocupados</p>
-                </div>
-                <div className="bg-card rounded-2xl p-5 premium-shadow text-center">
-                  <p className="text-3xl font-bold text-muted-foreground tabular-nums">{vacantCount}</p>
-                  <p className="text-sm text-muted-foreground mt-1">Andares Vagos</p>
-                </div>
+              <div className="bg-card rounded-2xl p-5 premium-shadow text-center">
+                <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{partialCount}</p>
+                <p className="text-sm text-muted-foreground mt-1">Parcialmente Ocupados</p>
+              </div>
+              <div className="bg-card rounded-2xl p-5 premium-shadow text-center">
+                <p className="text-3xl font-bold text-muted-foreground tabular-nums">{vacantCount}</p>
+                <p className="text-sm text-muted-foreground mt-1">Andares Vagos</p>
               </div>
             </div>
+
           </>
         )}
 
