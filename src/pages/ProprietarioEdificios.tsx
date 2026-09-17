@@ -85,7 +85,7 @@ const ProprietarioEdificios = () => {
   // For the Proprietário module, scope to the fund manager's portfolio (HGRE11 assets)
   const fundManager = mockUsers.find(u => u.role === 'gestor_fundo');
   const allowedBuildingIds: string[] = fundManager?.building_ids ?? user.building_ids;
-  const userBuildings = mockBuildings.filter(b => allowedBuildingIds.includes(b.id) && b.segment);
+  const userBuildings = mockBuildings.filter(b => (allowedBuildingIds.includes(b.id) || isHGRE11Asset(b.id)) && b.segment);
   const building = userBuildings.find(b => b.id === selectedBuildingId);
   const contracts = useMemo(() => mockTenantContracts.filter(c => c.building_id === selectedBuildingId), [selectedBuildingId]);
   const buildingTickets = useMemo(() => mockTickets.filter(t => t.building_id === selectedBuildingId && t.status !== 'completed' && t.status !== 'cancelled'), [selectedBuildingId]);
