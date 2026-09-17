@@ -1,5 +1,7 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { PATRIA_LOGO_WHITE_BASE64 } from '@/lib/patria-logo-base64'
+
 
 // ── TOKENS DE DESIGN — Brand Kit Patria Real Estate ─────────
 // Referência: Relatório Gerencial HGRE11 (azul royal Patria sobre branco,
@@ -10,8 +12,9 @@ export const PDF_COLORS = {
   navyLight:  [58,  84, 226]  as [number, number, number],
   green:      [16,  185, 129] as [number, number, number],
   greenLight: [209, 250, 229] as [number, number, number],
-  amber:      [245, 158, 11]  as [number, number, number],
-  amberLight: [254, 243, 199] as [number, number, number],
+  amber:      [249, 115, 22]  as [number, number, number], // laranja Patria (destaques)
+  amberLight: [255, 237, 213] as [number, number, number],
+
   red:        [225, 29,  72]  as [number, number, number],
   redLight:   [254, 226, 226] as [number, number, number],
   blue:       [27,  54, 214]  as [number, number, number], // accent = azul Patria
@@ -73,31 +76,17 @@ export function drawCoverPage(doc: jsPDF, config: ReportConfig): void {
   doc.setFillColor(...PDF_COLORS.navyMed)
   doc.rect(5, 0, W - 5, 10, 'F')
 
-  // Logo placeholder
-  const lw = 50, lh = 20
+  // Logotipo oficial Patria (branco sobre o navy da capa)
+  const lw = 52, lh = 10.1
   const lx = W - M - lw, ly = M
-  doc.setFillColor(...PDF_COLORS.white)
-  doc.roundedRect(lx, ly, lw, lh, 3, 3, 'F')
-  doc.setDrawColor(...PDF_COLORS.grayLine)
-  doc.setLineWidth(0.3)
-  doc.roundedRect(lx, ly, lw, lh, 3, 3, 'S')
-
-  if (config.logoUrl) {
-    try {
-      doc.addImage(config.logoUrl, 'PNG', lx + 2, ly + 2, lw - 4, lh - 4)
-    } catch {
-      doc.setFontSize(6.5)
-      doc.setTextColor(...PDF_COLORS.grayText)
-      doc.text('LOGOTIPO DA EMPRESA', lx + lw / 2, ly + lh / 2 + 1, { align: 'center' })
-    }
-  } else {
-    doc.setFontSize(6.5)
-    doc.setTextColor(...PDF_COLORS.grayText)
-    doc.text('LOGOTIPO DA EMPRESA', lx + lw / 2, ly + lh / 2 + 1, { align: 'center' })
-    doc.setFontSize(5.5)
-    doc.setTextColor(...PDF_COLORS.blueSoft)
-    doc.text('Substitua por arquivo .png', lx + lw / 2, ly + lh - 4, { align: 'center' })
+  try {
+    doc.addImage(config.logoUrl || PATRIA_LOGO_WHITE_BASE64, 'PNG', lx, ly, lw, lh)
+  } catch {
+    doc.setFontSize(11)
+    doc.setTextColor(...PDF_COLORS.white)
+    doc.text('PATRIA', W - M, ly + 7, { align: 'right' })
   }
+
 
   // Accent line + Título
   const tx = M + 8, ty = H * 0.60
