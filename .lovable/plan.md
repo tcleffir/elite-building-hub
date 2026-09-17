@@ -1,75 +1,122 @@
-## Conciliação Financeira — núcleo operacional
+# Escopo Pátria — Módulo Proprietário: o que temos, o que adaptar, o que criar
 
-Vou estender o módulo de Conciliação Financeira existente (`ProprietarioConciliacaoFinanceira.tsx` + `reconciliation-engine.ts` + `reconciliation-data.ts`), sem redesenhar a interface. Tudo se apoia no motor de valor esperado, no recorte por competência e nos status já existentes (Conciliado, Divergência, Em aberto Banco/Cliente, Inadimplente, Antecipado).
+Levantamento feito sobre o código atual (páginas do Proprietário, bibliotecas de dados,
+serviços de exportação PDF/Excel). Abaixo, cada item da reunião classificado em
+**Manter**, **Adaptar** ou **Criar**, mais o que fica **fora do escopo inicial**.
 
-### O que vou construir
+---
 
-**1. Ajustes mensais ao valor esperado (Funcionalidade 5 — base obrigatória)**
-- Novo tipo `AjusteMensal` em `reconciliation-data.ts` com tipos: `desconto_negociado`, `inadimplencia_arrastada`, `credito_antecipado`, `condicao_especial`, `ajuste_manual`.
-- O engine passa a calcular `ajustes[]` automaticamente:
-  - `inadimplencia_arrastada`: soma do que ficou em aberto na competência anterior.
-  - `credito_antecipado`: abate do mês quando há `creditoAntecipadoOrigem` apontando para a cobrança.
-  - `condicao_especial`: carência e revisional viram itens explicitados.
-  - `desconto_negociado`: descontos do contrato no mês.
-- `totalEsperado = aluguelEsperado + iptuEsperado + Σ ajustes` (positivos somam, negativos abatem).
-- Drawer da cobrança ganha seção **"Composição do esperado"** com cada item discriminado (tipo, descrição, valor) + botão "Adicionar ajuste manual".
+## 1. Portfólio
 
-**2. Cobrança correta + visão "quem pagou o quê e quando" (Funcionalidade 1)**
-- Quando `valorCobradoBoleto ≠ totalEsperado`, marca como divergência e adiciona botão **"Reemitir boleto com valor correto"** que atualiza o cobrado para o esperado e registra ação de auditoria.
-- A tabela principal já mostra esperado × cobrado × recebido × status × data de pagamento — vou reforçar a coluna "Pago em" e adicionar filtro rápido "Pagou / Não pagou" no header.
+**Já existe e mantemos**
+- Seleção de Ativos/Fundos (grade Tijolo/Papel, HGRE11 padrão) e Big Numbers.
+- Distribuição geográfica + Mapa de Ativos.
+- Filtro por competência mensal (snapshot congelado por mês).
+- Análise de Leakage.
+- Análise do Portfólio: receita por ativo, timeline de vencimentos, comparativo R$/m².
+- Alertas de contrato e documento; visão de locatários.
 
-**3. Vínculo de entradas bancárias a cobranças (Funcionalidade 2)**
-- Novo tipo `EntradaBancaria` e `VinculoConciliacao` + seed mockado de entradas (algumas casam automaticamente, outras ficam pendentes).
-- Nova aba **"Entradas bancárias"** ao lado das abas existentes, mostrando:
-  - Lista de entradas com data, valor, tipo (boleto/TED/PIX), descrição, pagador, status do vínculo.
-  - Vínculo automático: matching por `identificador_boleto`; fallback por valor + janela de data + nome/CNPJ do inquilino.
-  - Vínculo manual: botão **"Vincular"** abre dialog com busca por contrato/locatário/valor e permite vínculo parcial (define `valorAplicado`).
-  - Registra `responsavel` e `data` de cada vínculo (auditoria).
+**Adaptar**
+- Card do mapa: exibir nome, endereço, m² construído, aluguel mensal total, ocupação física e alertas ativos em um mesmo balão/painel.
+- Filtro de competência: acrescentar janelas rápidas (3, 6, 12 meses) e período personalizado, hoje só mês a mês.
+- Alertas e visão de locatários: filtros combinados por ativo + locatário + status, com R$ e receita mensal total.
 
-**4. TED/PIX + importação por API/upload (Funcionalidade 3)**
-- Botões no topo da aba "Entradas bancárias":
-  - **"Sincronizar via Open Finance"** (mock: adiciona entradas simuladas, toast de sucesso).
-  - **"Importar arquivo"** (aceita .xlsx / .ofx / .cnab / .pdf; mock parseia e adiciona entradas com `origem: 'upload'`).
-- Entradas TED/PIX (sem identificador) seguem o fluxo de matching por valor + data + pagador da Funcionalidade 2.
+**Criar**
+- Exportação da tela como "visualização personalizada Pátria": seleção de quais blocos entram no PDF (usa o serviço de PDF já existente, com o brand kit Pátria).
 
-**5. Split payment / agrupar contratos num boleto (Funcionalidade 4)**
-- Novo tipo `GrupoCobranca` e seed de exemplo: um locatário com dois contratos agrupados num boleto único.
-- Botão **"Agrupar cobranças"** na visão por locatário: seleciona N cobranças do mesmo inquilino na mesma competência e cria um grupo (boleto consolidado).
-- Visão dupla no drawer do grupo: total consolidado + breakdown por contrato (esperado de cada um).
-- No recebimento, faz split proporcional ao esperado e marca cada cobrança individualmente como conciliada.
+## 2. Contratos
 
-### Arquivos afetados
+**Já existe e mantemos**
+- Abas Locatários, Reajustes, Garantias, Revisionais, Por Competência, Vencimentos.
+- Import de contrato manual e por leitura de IA.
+- Gestão contratual com pipeline de status e histórico.
 
-- `src/lib/reconciliation-data.ts` — novos tipos (`AjusteMensal`, `EntradaBancaria`, `VinculoConciliacao`, `GrupoCobranca`, `Boleto`), seed de entradas bancárias e grupo de exemplo.
-- `src/lib/reconciliation-engine.ts` — `computeAjustes()`, `enrichCobranca` com `ajustes[]`, `tryAutoMatch(entrada, cobrancas)`, `splitGrupo(grupo, valorRecebido)`.
-- `src/pages/ProprietarioConciliacaoFinanceira.tsx` — coluna "Composição" no drawer, botão "Reemitir", nova aba "Entradas bancárias", dialogs de vínculo manual e agrupamento, botões de importação.
-- Novos componentes pequenos (opcional, se ficar muito grande): `EntradasBancariasTab.tsx`, `VincularEntradaDialog.tsx`, `ComposicaoEsperado.tsx`.
+**Adaptar**
+- Big Numbers do topo: padronizar os seis indicadores pedidos (total, criticidade, receita mensal, em vencimento, em reajuste, em revisional).
+- Filtros globais de locatário e ativo aplicados a todas as abas.
+- Reajustes: leitura automática do índice e do prazo a partir do contrato, com override manual e notificação pela plataforma.
+- Garantias: modalidade negociada por locatário (fiança bancária, caução, seguro fiança, título), pipeline de vencimento ao lado, anexo/leitura de boleto de garantia e import/export de documento.
+- Revisionais: elegibilidade por tempo, valor atual, motivação selecionável, e-mail de formalização e aplicação automática do novo valor no período.
+- Vencimentos: ações de cobrar renovação, anexar documentos de renovação e encerrar contrato.
+- Por Competência: exportação Excel e PDF da janela escolhida.
 
-### Como ficam as visões
+**Criar**
+- Relatório exportável da página inteira, por ativo ou portfólio completo, com seleção de conteúdo.
 
-```text
-Conciliação Financeira
-├── Por competência (existente)
-├── Por edifício/inquilino (existente)
-└── Entradas bancárias (novo)
-    ├── [Sincronizar Open Finance] [Importar arquivo]
-    ├── Tabela: data | valor | tipo | descrição | pagador | status vínculo | ação
-    └── Auto-match indica % vinculado; pendentes abrem dialog manual
-```
+## 3. Financeiro
 
-Drawer da cobrança:
-```text
-Composição do esperado
-- Aluguel base ............ R$ 42.000
-+ Reajuste IGPM (5,7%) .... R$  2.394   [condicao_especial — automático]
-- Desconto março .......... R$ -5.000   [desconto_negociado — automático]
-+ Saldo aberto fev ........ R$  3.200   [inadimplencia_arrastada — automático]
-= Total esperado .......... R$ 42.594
-[ + Adicionar ajuste manual ]
-```
+**Já existe e mantemos**
+- Fechamento Mensal (Esperado x Realizado) com série por competência e aba de Inadimplência.
+- Conciliação Financeira com cobranças e Entradas Bancárias para vínculo manual.
+- Despesas & NOI; Outros Recebimentos; Relatórios de Locação com histórico e agendamentos.
 
-### Fora de escopo (próxima iteração)
+**Adaptar**
+- Fechamento Mensal: gráfico do que permanece em aberto e filtros por fundo, ativo e competência em toda a aba.
+- Inadimplência: cálculo de juros/multa conforme contrato, seleção múltipla com cobrança individual por e-mail personalizado em um clique, e export Excel com números tratáveis por fórmula.
+- Conciliação: aluguel e IPTU frente ao valor esperado, ajuste manual, e-mail ao locatário ou ao banco, correção do esperado e aceitar/cobrar divergência.
+- Relatórios: consolidar como Report de saúde de contratos e cadastro, compliance e garantias, financeiro, histórico e vencimentos — em Excel tratado e PDF personalizável, com histórico filtrável.
+- Métricas e KPIs: sair de dentro do Financeiro e passar a módulo próprio no menu, com filtros por portfólio, fundo, ativo e período.
 
-- Integração real com Open Finance e parsing real de OFX/CNAB/PDF (mockado nesta entrega).
-- Fluxo de caixa consolidado (a integração detalhada virá depois, conforme o próprio briefing).
-- Persistência em backend (continua tudo em memória/mock como o resto do módulo).
+**Criar**
+- Integração Open Finance Itaú: captura de entradas e saídas do banco, identificação e uso nos três pontos acima (recebimentos, conciliação, entradas bancárias). Depende de credenciais e habilitação do Itaú.
+- Registro de Receitas e Despesas por fundo via importação de template Excel, com leitura do arquivo e montagem automática dos gráficos e registros.
+
+## 4. Ativos
+
+**Já existe e mantemos**
+- Mapa/lista de Ativos com abas Geral, Unidades e Chamados.
+- Documentos: upload manual e por IA com confiança para validação humana, status para renovação, biblioteca com pastas e geração de relatórios (Consumo, Críticos, Atenção, Geral).
+
+**Criar**
+- Stacking Plan andar a andar (e por galpão dividido): áreas BOMA e NBR, custo do m² de IPTU, garantia e aluguel, andar dividido entre múltiplos locatários com clique para abrir cada um, contato do locatário, histórico da unidade (troca de locatário, obras, operações), alertas e chamados vinculados.
+
+## 5. Operações
+
+**Manter como está**
+- Reservas de espaços e áreas comuns, com controle.
+- Comunicação com edifício, locatários e comunicados.
+
+**Fora do escopo inicial do Pátria**
+- Chamados com SLA (existe, fica desativado/oculto para eles).
+- Calendário com integração Google/Outlook (existe base; integração não entra agora).
+
+## 6. Relatório Mensal
+
+**Já existe e mantemos**: gráficos, detalhes, narrativa do gestor por competência.
+
+**Adaptar**: entrada de fotos da operação e personalização do relatório gerencial no brand kit Pátria.
+
+## 7. Sustentabilidade / ESG
+
+Módulos de telemetria (energia, água, gás), resíduos, neutralização de carbono, LEED,
+Mercado Livre de Energia e I-REC ficam presentes, porém **sem integração** para o Pátria
+neste momento.
+
+## 8. Integrações externas
+
+- **CRM Monday**: criar conexão do fluxo interno de operações com a plataforma. Depende de credencial Monday.
+- **IPTU Prefeitura**: criar conexão; onde não houver API pública, usar o controle de valores já existente na plataforma.
+
+## 9. Não implementar agora
+
+- Marketplace de fornecedores e cotações.
+- Apoio ao Gerente / Gestor (treinamentos e padronização de processos).
+
+---
+
+## Ordem de execução sugerida
+
+1. Adaptações de Portfólio e Contratos (maior parte do valor percebido, sem dependência externa).
+2. Exportações personalizadas (Portfólio, Contratos, Report Financeiro) com brand kit Pátria.
+3. Financeiro: inadimplência, conciliação, import de template Excel, KPIs como módulo próprio.
+4. Stacking Plan em Ativos.
+5. Integrações: Open Finance Itaú, Monday, IPTU (conforme credenciais chegarem).
+6. Relatório Mensal com fotos e narrativa.
+
+## Notas técnicas
+
+- Base atual: React + Vite, dados em `src/lib/*-data.ts` (mock/estruturado), backend Lovable Cloud disponível.
+- Exportação: `src/lib/pdf-report-service.ts` (paleta Pátria já aplicada) e `src/lib/export-service.ts` (Excel/OFX) servem de base para todos os relatórios exportáveis.
+- Competência: `src/lib/portfolio-competencia.ts` guarda snapshots congelados por mês; janelas de 3/6/12 meses serão agregações sobre essa camada.
+- Integrações bancária/Monday/IPTU exigem chamadas server-side em funções do backend, com credenciais guardadas em segredos — nenhuma chave no front.
+- Itens marcados como estimados nos ativos (endereços aproximados e valores proporcionais do HGRE11) seguem pendentes de planilha oficial por ativo.
