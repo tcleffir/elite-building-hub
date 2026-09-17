@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Building2, Upload, Download, Edit, RefreshCw, Info, FileText, Ticket as TicketIcon, Wrench, Mail, ListChecks } from "lucide-react";
+import { ArrowLeft, Building2, Upload, Download, Edit, RefreshCw, Info, FileText, Ticket as TicketIcon, Wrench, Mail, ListChecks, Plus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
