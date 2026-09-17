@@ -821,7 +821,7 @@ const ProprietarioPortfolio = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => toast.info("Exportação Excel disponível em breve")}>Excel — Todas as unidades</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => toast.info("Exportação PDF disponível em breve")}>PDF — Relatório executivo</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setExportOpen(true)}>PDF — Relatório personalizado</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -899,7 +899,25 @@ const ProprietarioPortfolio = () => {
           </CardContent>
         </Card>
       </div>
+
+      <ReportExportDialog
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        title="Relatório de Portfólio"
+        subtitle={`Visão Consolidada — ${portfolioBuildings.length} Ativos`}
+        module="Portfólio"
+        period={periodLabel}
+        fundName={selectedFund.ticker}
+        previewKpis={[
+          { value: String(portfolioBuildings.length), label: 'Ativos' },
+          { value: `${totalGla.toLocaleString('pt-BR')} m²`, label: 'GLA Total' },
+          { value: `${avgOccupancy.toFixed(1)}%`, label: 'Ocupação' },
+          { value: fmt(totalRevenue), label: 'Receita Mensal' },
+        ]}
+        sections={exportSections}
+      />
     </div>
+
   );
 };
 
