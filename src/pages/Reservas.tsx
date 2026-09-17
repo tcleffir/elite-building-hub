@@ -149,7 +149,7 @@ const Reservas = () => {
                 <span className="text-sm font-semibold">{weekStart.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
                 <Button variant="ghost" size="icon"><ChevronRight size={16} /></Button>
               </div>
-              <div className="overflow-x-auto">
+              <div className="hidden overflow-x-auto sm:block">
                 <div className="min-w-[800px]">
                   <div className="grid grid-cols-8 border-b">
                     <div className="p-2 text-xs text-muted-foreground" />
@@ -192,6 +192,28 @@ const Reservas = () => {
                   </div>
                 </div>
               </div>
+              <div className="divide-y sm:hidden">
+                {weekDates.map((date, index) => {
+                  const dateReservations = myReservations.filter(r => r.date === date.toISOString().split('T')[0]);
+                  return (
+                    <div key={date.toISOString()} className="p-4">
+                      <div className="mb-3 flex items-center justify-between">
+                        <div><p className="text-sm font-semibold">{weekDays[index]}, {date.getDate()}</p><p className="text-xs text-muted-foreground">{date.toLocaleDateString('pt-BR', { month: 'long' })}</p></div>
+                        <span className="text-xs text-muted-foreground">{dateReservations.length} reserva{dateReservations.length === 1 ? '' : 's'}</span>
+                      </div>
+                      <div className="space-y-2">
+                        {dateReservations.map(r => (
+                          <div key={r.id} className="rounded-md border p-3 text-sm">
+                            <div className="flex items-start justify-between gap-2"><strong>{r.title}</strong><span className="whitespace-nowrap text-xs text-muted-foreground">{r.start_time}–{r.end_time}</span></div>
+                            <p className="mt-1 text-xs text-muted-foreground">{r.room_name}{canViewAll ? ` · ${r.tenant}` : ''}</p>
+                          </div>
+                        ))}
+                        {dateReservations.length === 0 && <p className="py-2 text-xs text-muted-foreground">Nenhuma reserva.</p>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </TabsContent>
@@ -233,7 +255,7 @@ const Reservas = () => {
 
         <TabsContent value="list" className="mt-4">
           <div className="bg-card rounded-2xl premium-shadow overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="hidden overflow-x-auto sm:block">
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-muted/30">
@@ -261,6 +283,10 @@ const Reservas = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+            <div className="divide-y sm:hidden">
+              {myReservations.map(r => <div key={r.id} className="space-y-2 p-4"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{r.title}</p><p className="text-xs text-muted-foreground">{r.room_name}</p></div><StatusBadge status={r.status} /></div><div className="flex justify-between text-xs text-muted-foreground"><span>{new Date(r.date).toLocaleDateString('pt-BR')}</span><span>{r.start_time}–{r.end_time}</span></div>{canViewAll && <p className="text-xs text-muted-foreground">{r.tenant}</p>}</div>)}
+              {myReservations.length === 0 && <p className="p-8 text-center text-sm text-muted-foreground">Nenhuma reserva encontrada</p>}
             </div>
           </div>
         </TabsContent>

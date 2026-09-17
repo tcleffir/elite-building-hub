@@ -104,7 +104,8 @@ function SortableTicketCard({ ticket, onClick, getSlaColor, getSlaPercent }: {
           <Popover>
             <PopoverTrigger asChild>
               <button
-                className="p-1 rounded hover:bg-interactive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Notificar contatos"
+                className="mobile-touch flex items-center justify-center rounded hover:bg-interactive/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                 onClick={e => e.stopPropagation()}
                 onPointerDown={e => e.stopPropagation()}
               >
@@ -127,7 +128,7 @@ function KanbanColumn({ col, tickets, children }: { col: { key: string; label: s
   const { t } = useLanguage();
   const { setNodeRef, isOver } = useDroppable({ id: col.key });
   return (
-    <div className="min-w-[260px] sm:min-w-[280px] max-w-[320px] flex flex-col shrink-0">
+    <div className="min-w-0 w-full sm:min-w-[280px] sm:max-w-[320px] flex flex-col shrink-0">
       <div className={`flex items-center gap-2 mb-3 pb-2 border-b-2 ${col.color}`}>
         <h3 className="text-xs font-semibold text-foreground whitespace-nowrap">{col.label}</h3>
         <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{tickets.length}</span>

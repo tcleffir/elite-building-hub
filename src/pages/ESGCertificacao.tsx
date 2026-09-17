@@ -225,7 +225,7 @@ const ESGCertificacao = () => {
 
           {/* Carbon compensation */}
           <div className="bg-card rounded-2xl p-5 premium-shadow border border-border">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-base font-semibold text-foreground">🌱 Compensação de Carbono</h3>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -233,7 +233,7 @@ const ESGCertificacao = () => {
                 </p>
               </div>
               {carbonStatus === 'pendente' && (
-                <div className="flex items-center gap-3">
+                <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
                   <Badge variant="destructive">Não Neutralizado</Badge>
                   <Button size="sm" onClick={() => setShowCarbonDialog(true)}>Solicitar Compensação</Button>
                 </div>
