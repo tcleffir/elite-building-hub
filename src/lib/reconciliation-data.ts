@@ -1,5 +1,9 @@
 // Mock data for the Conciliação Financeira module.
 // Hierarchy: Fundo → Ativo → Unidade → Contrato → Cobrança.
+// IMPORTANTE: nomes, endereços e vínculo de fundo dos ativos vêm SEMPRE de
+// mock-data (getHGRE11PortfolioBuildings) — fonte única de verdade do portfólio.
+import { getHGRE11PortfolioBuildings } from "@/lib/mock-data";
+
 
 export type StatusCobranca =
   | 'conciliado'
