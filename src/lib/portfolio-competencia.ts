@@ -52,6 +52,46 @@ export const COMPETENCIAS: CompetenciaOption[] = Object.keys(INDEX_FACTOR)
 
 export const competenciaLabel = (value: string) => MONTH_LABEL(value);
 
+/** Competências em ordem cronológica (mais antiga → mais recente). */
+export const COMPETENCIAS_ASC = Object.keys(INDEX_FACTOR).sort();
+
+/** Presets de janela de competência usados nos filtros de período. */
+export type PeriodPreset = "1m" | "3m" | "6m" | "12m" | "custom";
+
+export const PERIOD_PRESETS: { value: PeriodPreset; label: string; months: number }[] = [
+  { value: "1m", label: "Competência atual", months: 1 },
+  { value: "3m", label: "Últimos 3 meses", months: 3 },
+  { value: "6m", label: "Últimos 6 meses", months: 6 },
+  { value: "12m", label: "Últimos 12 meses", months: 12 },
+];
+
+/**
+ * Lista de competências da janela selecionada (ordem cronológica).
+ * `end` é a competência de fechamento; `months` o tamanho da janela.
+ */
+export function getCompetenciaWindow(end: string, months: number): string[] {
+  const idx = COMPETENCIAS_ASC.indexOf(end);
+  if (idx < 0) return [end];
+  return COMPETENCIAS_ASC.slice(Math.max(0, idx - months + 1), idx + 1);
+}
+
+/** Competências entre duas datas (inclusive), ordem cronológica. */
+export function getCompetenciaRange(start: string, end: string): string[] {
+  const a = COMPETENCIAS_ASC.indexOf(start);
+  const b = COMPETENCIAS_ASC.indexOf(end);
+  if (a < 0 || b < 0) return [end];
+  const [from, to] = a <= b ? [a, b] : [b, a];
+  return COMPETENCIAS_ASC.slice(from, to + 1);
+}
+
+/** Rótulo legível de uma janela de competências. */
+export function periodRangeLabel(window: string[]): string {
+  if (window.length === 0) return "—";
+  if (window.length === 1) return MONTH_LABEL(window[0]);
+  return `${MONTH_LABEL(window[0])} – ${MONTH_LABEL(window[window.length - 1])}`;
+}
+
+
 /**
  * Ocupação financeira por competência (%).
  * Indicador calculado pelo módulo financeiro (receita faturada / receita
