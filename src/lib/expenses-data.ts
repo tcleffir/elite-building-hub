@@ -1,5 +1,8 @@
 // Despesas imobiliárias — base para o cálculo do NOI.
 // NÃO é contas a pagar: aqui só importamos, classificamos e conciliamos despesas.
+import { edificiosRec } from "@/lib/reconciliation-data";
+import { getHGRE11PortfolioBuildings } from "@/lib/mock-data";
+
 
 export type StatusDespesa = 'conciliado' | 'parcial' | 'pendente' | 'divergencia';
 
@@ -71,12 +74,19 @@ const PERFIL: { categoriaId: string; fornecedor: string; descricao: string; base
   { categoriaId: 'outros',              fornecedor: 'Diversos',             descricao: 'Despesas diversas do ativo',       base: 2200 },
 ];
 
-const EDIFICIOS_FUNDO: { edificioId: string; fundoId: string; peso: number }[] = [
-  { edificioId: 'b2', fundoId: 'f1', peso: 1.00 },
-  { edificioId: 'b4', fundoId: 'f1', peso: 0.72 },
-  { edificioId: 'b5', fundoId: 'f2', peso: 0.61 },
-  { edificioId: 'b3', fundoId: 'f3', peso: 0.83 },
-];
+// Derivado da fonte única de verdade (edificiosRec / mockBuildings): peso
+// proporcional à ABL de cada ativo, para que os valores nunca divirjam entre módulos.
+const EDIFICIOS_FUNDO: { edificioId: string; fundoId: string; peso: number }[] =
+  edificiosRec.map((e) => {
+    const b = getHGRE11PortfolioBuildings().find((x) => x.id === e.id);
+    const gla = b?.gla_m2 ?? b?.total_area_m2 ?? 0;
+    return {
+      edificioId: e.id,
+      fundoId: e.fundoId,
+      peso: Math.max(0.08, Math.round((gla / 22810) * 100) / 100),
+    };
+  });
+
 
 const COMPETENCIAS = [
   '2025-05', '2025-06', '2025-07', '2025-08', '2025-09', '2025-10',
