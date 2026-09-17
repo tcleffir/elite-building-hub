@@ -500,7 +500,7 @@ const ProprietarioPortfolio = () => {
           </div>
           <p className="text-sm text-muted-foreground">Visão consolidada — {portfolioBuildings.length} ativos · Período: {periodLabel}</p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="grid w-full grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:w-auto sm:flex-wrap">
           <PeriodFilter value={period} onChange={(v) => { setPeriod(v); setPage(0); }} />
 
           <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={() => setExportOpen(true)}>
@@ -694,7 +694,7 @@ const ProprietarioPortfolio = () => {
                 </div>
               </div>
 
-              <Table>
+              <div className="hidden sm:block"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-xs">Ativo</TableHead>
@@ -719,7 +719,15 @@ const ProprietarioPortfolio = () => {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
+              <div className="space-y-2 sm:hidden">
+                {leakageData.map((l, i) => (
+                  <div key={i} className="rounded-md border p-3">
+                    <div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{l.building}</p><p className="text-xs text-muted-foreground">{l.unitId} · {l.area.toLocaleString('pt-BR')} m²</p></div><strong className="text-sm text-rose-700">{fmt(l.total)}</strong></div>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]"><span>Receita<br/><strong>{fmt(l.receitaPerdida)}</strong></span><span>IPTU<br/><strong>{fmt(l.iptuVacancia)}</strong></span><span>Condomínio<br/><strong>{fmt(l.condVacancia)}</strong></span></div>
+                  </div>
+                ))}
+              </div>
               <p className="text-xs text-muted-foreground">Leakage = receita que o fundo deixa de receber + custos fixos arcados sem receita correspondente. Base: R$/m² médio por ativo.</p>
             </CardContent>
           </Card>

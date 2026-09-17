@@ -576,9 +576,9 @@ const ProprietarioDocumentosV2 = () => {
             <h1 className="text-xl md:text-2xl font-bold text-foreground">Documentos</h1>
             <p className="text-sm text-muted-foreground">Biblioteca de documentos e relatórios</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="grid w-full grid-cols-1 gap-2 min-[360px]:grid-cols-[minmax(0,1fr)_auto] sm:flex sm:w-auto sm:items-center">
             <Select value={selectedBuildingId} onValueChange={setSelectedBuildingId}>
-              <SelectTrigger className="w-[280px]"><SelectValue placeholder="Selecione o ativo" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-[280px]"><SelectValue placeholder="Selecione o ativo" /></SelectTrigger>
               <SelectContent>
                 {userBuildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
               </SelectContent>
@@ -647,20 +647,20 @@ const ProprietarioDocumentosV2 = () => {
               </div>
 
               {/* Filters */}
-              <div className="flex flex-wrap gap-3 items-center">
-                <div className="relative flex-1 min-w-[200px] max-w-sm">
+              <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
+                <div className="relative min-w-0 min-[360px]:col-span-2 lg:flex-1 lg:max-w-sm">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <Input placeholder="Buscar por nome..." className="pl-9" value={searchSummary} onChange={e => setSearchSummary(e.target.value)} />
                 </div>
                 <Select value={filterCategory} onValueChange={setFilterCategory}>
-                  <SelectTrigger className="w-[180px]"><SelectValue placeholder="Categoria" /></SelectTrigger>
+                  <SelectTrigger className="w-full lg:w-[180px]"><SelectValue placeholder="Categoria" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todas categorias</SelectItem>
                     {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-[160px]"><SelectValue placeholder="Status" /></SelectTrigger>
+                  <SelectTrigger className="w-full lg:w-[160px]"><SelectValue placeholder="Status" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos status</SelectItem>
                     <SelectItem value="ok">Atualizado</SelectItem>
@@ -669,7 +669,7 @@ const ProprietarioDocumentosV2 = () => {
                   </SelectContent>
                 </Select>
                 <Select value={filterCompany} onValueChange={setFilterCompany}>
-                  <SelectTrigger className="w-[180px]"><SelectValue placeholder="Empresa" /></SelectTrigger>
+                  <SelectTrigger className="w-full lg:w-[180px]"><SelectValue placeholder="Empresa" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todas empresas</SelectItem>
                     {companies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -682,7 +682,7 @@ const ProprietarioDocumentosV2 = () => {
 
               {/* Table */}
               <div className="bg-card rounded-xl border overflow-hidden">
-                <div className="overflow-x-auto">
+                <div className="hidden md:block">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b bg-muted/30">
@@ -750,6 +750,30 @@ const ProprietarioDocumentosV2 = () => {
                       )}
                     </tbody>
                   </table>
+                </div>
+                <div className="divide-y md:hidden">
+                  {sortedFiles.map(file => {
+                    const status = getDocStatus(file);
+                    const StatusIcon = status.icon;
+                    return (
+                      <div key={file.id} className="space-y-3 p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0"><p className="break-words text-sm font-semibold">{file.name}</p><p className="mt-1 text-xs text-muted-foreground">{file.categoryName}</p></div>
+                          <Badge className={`${status.color} shrink-0 text-[10px] gap-1`}><StatusIcon size={10} />{status.label}</Badge>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                          <div><span className="block text-muted-foreground">Empresa</span>{file.responsible_company || '—'}</div>
+                          <div><span className="block text-muted-foreground">Vencimento</span>{file.expires_at ? new Date(file.expires_at).toLocaleDateString('pt-BR') : '—'}</div>
+                        </div>
+                        <div className="flex justify-end gap-1">
+                          <Button variant="ghost" size="icon" aria-label="Baixar documento" onClick={() => toast.success("Download iniciado")}><Download size={16} /></Button>
+                          <Button variant="ghost" size="icon" aria-label="Editar documento" onClick={() => setEditDoc(file)}><Pencil size={16} /></Button>
+                          <Button variant="ghost" size="icon" aria-label="Excluir documento" className="text-destructive" onClick={() => setDeleteDoc(file)}><Trash2 size={16} /></Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {sortedFiles.length === 0 && <p className="p-6 text-center text-sm text-muted-foreground">Nenhum documento encontrado</p>}
                 </div>
               </div>
             </TabsContent>
