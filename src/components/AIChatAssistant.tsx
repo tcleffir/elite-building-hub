@@ -294,7 +294,7 @@ export default function AIChatAssistant() {
                 <p className="font-medium">Olá! Sou o assistente do portfólio.</p>
                 <p className="text-xs mt-1">Pergunte sobre contratos, ativos, financeiro ou envie documentos para análise e arquivamento automático.</p>
                 <div className="mt-4 space-y-1.5">
-                  {["Quantos contratos vencem neste mês?", "Qual a vacância atual do portfólio?", "Resumo financeiro do Caxias Park"].map((q) => (
+                  {["Quantos contratos vencem neste mês?", "Qual a vacância atual do portfólio?", "Resumo financeiro do Chucri Zaidan"].map((q) => (
                     <button key={q} onClick={() => send(q)}
                       className="block w-full text-left text-xs px-3 py-2 rounded-lg border hover:bg-muted transition-colors">
                       {q}

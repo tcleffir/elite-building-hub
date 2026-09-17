@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getVILG11PortfolioBuildings, mockLuxReports, mockLEEDData, mockIRECCertificates } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockLuxReports, mockLEEDData, mockIRECCertificates } from "@/lib/mock-data";
 import { toast } from "sonner";
 
 const fmt = (v: number) => `R$ ${v.toLocaleString('pt-BR')}`;
@@ -29,7 +29,7 @@ const ProprietarioSustentabilidade = () => {
   const [activeTab, setActiveTab] = useState('esg');
   const [carbonNeutralized, setCarbonNeutralized] = useState(false);
 
-  const userBuildings = getVILG11PortfolioBuildings();
+  const userBuildings = getHGRE11PortfolioBuildings();
   const building = userBuildings.find(b => b.id === selectedBuildingId);
   const leedData = mockLEEDData.find(l => l.building_id === selectedBuildingId);
   const luxReports = mockLuxReports.filter(r => r.building_id === selectedBuildingId);

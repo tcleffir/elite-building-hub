@@ -1,25 +1,28 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
-// ── TOKENS DE DESIGN ────────────────────────────────────────
+// ── TOKENS DE DESIGN — Brand Kit Patria Real Estate ─────────
+// Referência: Relatório Gerencial HGRE11 (azul royal Patria sobre branco,
+// tipografia geométrica, blocos chapados sem gradiente).
 export const PDF_COLORS = {
-  navyDark:   [15,  22, 41]   as [number, number, number],
-  navyMed:    [30,  58, 95]   as [number, number, number],
-  navyLight:  [45,  74, 111]  as [number, number, number],
+  navyDark:   [10,  22, 110]  as [number, number, number], // azul profundo Patria
+  navyMed:    [27,  54, 214]  as [number, number, number], // azul royal Patria (marca)
+  navyLight:  [58,  84, 226]  as [number, number, number],
   green:      [16,  185, 129] as [number, number, number],
   greenLight: [209, 250, 229] as [number, number, number],
   amber:      [245, 158, 11]  as [number, number, number],
   amberLight: [254, 243, 199] as [number, number, number],
-  red:        [239, 68,  68]  as [number, number, number],
+  red:        [225, 29,  72]  as [number, number, number],
   redLight:   [254, 226, 226] as [number, number, number],
-  blue:       [59,  130, 246] as [number, number, number],
+  blue:       [27,  54, 214]  as [number, number, number], // accent = azul Patria
+  blueSoft:   [169, 189, 245] as [number, number, number], // azul claro dos subtítulos
   purple:     [139, 92,  246] as [number, number, number],
   purpleLight:[237, 233, 254] as [number, number, number],
-  grayBg:     [248, 250, 252] as [number, number, number],
-  grayLine:   [226, 232, 240] as [number, number, number],
-  grayText:   [100, 116, 135] as [number, number, number],
+  grayBg:     [246, 248, 252] as [number, number, number],
+  grayLine:   [224, 230, 242] as [number, number, number],
+  grayText:   [92,  106, 132] as [number, number, number],
   white:      [255, 255, 255] as [number, number, number],
-  black:      [15,  23,  42]  as [number, number, number],
+  black:      [12,  18,  38]  as [number, number, number],
 }
 
 export interface ReportConfig {
@@ -92,7 +95,7 @@ export function drawCoverPage(doc: jsPDF, config: ReportConfig): void {
     doc.setTextColor(...PDF_COLORS.grayText)
     doc.text('LOGOTIPO DA EMPRESA', lx + lw / 2, ly + lh / 2 + 1, { align: 'center' })
     doc.setFontSize(5.5)
-    doc.setTextColor(148, 163, 184)
+    doc.setTextColor(...PDF_COLORS.blueSoft)
     doc.text('Substitua por arquivo .png', lx + lw / 2, ly + lh - 4, { align: 'center' })
   }
 
@@ -109,7 +112,7 @@ export function drawCoverPage(doc: jsPDF, config: ReportConfig): void {
 
   doc.setFontSize(13)
   doc.setFont('helvetica', 'normal')
-  doc.setTextColor(148, 163, 184)
+  doc.setTextColor(...PDF_COLORS.blueSoft)
   doc.text(config.subtitle, tx, ty + 14)
 
   doc.setFontSize(9.5)
@@ -147,7 +150,7 @@ export function drawCoverPage(doc: jsPDF, config: ReportConfig): void {
     doc.text(kpi.value, cx + kw / 2, ky + 12, { align: 'center' })
     doc.setFontSize(6.5)
     doc.setFont('helvetica', 'normal')
-    doc.setTextColor(148, 163, 184)
+    doc.setTextColor(...PDF_COLORS.blueSoft)
     doc.text(kpi.label, cx + kw / 2, ky + 17, { align: 'center' })
   })
 
@@ -189,10 +192,10 @@ export function drawCoverPage(doc: jsPDF, config: ReportConfig): void {
   )
   doc.setFont('helvetica', 'bold')
   doc.setTextColor(...PDF_COLORS.white)
-  doc.text('LUXCondo', W - M, H - M - 1, { align: 'right' })
+  doc.text('Patria Real Estate', W - M, H - M - 1, { align: 'right' })
   doc.setFont('helvetica', 'normal')
   doc.setTextColor(...PDF_COLORS.blue)
-  doc.text('Premium Building Management', W - M, H - M + 4, { align: 'right' })
+  doc.text('Real Estate — Gestão de Ativos Imobiliários', W - M, H - M + 4, { align: 'right' })
 }
 
 export function drawHeaderFooter(
@@ -212,9 +215,9 @@ export function drawHeaderFooter(
   doc.setFontSize(8)
   doc.setFont('helvetica', 'bold')
   doc.setTextColor(...PDF_COLORS.white)
-  doc.text('LUXCondo — ' + pageTitle, M, 7.5)
+  doc.text('Patria Real Estate — ' + pageTitle, M, 7.5)
   doc.setFont('helvetica', 'normal')
-  doc.setTextColor(148, 163, 184)
+  doc.setTextColor(...PDF_COLORS.blueSoft)
   doc.text(period + '  |  Confidencial', W - M, 7.5, { align: 'right' })
 
   // Footer
@@ -452,6 +455,6 @@ export async function generateReport(
   })
 
   // Salvar
-  const filename = `LUXCondo_${config.module.replace(/\s/g, '_')}_${config.period.replace(/\s/g, '_')}.pdf`
+  const filename = `Patria Real Estate_${config.module.replace(/\s/g, '_')}_${config.period.replace(/\s/g, '_')}.pdf`
   doc.save(filename)
 }

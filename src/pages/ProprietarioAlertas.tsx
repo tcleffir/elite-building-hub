@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Download } from "lucide-react";
-import { getVILG11PortfolioBuildings, mockTenantContracts, mockBuildingDocuments } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts, mockBuildingDocuments } from "@/lib/mock-data";
 import { getContractHealth, getDocumentHealth, daysUntil, healthColors, HealthStatus } from "@/lib/health-utils";
 import { toast } from "sonner";
 
@@ -17,7 +17,7 @@ interface Alert {
 
 const ProprietarioAlertas = () => {
   const [filterType, setFilterType] = useState('all');
-  const portfolioBuildings = getVILG11PortfolioBuildings();
+  const portfolioBuildings = getHGRE11PortfolioBuildings();
   const portfolioBuildingIds = new Set(portfolioBuildings.map((b) => b.id));
 
   const allAlerts: Alert[] = useMemo(() => {

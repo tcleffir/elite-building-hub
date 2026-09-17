@@ -15,7 +15,7 @@ import {
   ResponsiveContainer, BarChart, Bar, LineChart, Line, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart
 } from "recharts";
-import { monthlySnapshots, mockTenantContracts, getVILG11PortfolioBuildings } from "@/lib/mock-data";
+import { monthlySnapshots, mockTenantContracts, getHGRE11PortfolioBuildings } from "@/lib/mock-data";
 import { generateReport, type ReportConfig, type ReportSection } from "@/lib/pdf-report-service";
 import { toast } from "sonner";
 import html2canvas from "html2canvas";

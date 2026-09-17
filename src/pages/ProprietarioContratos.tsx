@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from "react";
-import { getVILG11PortfolioBuildings, mockTenantContracts, type TenantContract } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts, type TenantContract } from "@/lib/mock-data";
 import {
   mockGuarantees, mockInsurances, mockIPTUs, mockCommonAreaContracts,
   mockReajustes, mockContractDocuments,
@@ -106,7 +106,7 @@ function getGuaranteeStatus(g: ContractGuarantee): { label: string; color: strin
 }
 
 export default function ProprietarioContratos() {
-  const buildings = getVILG11PortfolioBuildings();
+  const buildings = getHGRE11PortfolioBuildings();
   const portfolioBuildingIds = new Set(buildings.map((b) => b.id));
   const [selectedBuildingId, setSelectedBuildingId] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<ContractStatus>('all');

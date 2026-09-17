@@ -303,7 +303,7 @@ export interface ContractDocumentFile {
 }
 
 export let mockContractDocuments: ContractDocumentFile[] = [
-  { id: 'cd1', contractId: 'tc1', fileName: 'Contrato_Magazine Luiza_GalpaoA1.pdf', fileSize: '2.4 MB', uploadDate: '2024-02-15', type: 'contract_pdf' },
+  { id: 'cd1', contractId: 'tc1', fileName: 'Contrato_Vivo (Telefônica Brasil)_GalpaoA1.pdf', fileSize: '2.4 MB', uploadDate: '2024-02-15', type: 'contract_pdf' },
   { id: 'cd2', contractId: 'tc2', fileName: 'Contrato_Ambev_GalpaoA2.pdf', fileSize: '1.8 MB', uploadDate: '2024-06-10', type: 'contract_pdf' },
   { id: 'cd3', contractId: 'tc6', fileName: 'Contrato_DHL_GalpaoC2.pdf', fileSize: '2.1 MB', uploadDate: '2024-03-20', type: 'contract_pdf' },
 ];
@@ -311,7 +311,7 @@ export let mockContractDocuments: ContractDocumentFile[] = [
 // ─── SEED DATA ─────────────────────────────────
 
 export let mockGuarantees: ContractGuarantee[] = [
-  // Caxias Park (b12) — VILG11
+  // Chucri Zaidan (b12) — HGRE11
   { id: 'g1', contract_id: 'tc1', type: 'fianca_bancaria', value: 540000, valid_until: '2026-07-01', guarantor: 'Bradesco', issueDate: '2022-02-01', certificateNumber: 'FB-2024-00847', documentUrl: 'mock-fb-magalu.pdf', documentUploadDate: '2024-03-10', renewalHistory: [
     { year: 2024, expiryDate: '2024-07-01', documentUrl: 'mock-fb-magalu-2024.pdf', uploadDate: '2024-06-01' },
     { year: 2023, expiryDate: '2023-07-01', documentUrl: 'mock-fb-magalu-2023.pdf', uploadDate: '2023-05-15' },
@@ -359,22 +359,22 @@ export const mockCommonAreaContracts: CommonAreaContract[] = [
 ];
 
 // ─── PAYMENT RECORDS (expanded with all fields) ─────────
-// Caxias Park (b12) — Locatários VILG11 — competência 2026-04
+// Chucri Zaidan (b12) — Locatários HGRE11 — competência 2026-04
 export let mockMonthlyPayments: MonthlyPayment[] = [
-  { id: 'mp1', building_id: 'b12', tenant_name: 'Magazine Luiza', unit_id: 'Galpão A1', contractual_value: 180000, discount: 0, billable_value: 180000, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-05', received_amount: 180000, status: 'paid', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: 'comprovante-magalu-abr.pdf' },
-  { id: 'mp2', building_id: 'b12', tenant_name: 'Ambev S.A.', unit_id: 'Galpão A2', contractual_value: 207000, discount: 0, billable_value: 207000, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-09', received_amount: 207000, status: 'paid', competence: '2026-04', due_day: 10, contactHistory: [], receiptUrl: 'comprovante-ambev-abr.pdf' },
-  { id: 'mp3', building_id: 'b12', tenant_name: 'Solistica (Grupo FEMSA)', unit_id: 'Galpão B1', contractual_value: 162500, discount: 0, billable_value: 162500, btg_sent: true, btg_sent_date: '2026-04-03', received: false, received_amount: null, status: 'pending', competence: '2026-04', due_day: 10, contactHistory: [], receiptUrl: null },
-  { id: 'mp4', building_id: 'b12', tenant_name: 'Tok&Stok', unit_id: 'Galpão B2', contractual_value: 127600, discount: 0, billable_value: 127600, btg_sent: true, btg_sent_date: '2026-03-20', received: false, received_amount: null, status: 'overdue', competence: '2026-04', due_day: 5, contactHistory: [
+  { id: 'mp1', building_id: 'b12', tenant_name: 'Vivo (Telefônica Brasil)', unit_id: 'Conjunto A1', contractual_value: 180000, discount: 0, billable_value: 180000, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-05', received_amount: 180000, status: 'paid', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: 'comprovante-magalu-abr.pdf' },
+  { id: 'mp2', building_id: 'b12', tenant_name: 'Totvs S.A.', unit_id: 'Conjunto A2', contractual_value: 207000, discount: 0, billable_value: 207000, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-09', received_amount: 207000, status: 'paid', competence: '2026-04', due_day: 10, contactHistory: [], receiptUrl: 'comprovante-ambev-abr.pdf' },
+  { id: 'mp3', building_id: 'b12', tenant_name: 'Befly Viagens', unit_id: 'Conjunto B1', contractual_value: 162500, discount: 0, billable_value: 162500, btg_sent: true, btg_sent_date: '2026-04-03', received: false, received_amount: null, status: 'pending', competence: '2026-04', due_day: 10, contactHistory: [], receiptUrl: null },
+  { id: 'mp4', building_id: 'b12', tenant_name: 'Hospital Sírio-Libanês', unit_id: 'Conjunto B2', contractual_value: 127600, discount: 0, billable_value: 127600, btg_sent: true, btg_sent_date: '2026-03-20', received: false, received_amount: null, status: 'overdue', competence: '2026-04', due_day: 5, contactHistory: [
     { date: '2026-04-06', method: 'email', sentBy: 'Rodrigo Silva', message: 'Cobrança de aluguel em atraso', response: 'no_response' },
   ], receiptUrl: null },
-  { id: 'mp5', building_id: 'b12', tenant_name: 'Supporte', unit_id: 'Galpão C1', contractual_value: 88200, discount: 0, billable_value: 88200, btg_sent: true, btg_sent_date: '2026-02-20', received: false, received_amount: null, status: 'overdue', competence: '2026-04', due_day: 5, contactHistory: [
+  { id: 'mp5', building_id: 'b12', tenant_name: 'BP Brasil', unit_id: 'Conjunto C1', contractual_value: 88200, discount: 0, billable_value: 88200, btg_sent: true, btg_sent_date: '2026-02-20', received: false, received_amount: null, status: 'overdue', competence: '2026-04', due_day: 5, contactHistory: [
     { date: '2026-03-10', method: 'email', sentBy: 'Rodrigo Silva', message: 'Primeiro aviso de cobrança — aluguel Fev/2026', response: 'promised_payment' },
     { date: '2026-03-25', method: 'whatsapp', sentBy: 'Ana Martins', message: 'Reforço de cobrança — ainda pendente', response: 'no_response' },
   ], receiptUrl: null },
-  { id: 'mp6', building_id: 'b12', tenant_name: 'DHL', unit_id: 'Galpão C2', contractual_value: 202800, discount: 0, billable_value: 202800, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-08', received_amount: 202800, status: 'paid', competence: '2026-04', due_day: 15, contactHistory: [], receiptUrl: 'comprovante-dhl-abr.pdf' },
-  { id: 'mp7', building_id: 'b12', tenant_name: 'Sierra Log', unit_id: 'Galpão D1', contractual_value: 103500, discount: 0, billable_value: 103500, btg_sent: true, btg_sent_date: '2026-04-03', received: false, received_amount: null, status: 'awaiting_btg', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: null },
-  { id: 'mp10', building_id: 'b12', tenant_name: 'Caedu', unit_id: 'Galpão D2', contractual_value: 80520, discount: 0, billable_value: 80520, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-05', received_amount: 80520, status: 'paid', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: 'comprovante-caedu-abr.pdf' },
-  // Áreas comuns Caxias Park
+  { id: 'mp6', building_id: 'b12', tenant_name: 'DHL', unit_id: 'Conjunto C2', contractual_value: 202800, discount: 0, billable_value: 202800, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-08', received_amount: 202800, status: 'paid', competence: '2026-04', due_day: 15, contactHistory: [], receiptUrl: 'comprovante-dhl-abr.pdf' },
+  { id: 'mp7', building_id: 'b12', tenant_name: 'WeWork Brasil', unit_id: 'Conjunto D1', contractual_value: 103500, discount: 0, billable_value: 103500, btg_sent: true, btg_sent_date: '2026-04-03', received: false, received_amount: null, status: 'awaiting_btg', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: null },
+  { id: 'mp10', building_id: 'b12', tenant_name: 'Deloitte Brasil', unit_id: 'Conjunto D2', contractual_value: 80520, discount: 0, billable_value: 80520, btg_sent: true, btg_sent_date: '2026-04-03', received: true, received_date: '2026-04-05', received_amount: 80520, status: 'paid', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: 'comprovante-caedu-abr.pdf' },
+  // Áreas comuns Chucri Zaidan
   { id: 'mp8', building_id: 'b12', tenant_name: 'Cantina Industrial', unit_id: 'Área Comum', contractual_value: 8500, discount: 0, billable_value: 8500, btg_sent: true, btg_sent_date: '2026-04-02', received: true, received_date: '2026-04-04', received_amount: 8500, status: 'paid', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: null },
   { id: 'mp9', building_id: 'b12', tenant_name: 'Estacionamento Carretas', unit_id: 'Área Comum', contractual_value: 12000, discount: 0, billable_value: 12000, btg_sent: true, btg_sent_date: '2026-04-02', received: false, received_amount: null, status: 'overdue', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: null },
   { id: 'mp16', building_id: 'b12', tenant_name: 'Centro de Treinamento', unit_id: 'Área Comum', contractual_value: 15000, discount: 0, billable_value: 15000, btg_sent: true, btg_sent_date: '2026-04-02', received: true, received_date: '2026-04-04', received_amount: 15000, status: 'paid', competence: '2026-04', due_day: 5, contactHistory: [], receiptUrl: null },
@@ -382,17 +382,17 @@ export let mockMonthlyPayments: MonthlyPayment[] = [
 ];
 
 export const mockReajustes: ReajusteInfo[] = [
-  { id: 'r1', building_id: 'b12', tenant_name: 'Magazine Luiza', unit_id: 'Galpão A1', index: 'IGP-M', base_date: '2022-03-01', last_adjustment: '2025-03-01', next_adjustment: '2026-03-01', current_value: 180000, simulated_value: 188676, variation_pct: 4.82, status: 'urgent' },
-  { id: 'r2', building_id: 'b12', tenant_name: 'Ambev S.A.', unit_id: 'Galpão A2', index: 'IPCA', base_date: '2021-08-01', last_adjustment: '2025-08-01', next_adjustment: '2026-08-01', current_value: 207000, simulated_value: 215280, variation_pct: 4.0, status: 'upcoming' },
-  { id: 'r3', building_id: 'b12', tenant_name: 'Solistica (Grupo FEMSA)', unit_id: 'Galpão B1', index: 'IGP-M', base_date: '2023-01-01', last_adjustment: '2025-01-01', next_adjustment: '2026-01-01', current_value: 162500, simulated_value: 170334, variation_pct: 4.82, status: 'applied' },
-  { id: 'r4', building_id: 'b12', tenant_name: 'Tok&Stok', unit_id: 'Galpão B2', index: 'IPCA', base_date: '2022-11-01', last_adjustment: '2025-11-01', next_adjustment: '2026-11-01', current_value: 127600, simulated_value: 132704, variation_pct: 4.0, status: 'upcoming' },
-  { id: 'r5', building_id: 'b12', tenant_name: 'DHL', unit_id: 'Galpão C2', index: 'IPCA', base_date: '2023-06-01', last_adjustment: '2025-06-01', next_adjustment: '2026-06-01', current_value: 202800, simulated_value: 210912, variation_pct: 4.0, status: 'upcoming' },
-  { id: 'r6', building_id: 'b12', tenant_name: 'Sierra Log', unit_id: 'Galpão D1', index: 'IGP-M', base_date: '2024-04-01', last_adjustment: '2025-04-01', next_adjustment: '2026-04-01', current_value: 103500, simulated_value: 108489, variation_pct: 4.82, status: 'urgent' },
-  { id: 'r7', building_id: 'b12', tenant_name: 'Caedu', unit_id: 'Galpão D2', index: 'IPCA', base_date: '2023-09-01', last_adjustment: '2025-09-01', next_adjustment: '2026-09-01', current_value: 80520, simulated_value: 83741, variation_pct: 4.0, status: 'upcoming' },
+  { id: 'r1', building_id: 'b12', tenant_name: 'Vivo (Telefônica Brasil)', unit_id: 'Conjunto A1', index: 'IGP-M', base_date: '2022-03-01', last_adjustment: '2025-03-01', next_adjustment: '2026-03-01', current_value: 180000, simulated_value: 188676, variation_pct: 4.82, status: 'urgent' },
+  { id: 'r2', building_id: 'b12', tenant_name: 'Totvs S.A.', unit_id: 'Conjunto A2', index: 'IPCA', base_date: '2021-08-01', last_adjustment: '2025-08-01', next_adjustment: '2026-08-01', current_value: 207000, simulated_value: 215280, variation_pct: 4.0, status: 'upcoming' },
+  { id: 'r3', building_id: 'b12', tenant_name: 'Befly Viagens', unit_id: 'Conjunto B1', index: 'IGP-M', base_date: '2023-01-01', last_adjustment: '2025-01-01', next_adjustment: '2026-01-01', current_value: 162500, simulated_value: 170334, variation_pct: 4.82, status: 'applied' },
+  { id: 'r4', building_id: 'b12', tenant_name: 'Hospital Sírio-Libanês', unit_id: 'Conjunto B2', index: 'IPCA', base_date: '2022-11-01', last_adjustment: '2025-11-01', next_adjustment: '2026-11-01', current_value: 127600, simulated_value: 132704, variation_pct: 4.0, status: 'upcoming' },
+  { id: 'r5', building_id: 'b12', tenant_name: 'DHL', unit_id: 'Conjunto C2', index: 'IPCA', base_date: '2023-06-01', last_adjustment: '2025-06-01', next_adjustment: '2026-06-01', current_value: 202800, simulated_value: 210912, variation_pct: 4.0, status: 'upcoming' },
+  { id: 'r6', building_id: 'b12', tenant_name: 'WeWork Brasil', unit_id: 'Conjunto D1', index: 'IGP-M', base_date: '2024-04-01', last_adjustment: '2025-04-01', next_adjustment: '2026-04-01', current_value: 103500, simulated_value: 108489, variation_pct: 4.82, status: 'urgent' },
+  { id: 'r7', building_id: 'b12', tenant_name: 'Deloitte Brasil', unit_id: 'Conjunto D2', index: 'IPCA', base_date: '2023-09-01', last_adjustment: '2025-09-01', next_adjustment: '2026-09-01', current_value: 80520, simulated_value: 83741, variation_pct: 4.0, status: 'upcoming' },
 ];
 
 export let mockInadimplencia: InadimplenciaRecord[] = [
-  { id: 'inad1', building_id: 'b12', building_name: 'Caxias Park', tenant_name: 'Tok&Stok', unit_id: 'Galpão B2', competence: '2026-04', value: 127600, days_overdue: 3,
+  { id: 'inad1', building_id: 'b12', building_name: 'Chucri Zaidan', tenant_name: 'Hospital Sírio-Libanês', unit_id: 'Conjunto B2', competence: '2026-04', value: 127600, days_overdue: 3,
     last_contact: '2026-04-06', last_contact_type: 'email', contact_status: 'contacted',
     responsible_name: 'Renata Furlan', responsible_email: 'financeiro@tokstok.com.br', responsible_phone: '(11) 98765-1234',
     multa_pct: 2, juros_am_pct: 1, next_payment_deadline: '2026-04-20',
@@ -402,7 +402,7 @@ export let mockInadimplencia: InadimplenciaRecord[] = [
       { date: '2026-04-06', type: 'email', note: 'E-mail de cobrança enviado automaticamente via Banco' },
     ],
   },
-  { id: 'inad2', building_id: 'b12', building_name: 'Caxias Park', tenant_name: 'Supporte', unit_id: 'Galpão C1', competence: '2026-04', value: 88200, days_overdue: 45,
+  { id: 'inad2', building_id: 'b12', building_name: 'Chucri Zaidan', tenant_name: 'BP Brasil', unit_id: 'Conjunto C1', competence: '2026-04', value: 88200, days_overdue: 45,
     last_contact: '2026-03-25', last_contact_type: 'whatsapp', contact_status: 'promised',
     responsible_name: 'Carlos Mendes', responsible_email: 'carlos.mendes@supporte.com.br', responsible_phone: '(11) 99123-4567',
     multa_pct: 2, juros_am_pct: 1, next_payment_deadline: '2026-04-30',
@@ -413,7 +413,7 @@ export let mockInadimplencia: InadimplenciaRecord[] = [
       { date: '2026-03-25', type: 'whatsapp', note: 'Reforço de cobrança — locatário prometeu pagar em 5 dias' },
     ],
   },
-  { id: 'inad3', building_id: 'b12', building_name: 'Caxias Park', tenant_name: 'Estacionamento Carretas', unit_id: 'Área Comum', competence: '2026-04', value: 12000, days_overdue: 3,
+  { id: 'inad3', building_id: 'b12', building_name: 'Chucri Zaidan', tenant_name: 'Estacionamento Carretas', unit_id: 'Área Comum', competence: '2026-04', value: 12000, days_overdue: 3,
     contact_status: 'not_contacted',
     responsible_name: 'João Pacheco', responsible_email: 'joao@estcarretas.com.br', responsible_phone: '(11) 97777-8821',
     multa_pct: 2, juros_am_pct: 1, next_payment_deadline: '2026-04-18',
@@ -421,21 +421,21 @@ export let mockInadimplencia: InadimplenciaRecord[] = [
     serasa: false,
     history: [],
   },
-  { id: 'inad4', building_id: 'b12', building_name: 'Caxias Park', tenant_name: 'Sierra Log', unit_id: 'Galpão D1', competence: '2026-04', value: 103500, days_overdue: 3,
+  { id: 'inad4', building_id: 'b12', building_name: 'Chucri Zaidan', tenant_name: 'WeWork Brasil', unit_id: 'Conjunto D1', competence: '2026-04', value: 103500, days_overdue: 3,
     last_contact: '2026-04-07', last_contact_type: 'email', contact_status: 'contacted',
     responsible_name: 'Patrícia Lemos', responsible_email: 'financeiro@sierralog.com', responsible_phone: '(11) 98123-5599',
     multa_pct: 2, juros_am_pct: 1, next_payment_deadline: '2026-04-22',
     comments: 'Em negociação para parcelamento em 2x.',
     serasa: false,
     history: [
-      { date: '2026-04-07', type: 'email', note: 'Cobrança aluguel em atraso — Galpão D1' },
+      { date: '2026-04-07', type: 'email', note: 'Cobrança aluguel em atraso — Conjunto D1' },
     ],
   },
 ];
 
 
 export const mockCashFlow: CashFlowMonth[] = [
-  // Caxias Park (b12) — VILG11
+  // Chucri Zaidan (b12) — HGRE11
   { competence: '2026-01', building_id: 'b12', expected_revenue: 1107120, realized_revenue: 1098000, expenses: 32500, result: 1065500, variation_pct: 0, breakdown: { alugueis: 1052120, outras_receitas: 45300, condominio: 0, iptu: 12500, manutencao: 14200, administracao: 5800, outras_despesas: 0 } },
   { competence: '2026-02', building_id: 'b12', expected_revenue: 1107120, realized_revenue: 1110000, expenses: 31800, result: 1078200, variation_pct: 1.2, breakdown: { alugueis: 1064820, outras_receitas: 45300, condominio: 0, iptu: 12500, manutencao: 13500, administracao: 5800, outras_despesas: 0 } },
   { competence: '2026-03', building_id: 'b12', expected_revenue: 1107120, realized_revenue: 1112000, expenses: 38900, result: 1073100, variation_pct: -0.5, breakdown: { alugueis: 1066700, outras_receitas: 45300, condominio: 0, iptu: 12500, manutencao: 18700, administracao: 7700, outras_despesas: 0 } },
@@ -448,14 +448,14 @@ export const mockCashFlow: CashFlowMonth[] = [
 
 // ─── REVENUE SEED DATA ────────────────────────
 const caxiasTenants = [
-  { name: 'Magazine Luiza', unit: 'Galpão A1', value: 180000 },
-  { name: 'Ambev S.A.', unit: 'Galpão A2', value: 207000 },
-  { name: 'Solistica (Grupo FEMSA)', unit: 'Galpão B1', value: 162500 },
-  { name: 'Tok&Stok', unit: 'Galpão B2', value: 127600 },
-  { name: 'Supporte', unit: 'Galpão C1', value: 88200 },
-  { name: 'DHL', unit: 'Galpão C2', value: 202800 },
-  { name: 'Sierra Log', unit: 'Galpão D1', value: 103500 },
-  { name: 'Caedu', unit: 'Galpão D2', value: 80520 },
+  { name: 'Vivo (Telefônica Brasil)', unit: 'Conjunto A1', value: 180000 },
+  { name: 'Totvs S.A.', unit: 'Conjunto A2', value: 207000 },
+  { name: 'Befly Viagens', unit: 'Conjunto B1', value: 162500 },
+  { name: 'Hospital Sírio-Libanês', unit: 'Conjunto B2', value: 127600 },
+  { name: 'BP Brasil', unit: 'Conjunto C1', value: 88200 },
+  { name: 'DHL', unit: 'Conjunto C2', value: 202800 },
+  { name: 'WeWork Brasil', unit: 'Conjunto D1', value: 103500 },
+  { name: 'Deloitte Brasil', unit: 'Conjunto D2', value: 80520 },
 ];
 const caxiasAreas = [
   { name: 'Cantina Industrial', value: 8500 },
@@ -465,14 +465,14 @@ const caxiasAreas = [
 ];
 
 const caxiasTenantStatuses: Record<string, ('paid'|'pending'|'overdue')[]> = {
-  'Magazine Luiza': ['paid','paid','paid','paid'],
-  'Ambev S.A.': ['paid','paid','paid','paid'],
-  'Solistica (Grupo FEMSA)': ['paid','paid','paid','pending'],
-  'Tok&Stok': ['paid','paid','paid','overdue'],
-  'Supporte': ['paid','paid','overdue','overdue'],
+  'Vivo (Telefônica Brasil)': ['paid','paid','paid','paid'],
+  'Totvs S.A.': ['paid','paid','paid','paid'],
+  'Befly Viagens': ['paid','paid','paid','pending'],
+  'Hospital Sírio-Libanês': ['paid','paid','paid','overdue'],
+  'BP Brasil': ['paid','paid','overdue','overdue'],
   'DHL': ['paid','paid','paid','paid'],
-  'Sierra Log': ['paid','paid','pending','pending'],
-  'Caedu': ['paid','paid','paid','paid'],
+  'WeWork Brasil': ['paid','paid','pending','pending'],
+  'Deloitte Brasil': ['paid','paid','paid','paid'],
 };
 
 let revId = 0;
@@ -513,36 +513,36 @@ export const mockRevenues: RevenueRecord[] = generateRevenues();
 
 let expId = 0;
 export const mockExpenses: ExpenseRecord[] = [
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-10', supplier: 'Prefeitura Duque de Caxias', description: 'IPTU Parcela Jan', value: 12500, category: 'iptu', cost_center: 'Caxias Park', competence: '2026-01' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-15', supplier: 'TechLog Manutenção', description: 'Manutenção docas e portões', value: 7200, category: 'manutencao', cost_center: 'Caxias Park', competence: '2026-01' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-20', supplier: 'CleanLog Serviços', description: 'Limpeza industrial mensal', value: 7000, category: 'manutencao', cost_center: 'Caxias Park', competence: '2026-01' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-25', supplier: 'Vinci Compass Admin', description: 'Taxa de administração', value: 5800, category: 'honorarios', cost_center: 'Caxias Park', competence: '2026-01' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-10', supplier: 'Prefeitura Duque de Caxias', description: 'IPTU Parcela Fev', value: 12500, category: 'iptu', cost_center: 'Caxias Park', competence: '2026-02' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-15', supplier: 'Allianz Seguros', description: 'Seguro patrimonial', value: 6300, category: 'seguro_predial', cost_center: 'Caxias Park', competence: '2026-02' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-20', supplier: 'CleanLog Serviços', description: 'Limpeza industrial mensal', value: 7200, category: 'manutencao', cost_center: 'Caxias Park', competence: '2026-02' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-25', supplier: 'Vinci Compass Admin', description: 'Taxa de administração', value: 5800, category: 'honorarios', cost_center: 'Caxias Park', competence: '2026-02' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-03-10', supplier: 'Prefeitura Duque de Caxias', description: 'IPTU Parcela Mar', value: 12500, category: 'iptu', cost_center: 'Caxias Park', competence: '2026-03' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-03-18', supplier: 'TechLog Manutenção', description: 'Reparo telhado galpão A', value: 11500, category: 'manutencao', cost_center: 'Caxias Park', competence: '2026-03' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-03-25', supplier: 'Vinci Compass Admin', description: 'Taxa de administração', value: 7700, category: 'honorarios', cost_center: 'Caxias Park', competence: '2026-03' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-04-10', supplier: 'Prefeitura Duque de Caxias', description: 'IPTU Parcela Abr', value: 12500, category: 'iptu', cost_center: 'Caxias Park', competence: '2026-04' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-04-20', supplier: 'CleanLog Serviços', description: 'Limpeza industrial mensal', value: 6900, category: 'manutencao', cost_center: 'Caxias Park', competence: '2026-04' },
-  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-04-25', supplier: 'Vinci Compass Admin', description: 'Taxa de administração', value: 5400, category: 'honorarios', cost_center: 'Caxias Park', competence: '2026-04' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-10', supplier: 'Prefeitura de São Paulo', description: 'IPTU Parcela Jan', value: 12500, category: 'iptu', cost_center: 'Chucri Zaidan', competence: '2026-01' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-15', supplier: 'TechLog Manutenção', description: 'Manutenção docas e portões', value: 7200, category: 'manutencao', cost_center: 'Chucri Zaidan', competence: '2026-01' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-20', supplier: 'CleanLog Serviços', description: 'Limpeza industrial mensal', value: 7000, category: 'manutencao', cost_center: 'Chucri Zaidan', competence: '2026-01' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-01-25', supplier: 'Patria Investimentos', description: 'Taxa de administração', value: 5800, category: 'honorarios', cost_center: 'Chucri Zaidan', competence: '2026-01' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-10', supplier: 'Prefeitura de São Paulo', description: 'IPTU Parcela Fev', value: 12500, category: 'iptu', cost_center: 'Chucri Zaidan', competence: '2026-02' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-15', supplier: 'Allianz Seguros', description: 'Seguro patrimonial', value: 6300, category: 'seguro_predial', cost_center: 'Chucri Zaidan', competence: '2026-02' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-20', supplier: 'CleanLog Serviços', description: 'Limpeza industrial mensal', value: 7200, category: 'manutencao', cost_center: 'Chucri Zaidan', competence: '2026-02' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-02-25', supplier: 'Patria Investimentos', description: 'Taxa de administração', value: 5800, category: 'honorarios', cost_center: 'Chucri Zaidan', competence: '2026-02' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-03-10', supplier: 'Prefeitura de São Paulo', description: 'IPTU Parcela Mar', value: 12500, category: 'iptu', cost_center: 'Chucri Zaidan', competence: '2026-03' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-03-18', supplier: 'TechLog Manutenção', description: 'Reparo telhado galpão A', value: 11500, category: 'manutencao', cost_center: 'Chucri Zaidan', competence: '2026-03' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-03-25', supplier: 'Patria Investimentos', description: 'Taxa de administração', value: 7700, category: 'honorarios', cost_center: 'Chucri Zaidan', competence: '2026-03' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-04-10', supplier: 'Prefeitura de São Paulo', description: 'IPTU Parcela Abr', value: 12500, category: 'iptu', cost_center: 'Chucri Zaidan', competence: '2026-04' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-04-20', supplier: 'CleanLog Serviços', description: 'Limpeza industrial mensal', value: 6900, category: 'manutencao', cost_center: 'Chucri Zaidan', competence: '2026-04' },
+  { id: `exp-${++expId}`, building_id: 'b12', date: '2026-04-25', supplier: 'Patria Investimentos', description: 'Taxa de administração', value: 5400, category: 'honorarios', cost_center: 'Chucri Zaidan', competence: '2026-04' },
 ];
 
 // ─── Financial Entries (unified model) ─────────
 export let mockFinancialEntries: FinancialEntry[] = [
-  { id: 'fe1', buildingId: 'b12', unitId: 'Galpão A1', date: '2026-04-05', type: 'receita', category: 'aluguel', subcategory: 'Aluguel', description: 'Aluguel Magazine Luiza Galpão A1', amount: 180000, receiptUrl: 'comprovante-magalu.pdf', isCapex: false, iptuInstallment: null, notes: '' },
-  { id: 'fe2', buildingId: 'b12', unitId: 'Galpão A2', date: '2026-04-09', type: 'receita', category: 'aluguel', subcategory: 'Aluguel', description: 'Aluguel Ambev Galpão A2', amount: 207000, receiptUrl: 'comprovante-ambev.pdf', isCapex: false, iptuInstallment: null, notes: '' },
-  { id: 'fe3', buildingId: 'b12', unitId: 'Galpão C2', date: '2026-04-08', type: 'receita', category: 'aluguel', subcategory: 'Aluguel', description: 'Aluguel DHL Galpão C2', amount: 202800, receiptUrl: 'comprovante-dhl.pdf', isCapex: false, iptuInstallment: null, notes: '' },
-  { id: 'fe4', buildingId: 'b12', unitId: null, date: '2026-04-10', type: 'despesa', category: 'iptu', subcategory: 'IPTU', description: 'IPTU Parcela Abr — Caxias Park', amount: 12500, receiptUrl: null, isCapex: false, iptuInstallment: { current: 4, total: 12 }, notes: '' },
+  { id: 'fe1', buildingId: 'b12', unitId: 'Conjunto A1', date: '2026-04-05', type: 'receita', category: 'aluguel', subcategory: 'Aluguel', description: 'Aluguel Vivo (Telefônica Brasil) Conjunto A1', amount: 180000, receiptUrl: 'comprovante-magalu.pdf', isCapex: false, iptuInstallment: null, notes: '' },
+  { id: 'fe2', buildingId: 'b12', unitId: 'Conjunto A2', date: '2026-04-09', type: 'receita', category: 'aluguel', subcategory: 'Aluguel', description: 'Aluguel Ambev Conjunto A2', amount: 207000, receiptUrl: 'comprovante-ambev.pdf', isCapex: false, iptuInstallment: null, notes: '' },
+  { id: 'fe3', buildingId: 'b12', unitId: 'Conjunto C2', date: '2026-04-08', type: 'receita', category: 'aluguel', subcategory: 'Aluguel', description: 'Aluguel DHL Conjunto C2', amount: 202800, receiptUrl: 'comprovante-dhl.pdf', isCapex: false, iptuInstallment: null, notes: '' },
+  { id: 'fe4', buildingId: 'b12', unitId: null, date: '2026-04-10', type: 'despesa', category: 'iptu', subcategory: 'IPTU', description: 'IPTU Parcela Abr — Chucri Zaidan', amount: 12500, receiptUrl: null, isCapex: false, iptuInstallment: { current: 4, total: 12 }, notes: '' },
   { id: 'fe5', buildingId: 'b12', unitId: null, date: '2026-04-20', type: 'despesa', category: 'manutencao_preventiva', subcategory: 'Manutenção preventiva', description: 'Limpeza industrial mensal', amount: 6900, receiptUrl: null, isCapex: false, iptuInstallment: null, notes: '' },
-  { id: 'fe6', buildingId: 'b12', unitId: null, date: '2026-04-25', type: 'despesa', category: 'honorarios', subcategory: 'Administração', description: 'Taxa de administração Vinci Compass', amount: 5400, receiptUrl: null, isCapex: false, iptuInstallment: null, notes: '' },
-  { id: 'fe7', buildingId: 'b12', unitId: null, date: '2026-02-15', type: 'despesa', category: 'seguro_predial', subcategory: 'Seguro patrimonial', description: 'Seguro patrimonial Caxias Park', amount: 6300, receiptUrl: 'apolice-allianz.pdf', isCapex: false, iptuInstallment: null, notes: '' },
+  { id: 'fe6', buildingId: 'b12', unitId: null, date: '2026-04-25', type: 'despesa', category: 'honorarios', subcategory: 'Administração', description: 'Taxa de administração Patria', amount: 5400, receiptUrl: null, isCapex: false, iptuInstallment: null, notes: '' },
+  { id: 'fe7', buildingId: 'b12', unitId: null, date: '2026-02-15', type: 'despesa', category: 'seguro_predial', subcategory: 'Seguro patrimonial', description: 'Seguro patrimonial Chucri Zaidan', amount: 6300, receiptUrl: 'apolice-allianz.pdf', isCapex: false, iptuInstallment: null, notes: '' },
 ];
 
-// Banco Extract mock — Caxias Park / VILG11
+// Banco Extract mock — Chucri Zaidan / HGRE11
 export let mockBTGExtract: BTGExtractEntry[] = [
-  { id: 'btg1', date: '2026-04-02', description: 'TED RECEBIDA Magazine Luiza', amount: 180000, documentNumber: 'BANCO001' },
+  { id: 'btg1', date: '2026-04-02', description: 'TED RECEBIDA Vivo (Telefônica Brasil)', amount: 180000, documentNumber: 'BANCO001' },
   { id: 'btg2', date: '2026-04-02', description: 'TED RECEBIDA AMBEV SA', amount: 207000, documentNumber: 'BANCO002' },
   { id: 'btg3', date: '2026-04-01', description: 'TED RECEBIDA CANTINA INDUSTRIAL', amount: 8500, documentNumber: 'BANCO003' },
   { id: 'btg4', date: '2026-04-01', description: 'TED RECEBIDA CENTRO TREINAMENTO', amount: 15000, documentNumber: 'BANCO004' },
@@ -554,10 +554,10 @@ export let mockBTGExtract: BTGExtractEntry[] = [
 ];
 
 export const mockReportHistory: ReportHistoryEntry[] = [
-  { id: 'rh1', type: 'gestao', building_name: 'Caxias Park', tenants: ['Magazine Luiza', 'Ambev S.A.'], period: 'Jan-Mar/2026', generated_at: '2026-03-31T14:00:00', generated_by: 'Rodrigo Silva', format: 'pdf', size: '1.2 MB' },
-  { id: 'rh2', type: 'pendencias', building_name: 'Caxias Park', tenants: ['Supporte'], period: 'Mar/2026', generated_at: '2026-03-28T10:30:00', generated_by: 'Rodrigo Silva', format: 'pdf', size: '340 KB' },
-  { id: 'rh3', type: 'gestao', building_name: 'Caxias Park', tenants: ['Todos'], period: 'Jan-Mar/2026', generated_at: '2026-03-30T16:00:00', generated_by: 'Ana Martins', format: 'pdf', size: '2.8 MB' },
-  { id: 'rh4', type: 'gestao', building_name: 'Caxias Park', tenants: ['Todos'], period: 'Jan-Dez/2025', generated_at: '2026-01-05T09:00:00', generated_by: 'Rodrigo Silva', format: 'excel', size: '890 KB' },
-  { id: 'rh5', type: 'pendencias', building_name: 'Caxias Park', tenants: ['Todos'], period: 'Fev/2026', generated_at: '2026-03-01T11:00:00', generated_by: 'Ana Martins', format: 'pdf', size: '280 KB' },
-  { id: 'rh6', type: 'gestao', building_name: 'Caxias Park', tenants: ['Tok&Stok'], period: 'Abr/2026', generated_at: '2026-04-05T15:30:00', generated_by: 'Rodrigo Silva', format: 'pdf', size: '520 KB' },
+  { id: 'rh1', type: 'gestao', building_name: 'Chucri Zaidan', tenants: ['Vivo (Telefônica Brasil)', 'Totvs S.A.'], period: 'Jan-Mar/2026', generated_at: '2026-03-31T14:00:00', generated_by: 'Rodrigo Silva', format: 'pdf', size: '1.2 MB' },
+  { id: 'rh2', type: 'pendencias', building_name: 'Chucri Zaidan', tenants: ['BP Brasil'], period: 'Mar/2026', generated_at: '2026-03-28T10:30:00', generated_by: 'Rodrigo Silva', format: 'pdf', size: '340 KB' },
+  { id: 'rh3', type: 'gestao', building_name: 'Chucri Zaidan', tenants: ['Todos'], period: 'Jan-Mar/2026', generated_at: '2026-03-30T16:00:00', generated_by: 'Ana Martins', format: 'pdf', size: '2.8 MB' },
+  { id: 'rh4', type: 'gestao', building_name: 'Chucri Zaidan', tenants: ['Todos'], period: 'Jan-Dez/2025', generated_at: '2026-01-05T09:00:00', generated_by: 'Rodrigo Silva', format: 'excel', size: '890 KB' },
+  { id: 'rh5', type: 'pendencias', building_name: 'Chucri Zaidan', tenants: ['Todos'], period: 'Fev/2026', generated_at: '2026-03-01T11:00:00', generated_by: 'Ana Martins', format: 'pdf', size: '280 KB' },
+  { id: 'rh6', type: 'gestao', building_name: 'Chucri Zaidan', tenants: ['Hospital Sírio-Libanês'], period: 'Abr/2026', generated_at: '2026-04-05T15:30:00', generated_by: 'Rodrigo Silva', format: 'pdf', size: '520 KB' },
 ];

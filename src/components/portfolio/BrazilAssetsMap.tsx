@@ -12,7 +12,7 @@ interface Props {
   onAssetClick?: (a: AssetPoint) => void;
 }
 
-// Palette inspired by VILG11 reference
+// Palette inspired by HGRE11 reference
 const PALETTE = [
   "#1E2A78", "#22B6F0", "#0B4F8A", "#1763C8", "#1A56A8",
   "#2D7AD9", "#0E5266", "#0B6E7F", "#0E7C8C", "#2DB07A", "#5BC773",

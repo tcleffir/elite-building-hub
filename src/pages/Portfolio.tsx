@@ -3,14 +3,14 @@ import { Building2, ChevronRight, AlertTriangle, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { getVILG11PortfolioBuildings, mockTenantContracts, mockBuildingDocuments } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts, mockBuildingDocuments } from "@/lib/mock-data";
 import { getContractHealth, getDocumentHealth, getOccupancyStatus, healthColors, healthLabels } from "@/lib/health-utils";
 
 const fmt = (v: number) => v >= 1000000 ? `R$ ${(v / 1000000).toFixed(2).replace('.', ',')}M` : `R$ ${v.toLocaleString('pt-BR')}`;
 
 const Portfolio = () => {
   const navigate = useNavigate();
-  const portfolioBuildings = getVILG11PortfolioBuildings();
+  const portfolioBuildings = getHGRE11PortfolioBuildings();
 
   return (
     <div className="space-y-6">

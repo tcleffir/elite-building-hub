@@ -63,7 +63,7 @@ export const TEMPLATE_PADRAO = {
     ],
   } satisfies ExportTemplate<any>,
 
-  /* Cobranças preparadas — base para o futuro layout bancário/CNAB da Vinci.
+  /* Cobranças preparadas — base para o futuro layout bancário/CNAB da Patria.
      Quando o layout for definido, substitua as colunas abaixo. */
   cobrancasPreparadas: {
     sheetName: "Cobranças preparadas",

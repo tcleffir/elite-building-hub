@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { getVILG11PortfolioBuildings, mockReservations, Reservation } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockReservations, Reservation } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { format, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -70,7 +70,7 @@ const ProprietarioReservas = () => {
   const [newEnd, setNewEnd] = useState('');
   const [newNote, setNewNote] = useState('');
 
-  const userBuildings = getVILG11PortfolioBuildings();
+  const userBuildings = getHGRE11PortfolioBuildings();
 
   const getAreaInfo = (name: string) => commonAreas.find(a => a.name === name);
   const getAreaReservationsThisMonth = (name: string) => {

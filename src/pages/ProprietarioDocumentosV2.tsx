@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { getVILG11PortfolioBuildings, mockBuildingDocuments, mockEnergyData, mockReportFolders, ReportFolder, ReportFile } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockBuildingDocuments, mockEnergyData, mockReportFolders, ReportFolder, ReportFile } from "@/lib/mock-data";
 import { getDocumentHealth, daysUntil, healthColors, healthLabels, HealthStatus } from "@/lib/health-utils";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
@@ -136,7 +136,7 @@ const ProprietarioDocumentosV2 = () => {
     fetchRealDocs();
   }, []);
 
-  const userBuildings = getVILG11PortfolioBuildings();
+  const userBuildings = getHGRE11PortfolioBuildings();
   const building = userBuildings.find(b => b.id === selectedBuildingId);
 
   const docs = useMemo(() => {
@@ -408,7 +408,7 @@ const ProprietarioDocumentosV2 = () => {
         autoTable(doc, { head: [headers], body: rows.length > 0 ? rows : [['Nenhum documento', '', '', '', '']], startY: 55, styles: { fontSize: 8 }, headStyles: { fillColor: [15, 56, 52] } });
       }
 
-      const fileName = `LUXCondo_${titles[type]?.replace(/\s/g, '_') || type}_${bName.replace(/\s/g, '-')}.pdf`;
+      const fileName = `Patria Real Estate_${titles[type]?.replace(/\s/g, '_') || type}_${bName.replace(/\s/g, '-')}.pdf`;
       doc.save(fileName);
       toast.success(`Relatório gerado: ${fileName}`);
       setLastGenerated(prev => ({ ...prev, [type]: new Date().toLocaleString('pt-BR') }));

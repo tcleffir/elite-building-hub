@@ -1,4 +1,4 @@
-import { Building, TenantContract, getVILG11PortfolioBuildings, mockTenantContracts } from "@/lib/mock-data";
+import { Building, TenantContract, getHGRE11PortfolioBuildings, mockTenantContracts } from "@/lib/mock-data";
 
 /**
  * Camada de competência (snapshot mensal) da página Portfólio.
@@ -136,7 +136,7 @@ export function getPortfolioSnapshot(competencia: string): PortfolioSnapshot {
   const current = monthStart(CURRENT_COMPETENCIA);
   const monthsShift = monthsBetween(start, current); // >= 0 para competências passadas
 
-  const baseBuildings = getVILG11PortfolioBuildings();
+  const baseBuildings = getHGRE11PortfolioBuildings();
   const buildingIds = new Set(baseBuildings.map((b) => b.id));
 
   // Contratos vigentes na competência (vagas permanecem para cálculo de vacância)

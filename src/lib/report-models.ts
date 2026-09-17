@@ -74,17 +74,17 @@ export interface ScheduledReport {
 export const mockScheduledReports: ScheduledReport[] = [
   {
     id: "sch-1", model: "mensal", modelLabel: "Relatório Mensal de Locação",
-    escopo: "CD Cariacica", periodicidade: "Mensal", proximaGeracao: "2026-09-05",
+    escopo: "Sêneca", periodicidade: "Mensal", proximaGeracao: "2026-09-05",
     destinatarios: ["Gestão", "Comitê"], formato: "pdf", status: "ativo",
   },
   {
     id: "sch-2", model: "inadimplencia", modelLabel: "Relatório de Inadimplência",
-    escopo: "Todos os ativos — VILG11", periodicidade: "Mensal", proximaGeracao: "2026-09-10",
+    escopo: "Todos os ativos — HGRE11", periodicidade: "Mensal", proximaGeracao: "2026-09-10",
     destinatarios: ["Gestão", "Administradora"], formato: "excel", status: "ativo",
   },
   {
     id: "sch-3", model: "vencimentos", modelLabel: "Relatório de Vencimentos",
-    escopo: "Caxias Park", periodicidade: "Trimestral", proximaGeracao: "2026-10-01",
+    escopo: "Chucri Zaidan", periodicidade: "Trimestral", proximaGeracao: "2026-10-01",
     destinatarios: ["Comitê"], formato: "pdf", status: "pausado",
   },
 ];

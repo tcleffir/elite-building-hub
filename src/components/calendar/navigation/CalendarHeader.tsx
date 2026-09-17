@@ -64,7 +64,7 @@ const CalendarHeader = ({
       const d = new Date(e.start_at);
       return d.getMonth() === month && d.getFullYear() === year;
     });
-    downloadICS(monthEvents, `LUXCondo_${monthNames[month]}_${year}.ics`);
+    downloadICS(monthEvents, `Patria Real Estate_${monthNames[month]}_${year}.ics`);
     import('sonner').then(m => m.toast.success(`Exportados ${monthEvents.length} eventos de ${monthNames[month]}`));
   };
 
@@ -72,12 +72,12 @@ const CalendarHeader = ({
     const now = new Date();
     const limit = new Date(now.getTime() + 30 * 86400000);
     const filtered = events.filter(e => { const d = new Date(e.start_at); return d >= now && d <= limit; });
-    downloadICS(filtered, `LUXCondo_Proximos_30_dias.ics`);
+    downloadICS(filtered, `Patria Real Estate_Proximos_30_dias.ics`);
     import('sonner').then(m => m.toast.success(`Exportados ${filtered.length} eventos`));
   };
 
   const handleExportAll = () => {
-    downloadICS(events, `LUXCondo_Todos_Eventos.ics`);
+    downloadICS(events, `Patria Real Estate_Todos_Eventos.ics`);
     import('sonner').then(m => m.toast.success(`Exportados ${events.length} eventos`));
   };
 

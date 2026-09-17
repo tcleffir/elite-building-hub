@@ -6,7 +6,7 @@ const corsHeaders = {
     'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 }
 
-const buildPrompt = (taxonomy: string, assets: string) => `Você é o analista documental de um gestor de portfólio de fundos imobiliários (Vinci Compass, fundo logístico VILG11).
+const buildPrompt = (taxonomy: string, assets: string) => `Você é o analista documental de um gestor de portfólio de fundos imobiliários (Patria, fundo logístico HGRE11).
 
 Sua tarefa: ler o documento enviado (contrato de locação, aditivo, apólice de seguro, laudo técnico, AVCB, PMOC, IPTU, nota fiscal, boleto, fatura de utilities, ART, alvará, planilha, foto de placa/equipamento, etc.) e devolver uma ficha COMPLETA e DETALHADA do que se trata, com TODOS os dados relevantes que existirem no documento.
 

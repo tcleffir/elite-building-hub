@@ -98,7 +98,7 @@ const pt = {
   "common.occupied": "Ocupado",
 
   // ── Login ──
-  "login.title": "Entrar no Vinci Compass",
+  "login.title": "Entrar no Patria",
   "login.subtitle": "Gestão inteligente de condomínios premium",
   "login.email": "E-mail",
   "login.password": "Senha",
@@ -732,7 +732,7 @@ const es: Record<TranslationKey, string> = {
   "common.unavailable": "No disponible",
   "common.occupied": "Ocupado",
 
-  "login.title": "Iniciar sesión en Vinci Compass",
+  "login.title": "Iniciar sesión en Patria",
   "login.subtitle": "Gestión inteligente de condominios premium",
   "login.email": "Correo electrónico",
   "login.password": "Contraseña",
@@ -1338,7 +1338,7 @@ const en: Record<TranslationKey, string> = {
   "common.unavailable": "Unavailable",
   "common.occupied": "Occupied",
 
-  "login.title": "Sign in to Vinci Compass",
+  "login.title": "Sign in to Patria",
   "login.subtitle": "Smart management for premium condominiums",
   "login.email": "Email",
   "login.password": "Password",

@@ -76,7 +76,7 @@ const ProprietarioEdificios = () => {
     if (bp) setSelectedBuildingId(bp);
   }, [searchParams]);
 
-  // For the Proprietário module, scope to the fund manager's portfolio (VILG11 assets)
+  // For the Proprietário module, scope to the fund manager's portfolio (HGRE11 assets)
   const fundManager = mockUsers.find(u => u.role === 'gestor_fundo');
   const allowedBuildingIds: string[] = fundManager?.building_ids ?? user.building_ids;
   const userBuildings = mockBuildings.filter(b => allowedBuildingIds.includes(b.id) && b.segment);
