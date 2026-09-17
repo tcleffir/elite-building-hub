@@ -386,7 +386,7 @@ export interface ReportFile {
 }
 
 // ─── Mock Users (single ref) ──────────────────────────
-export const mockUser: User = mockUsers[1]; // Tatiana as default
+export const mockUser: User = mockUsers[1]; // Natalia Landi as default
 
 export const HGRE11_ASSET_IDS = ['b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14'] as const;
 export type HGRE11AssetId = typeof HGRE11_ASSET_IDS[number];
