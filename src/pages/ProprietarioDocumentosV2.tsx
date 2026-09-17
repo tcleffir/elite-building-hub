@@ -381,31 +381,71 @@ const ProprietarioDocumentosV2 = () => {
     toast.success(`Arquivado em ${dest.category} › ${dest.subfolder}`);
   };
 
-  const generatePDF = (type: string) => {
-    setGeneratingReport(type);
-    setTimeout(() => {
-      const doc = new jsPDF();
-      const bName = building?.name || 'Portfólio';
+  const reportTitles: Record<string, string> = {
+    utilities: 'Relatório de Consumo',
+    docs_critical: 'Documentos Críticos',
+    docs_attention: 'Documentos de Atenção',
+    docs_general: 'Relatório Geral de Documentação',
+  };
 
-      doc.setDrawColor(15, 56, 52);
-      doc.setFillColor(15, 56, 52);
-      doc.rect(0, 0, 210, 35, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(8);
-      doc.text('[LOGO]', 14, 15);
-      doc.setFontSize(16);
-      const titles: Record<string, string> = {
-        utilities: 'Relatório de Consumo',
-        docs_critical: 'Documentos Críticos',
-        docs_attention: 'Documentos de Atenção',
-        docs_general: 'Relatório Geral de Documentação',
-      };
-      doc.text(titles[type] || 'Relatório', 14, 25);
-      doc.setFontSize(9);
-      doc.text(bName, 14, 31);
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(9);
-      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, 14, 42);
+  const monthLabel = (v: string) => monthOptions.find(o => o.value === v)?.label || v;
+
+  const generatePDF = async (type: string) => {
+    setGeneratingReport(type);
+    const bName = building?.name || 'Portfólio HGRE11';
+    const title = reportTitles[type] || 'Relatório';
+    const period = type === 'utilities'
+      ? `${monthLabel(reportStart)} — ${monthLabel(reportEnd)}`
+      : new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+    try {
+      const docStatusRows = (files: FileWithMeta[]) => files.map(f => {
+        const s = getDocStatus(f);
+        return [
+          f.name,
+          f.categoryName,
+          s.label,
+          f.expires_at ? new Date(f.expires_at).toLocaleDateString('pt-BR') : '—',
+          f.responsible_company || '—',
+        ];
+      });
+
+      const relevantFiles = type === 'docs_critical'
+        ? criticalDocs
+        : type === 'docs_attention'
+        ? allFiles.filter(f => { const d = getDocStatus(f).daysLeft; return d !== null && d > 30 && d <= attentionDays[0]; })
+        : allFiles;
+
+      // Exportação Excel do Relatório Geral
+      if (type === 'docs_general' && generalFormat === 'excel') {
+        const sorted = [...relevantFiles].sort((a, b) => {
+          if (generalGroupBy === 'status') return getDocStatus(a).statusKey.localeCompare(getDocStatus(b).statusKey);
+          if (generalGroupBy === 'expires') return (a.expires_at || '9999').localeCompare(b.expires_at || '9999');
+          return a.categoryName.localeCompare(b.categoryName, 'pt-BR');
+        });
+        exportExcel({
+          fileName: `Patria_${title.replace(/\s/g, '_')}_${bName.replace(/\s/g, '-')}.xlsx`,
+          sheets: [{
+            sheetName: 'Documentos',
+            columns: [
+              { header: 'Documento', get: (r: FileWithMeta) => r.name },
+              { header: 'Categoria', get: (r: FileWithMeta) => r.categoryName },
+              { header: 'Subpasta', get: (r: FileWithMeta) => r.subfolderName },
+              { header: 'Status', get: (r: FileWithMeta) => getDocStatus(r).label },
+              { header: 'Emissão', get: (r: FileWithMeta) => r.issued_at || '' },
+              { header: 'Vencimento', get: (r: FileWithMeta) => r.expires_at || '' },
+              { header: 'Empresa responsável', get: (r: FileWithMeta) => r.responsible_company || '' },
+            ],
+            rows: sorted,
+          }],
+        });
+        toast.success('Planilha gerada com sucesso');
+        setLastGenerated(prev => ({ ...prev, [type]: new Date().toLocaleString('pt-BR') }));
+        setGeneratingReport(null);
+        return;
+      }
+
+      const sections: ReportSection[] = [];
 
       if (type === 'utilities') {
         const headers: string[] = ['Mês'];
@@ -414,34 +454,80 @@ const ProprietarioDocumentosV2 = () => {
         if (utilityToggles.gas) headers.push('Gás (m³)', 'Custo');
         if (utilityToggles.waste) headers.push('Resíduos (ton)');
         const rows = mockEnergyData.map(d => {
-          const row: string[] = [d.month];
-          if (utilityToggles.energy) { row.push(d.kwh.toLocaleString('pt-BR'), `R$ ${(d.kwh * 0.85).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`); }
-          if (utilityToggles.water) { row.push(d.water.toLocaleString('pt-BR'), `R$ ${(d.water * 12.5).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`); }
-          if (utilityToggles.gas) { row.push(d.gas.toLocaleString('pt-BR'), `R$ ${(d.gas * 4.2).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`); }
-          if (utilityToggles.waste) { row.push((2.5 + Math.random() * 0.8).toFixed(1)); }
+          const row: (string | number)[] = [d.month];
+          if (utilityToggles.energy) row.push(d.kwh.toLocaleString('pt-BR'), `R$ ${(d.kwh * 0.85).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`);
+          if (utilityToggles.water) row.push(d.water.toLocaleString('pt-BR'), `R$ ${(d.water * 12.5).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`);
+          if (utilityToggles.gas) row.push(d.gas.toLocaleString('pt-BR'), `R$ ${(d.gas * 4.2).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`);
+          if (utilityToggles.waste) row.push('2,8');
           return row;
         });
-        autoTable(doc, { head: [headers], body: rows, startY: 55, styles: { fontSize: 8 }, headStyles: { fillColor: [15, 56, 52] } });
-      } else {
-        const relevantFiles = type === 'docs_critical'
-          ? allFiles.filter(f => getDocStatus(f).statusKey === 'expired' || (getDocStatus(f).daysLeft !== null && getDocStatus(f).daysLeft! <= 30 && getDocStatus(f).daysLeft! >= 0))
-          : type === 'docs_attention'
-          ? allFiles.filter(f => { const d = getDocStatus(f).daysLeft; return d !== null && d > 30 && d <= attentionDays[0]; })
-          : allFiles;
-        const headers = ['Documento', 'Categoria', 'Status', 'Vencimento', 'Empresa'];
-        const rows = relevantFiles.map(f => {
-          const s = getDocStatus(f);
-          return [f.name, f.categoryName, s.label, f.expires_at ? new Date(f.expires_at).toLocaleDateString('pt-BR') : '—', f.responsible_company || '—'];
+        sections.push({
+          title: 'Consumo por competência',
+          type: 'table',
+          tableHeaders: headers,
+          tableRows: rows,
+          footnote: 'Valores de consumo e custo estimados a partir das medições registradas na plataforma.',
         });
-        autoTable(doc, { head: [headers], body: rows.length > 0 ? rows : [['Nenhum documento', '', '', '', '']], startY: 55, styles: { fontSize: 8 }, headStyles: { fillColor: [15, 56, 52] } });
+      } else {
+        sections.push({
+          title: 'Panorama da documentação',
+          type: 'kpi-cards',
+          kpis: [
+            { value: String(okCount), label: 'Atualizados', color: PDF_COLORS.green },
+            { value: String(expiringCount), label: 'A vencer', color: PDF_COLORS.amber },
+            { value: String(expiredCount), label: 'Vencidos', color: PDF_COLORS.red },
+            { value: String(relevantFiles.length), label: 'Neste relatório' },
+          ],
+        });
+
+        const sorted = [...relevantFiles].sort((a, b) => {
+          if (type === 'docs_general' && generalGroupBy === 'status') return getDocStatus(a).statusKey.localeCompare(getDocStatus(b).statusKey);
+          if (type === 'docs_general' && generalGroupBy === 'expires') return (a.expires_at || '9999').localeCompare(b.expires_at || '9999');
+          return a.categoryName.localeCompare(b.categoryName, 'pt-BR');
+        });
+
+        sections.push({
+          title: type === 'docs_attention' ? `Documentos com vencimento em até ${attentionDays[0]} dias` : 'Relação de documentos',
+          type: 'table',
+          tableHeaders: ['Documento', 'Categoria', 'Status', 'Vencimento', 'Empresa'],
+          tableRows: sorted.length ? docStatusRows(sorted) : [['Nenhum documento encontrado', '—', '—', '—', '—']],
+          columnWidths: [58, 38, 26, 24, 28],
+          rowHealthCodes: sorted.map(f => {
+            const k = getDocStatus(f).statusKey;
+            return k === 'expired' ? 'critical' : k === 'expiring' ? 'warning' : 'healthy';
+          }),
+        });
       }
 
-      const fileName = `Patria Real Estate_${titles[type]?.replace(/\s/g, '_') || type}_${bName.replace(/\s/g, '-')}.pdf`;
-      doc.save(fileName);
-      toast.success(`Relatório gerado: ${fileName}`);
+      const config: ReportConfig = {
+        title,
+        subtitle: bName,
+        period,
+        module: 'Documentos',
+        gestorName: 'Patria Investimentos',
+        fundName: 'HGRE11',
+        tableOfContents: sections.map((s, i) => ({ page: i + 2, title: s.title })),
+        previewKpis: type === 'utilities'
+          ? [
+              { value: `${mockEnergyData.length}`, label: 'Competências' },
+              { value: `${Object.values(utilityToggles).filter(Boolean).length}`, label: 'Indicadores' },
+            ]
+          : [
+              { value: String(relevantFiles.length), label: 'Documentos' },
+              { value: String(expiredCount), label: 'Vencidos' },
+              { value: String(expiringCount), label: 'A vencer' },
+            ],
+      };
+
+      await generateReport(config, sections);
+      toast.success(`Relatório Patria gerado: ${title}`);
       setLastGenerated(prev => ({ ...prev, [type]: new Date().toLocaleString('pt-BR') }));
+    } catch (e) {
+      console.error(e);
+      toast.error('Não foi possível gerar o relatório.');
+    } finally {
       setGeneratingReport(null);
-    }, 1500);
+    }
   };
 
   // Critical/attention doc counts for report tab
