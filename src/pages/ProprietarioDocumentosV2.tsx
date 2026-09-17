@@ -90,6 +90,14 @@ const ProprietarioDocumentosV2 = () => {
   const [renameFile, setRenameFile] = useState<ReportFile | null>(null);
   const [renameValue, setRenameValue] = useState('');
 
+  // Pastas criadas pelo usuário (nesta sessão)
+  const [customFolders, setCustomFolders] = useState<ReportFolder[]>([]);
+  const [customSubfolders, setCustomSubfolders] = useState<Record<string, ReportFolder[]>>({});
+  const [showNewFolder, setShowNewFolder] = useState(false);
+  const [newFolderKind, setNewFolderKind] = useState<'folder' | 'subfolder'>('folder');
+  const [newFolderName, setNewFolderName] = useState('');
+  const [newFolderParent, setNewFolderParent] = useState('');
+
   // Report generation state
   const [reportStart, setReportStart] = useState('2026-01');
   const [reportEnd, setReportEnd] = useState('2026-04');
