@@ -15,10 +15,17 @@ export default {
   	extend: {
   		fontFamily: {
   			montserrat: [
+  				'Jost',
   				'Montserrat',
   				'sans-serif'
   			],
+  			display: [
+  				'Jost',
+  				'ui-sans-serif',
+  				'sans-serif'
+  			],
   			sans: [
+  				'Jost',
   				'ui-sans-serif',
   				'system-ui',
   				'sans-serif',
@@ -27,6 +34,7 @@ export default {
   				'Segoe UI Symbol',
   				'Noto Color Emoji'
   			],
+
   			serif: [
   				'ui-serif',
   				'Georgia',

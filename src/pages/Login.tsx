@@ -8,8 +8,8 @@ import { mockUsers, roleLabels } from "@/lib/mock-data";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useApp } from "@/contexts/AppContext";
 import { localeLabels, Locale } from "@/lib/translations";
-import logoAzul from "@/assets/logo-azul.png";
-import logoBranco from "@/assets/logo-branco.png";
+import logoAzul from "@/assets/patria-logo-navy.png";
+import logoBranco from "@/assets/patria-logo-white.png";
 import heroBuilding from "@/assets/hero-building.jpg";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,

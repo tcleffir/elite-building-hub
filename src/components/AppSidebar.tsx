@@ -6,7 +6,7 @@ import { useApp } from "@/contexts/AppContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TranslationKey } from "@/lib/translations";
 import { getVisibleNav, NavGroup, moduleKeyForGroup } from "@/lib/role-config";
-import logoBranco from "@/assets/logo-branco.png";
+import logoBranco from "@/assets/patria-logo-white.png";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
