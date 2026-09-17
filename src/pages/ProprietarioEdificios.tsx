@@ -70,6 +70,10 @@ const ProprietarioEdificios = () => {
   // Dialogs
   const [showEdit, setShowEdit] = useState(false);
   const [showRenew, setShowRenew] = useState(false);
+  const [showNewBuilding, setShowNewBuilding] = useState(false);
+  const [showNewTenant, setShowNewTenant] = useState(false);
+  const [newBuilding, setNewBuilding] = useState({ name: '', city: '', state: '', segment: 'office', floors: '', gla: '', address: '' });
+  const [newTenant, setNewTenant] = useState({ name: '', unit: '', floor: '', area: '', pricePerM2: '', start: '', end: '', contact: '', email: '' });
   const [editForm, setEditForm] = useState({ tenant: '', type: 'net', area: '', price: '', start: '', end: '' });
   const [renewForm, setRenewForm] = useState({ endDate: '', value: '', index: '4.82' });
 
