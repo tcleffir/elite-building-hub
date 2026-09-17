@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import RevisionaisTab from "@/components/contratos/RevisionaisTab";
 import CompetenciaTab from "@/components/contratos/CompetenciaTab";
 import ContractManagementSection from "@/components/contratos/ContractManagementSection";
+import IptuTab from "@/components/contratos/IptuTab";
 
 type ContractStatus = 'all' | 'active' | 'expiring' | 'expired' | 'negotiation';
 type SortKey = 'tenant' | 'area' | 'rpsm2' | 'value' | 'monthsRemaining';
