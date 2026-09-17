@@ -175,18 +175,52 @@ const ProprietarioEdificios = () => {
               {building.occupancy_pct}% ocupação
             </Badge>
           )}
-          {building && (
-            <Button variant="outline" size="sm" className="ml-auto text-xs gap-1 h-7" onClick={() => navigate('/proprietario/contratos')}>
-              <ListChecks size={12} /> Ver Lista de Contratos
+          <div className="ml-auto flex items-center gap-2 flex-wrap">
+            <Button size="sm" className="text-xs gap-1 h-8" onClick={() => setShowNewBuilding(true)}>
+              <Plus size={12} /> Adicionar Ativo
             </Button>
-          )}
+            {building && (
+              <Button variant="outline" size="sm" className="text-xs gap-1 h-8" onClick={() => setShowNewTenant(true)}>
+                <UserPlus size={12} /> Adicionar Locatário
+              </Button>
+            )}
+            {building && (
+              <Button variant="outline" size="sm" className="text-xs gap-1 h-8" onClick={() => navigate('/proprietario/contratos')}>
+                <ListChecks size={12} /> Ver Lista de Contratos
+              </Button>
+            )}
+          </div>
         </div>
 
         {!building ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <Building2 size={48} className="text-muted-foreground/30 mb-4" />
-            <h3 className="text-lg font-medium text-muted-foreground">Selecione um ativo</h3>
-            <p className="text-sm text-muted-foreground">Escolha um ativo para visualizar o mapa de unidades</p>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Selecione um ativo abaixo para abrir o mapa de unidades — {userBuildings.length} ativos no portfólio.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {userBuildings.map(b => (
+                <button
+                  key={b.id}
+                  onClick={() => setSelectedBuildingId(b.id)}
+                  className="text-left bg-card rounded-2xl p-4 premium-shadow border hover:border-interactive transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-foreground flex items-center gap-2">
+                        <Building2 size={15} /> {b.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{b.city}/{b.state}</p>
+                    </div>
+                    <Badge className={`${healthColors[getOccupancyStatus(b.occupancy_pct || 0)].badge} text-[10px]`}>
+                      {b.occupancy_pct}% ocup.
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    {(b.gla_m2 || b.total_area_m2 || 0).toLocaleString('pt-BR')} m² · {b.total_floors || 0} andares
+                  </p>
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           <>
