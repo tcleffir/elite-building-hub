@@ -140,8 +140,10 @@ const AiDocumentReview = ({ analysis, onChange, fileName }: Props) => {
         </p>
       </Section>
 
+      {/* Detailed sections — two columns on wide screens */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       {/* Identification (editable) */}
-      <Section icon={FileText} title="Identificação">
+      <Section icon={FileText} title="Identificação" className="lg:col-span-2">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="sm:col-span-2">
             <Label className="text-xs">Nome do documento</Label>
