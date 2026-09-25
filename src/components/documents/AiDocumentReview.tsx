@@ -286,6 +286,7 @@ const AiDocumentReview = ({ analysis, onChange, fileName }: Props) => {
           </ul>
         </Section>
       )}
+      </div>
     </div>
   );
 };
