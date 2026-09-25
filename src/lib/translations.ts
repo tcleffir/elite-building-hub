@@ -437,7 +437,7 @@ const pt = {
 
   // ── Financeiro ──
   "financeiro.title": "Financeiro",
-  "financeiro.titleIPMS": "Financeiro — IPMS",
+  "financeiro.titleIPMS": "Financeiro",
   "financeiro.subtitle": "Visão consolidada de receitas, despesas e rateio condominial",
   "financeiro.income": "Receita",
   "financeiro.expenses": "Despesas",

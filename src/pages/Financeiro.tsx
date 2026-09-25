@@ -173,7 +173,7 @@ const Financeiro = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground">Financeiro — IPMS</h1>
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground">Financeiro</h1>
           <p className="text-sm text-muted-foreground">Visão consolidada de receitas, despesas e rateio condominial</p>
         </div>
         <div className="flex gap-2 flex-wrap">
