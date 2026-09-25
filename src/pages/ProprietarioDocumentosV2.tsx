@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { getHGRE11PortfolioBuildings, mockBuildingDocuments, mockEnergyData, mockReportFolders, ReportFolder, ReportFile } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts, upsertTenantContract, type TenantContract, mockBuildingDocuments, mockEnergyData, mockReportFolders, ReportFolder, ReportFile } from "@/lib/mock-data";
 import { getDocumentHealth, daysUntil, healthColors, healthLabels, HealthStatus, getOccupancyStatus } from "@/lib/health-utils";
 import { toast } from "sonner";
 import { generateReport, ReportConfig, ReportSection, PDF_COLORS } from "@/lib/pdf-report-service";
@@ -352,9 +352,54 @@ const ProprietarioDocumentosV2 = () => {
   };
 
 
+  const isLeaseDoc = (a: AiDocumentAnalysis | null) => !!a && ['contrato_locacao', 'aditivo'].includes(a.docTypeKey || '');
+  const [linkBuildingId, setLinkBuildingId] = useState('');
+  const [linkUnitId, setLinkUnitId] = useState('');
+  const linkBuilding = linkBuildingId || selectedBuildingId || 'b12';
+  const vacantUnits = useMemo(
+    () => mockTenantContracts.filter(c => c.building_id === linkBuilding && (c.status === 'vacant' || !c.tenant_name)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [linkBuilding, aiResult],
+  );
+  useEffect(() => {
+    if (!aiResult) return;
+    const a = aiResult as AiDocumentAnalysis;
+    const text = JSON.stringify(a).toLowerCase();
+    const floorMatch = text.match(/(\d{1,2})\s*[ºo°]?\s*andar/);
+    const byFloor = floorMatch ? vacantUnits.find(u => String(u.floor ?? '') === floorMatch[1] || u.unit_id.replace(/\D/g, '').startsWith(floorMatch[1])) : undefined;
+    setLinkUnitId(prev => (vacantUnits.some(u => u.id === prev) ? prev : (byFloor ?? vacantUnits[0])?.id ?? ''));
+  }, [aiResult, vacantUnits]);
+
+  const allocateLease = (a: AiDocumentAnalysis): string | null => {
+    const unit = mockTenantContracts.find(c => c.id === linkUnitId);
+    if (!unit) return null;
+    const tenant = (a.contraparte || a.empresa || '').trim();
+    if (!tenant) return null;
+    const idx = (a.reajuste?.indice || 'IPCA').toUpperCase();
+    const g = (a.garantia?.tipo || '').toLowerCase();
+    const garantia: TenantContract['garantia'] = g.includes('seguro') ? 'Seguro fiança' : g.includes('cau') ? 'Depósito caução' : g.includes('fiad') ? 'Fiador' : 'Fiança bancária';
+    const area = a.financeiro?.areaM2 || unit.area_m2;
+    const m2 = a.financeiro?.valorPorM2 || (a.financeiro?.valorAluguel && area ? Math.round((a.financeiro.valorAluguel / area) * 100) / 100 : null);
+    upsertTenantContract({
+      ...unit,
+      tenant_name: tenant,
+      area_m2: area,
+      price_per_m2: m2 ?? unit.price_per_m2 ?? null,
+      contract_start: a.prazos?.dataInicio || unit.contract_start,
+      contract_end: a.prazos?.dataFim || unit.contract_end,
+      status: 'active',
+      indice_reajuste: (idx.includes('IGP') ? 'IGP-M' : 'IPCA') as TenantContract['indice_reajuste'],
+      periodicidade_reajuste: 'anual',
+      data_base_reajuste: a.prazos?.dataInicio || undefined,
+      garantia,
+    } as TenantContract);
+    return `${tenant} alocado em ${unit.unit_id}`;
+  };
+
   const handleArchiveAiDoc = () => {
     const analysis = aiResult as AiDocumentAnalysis | null;
     if (!analysis || !uploadFile) return;
+    const allocated = isLeaseDoc(analysis) ? allocateLease(analysis) : null;
     const dest = resolveDestination(analysis.destino, analysis.docTypeKey);
     if (!dest) { toast.error('Não foi possível identificar a pasta de destino.'); return; }
     const ext = (uploadFile.name.split('.').pop() || 'pdf').toLowerCase();
@@ -378,7 +423,7 @@ const ProprietarioDocumentosV2 = () => {
     setShowUpload(false);
     setUploadFile(null);
     setAiResult(null);
-    toast.success(`Arquivado em ${dest.category} › ${dest.subfolder}`);
+    toast.success(`Arquivado em ${dest.category} › ${dest.subfolder}${allocated ? ` — ${allocated} (Mapa de Ativos atualizado)` : ''}`);
   };
 
   const reportTitles: Record<string, string> = {
@@ -1063,6 +1108,30 @@ const ProprietarioDocumentosV2 = () => {
                       onChange={next => setAiResult(next)}
                       fileName={uploadFile.name}
                     />
+                    {isLeaseDoc(aiResult as AiDocumentAnalysis) && (
+                      <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-3">
+                        <p className="text-sm font-semibold">Vincular ao Mapa de Ativos</p>
+                        <p className="text-xs text-muted-foreground">O locatário <strong>{(aiResult as AiDocumentAnalysis).contraparte || (aiResult as AiDocumentAnalysis).empresa || '—'}</strong> será alocado no conjunto escolhido e aparecerá no Stacking Plan, Contratos, IPTU e Fechamento.</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div><Label className="text-xs">Ativo</Label>
+                            <Select value={linkBuilding} onValueChange={v => { setLinkBuildingId(v); setLinkUnitId(''); }}>
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>{userBuildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
+                            </Select>
+                          </div>
+                          <div><Label className="text-xs">Conjunto vago</Label>
+                            <Select value={linkUnitId || 'none'} onValueChange={v => setLinkUnitId(v === 'none' ? '' : v)}>
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Não vincular</SelectItem>
+                                {vacantUnits.map(u => <SelectItem key={u.id} value={u.id}>{u.unit_id} · {u.area_m2.toLocaleString('pt-BR')} m²</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        {vacantUnits.length === 0 && <p className="text-xs text-muted-foreground">Nenhum conjunto vago neste ativo.</p>}
+                      </div>
+                    )}
                     <div className="flex gap-2 sticky bottom-0 bg-background pt-2">
                       <Button variant="outline" className="flex-1" onClick={() => { setUploadFile(null); setAiResult(null); }}>Descartar leitura</Button>
                       <Button className="flex-1" onClick={handleArchiveAiDoc}>Arquivar na pasta sugerida</Button>
