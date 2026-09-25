@@ -185,6 +185,7 @@ export default function ProprietarioConciliacaoFinanceira() {
   const [categoriaFiltro, setCategoriaFiltro] = useState<Categoria | 'all'>('all');
   const [statusFiltro, setStatusFiltro] = useState<StatusCobranca | 'all'>('all');
   const [acaoFiltro, setAcaoFiltro] = useState<'all' | 'com_acao' | 'sem_acao' | NonNullable<SubStatus>>('all');
+  const [ordenarPor, setOrdenarPor] = useState<'inquilino' | 'conjunto'>('inquilino');
   const [ordenarInquilino, setOrdenarInquilino] = useState<'asc' | 'desc'>('asc');
 
   const [actionDialog, setActionDialog] = useState<{ cobrancaId: string; status: StatusCobranca } | null>(null);
