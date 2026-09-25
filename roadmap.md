@@ -8,8 +8,8 @@
 - [x] Mapa do Ativo do Super Admin substituído pelo Stacking Plan da visão da Natalia (mesma base)
 - [x] Contratos do Super Admin convertidos em prestadores de serviço do edifício (limpeza, segurança, elevadores etc.)
 - [x] Renomear módulo "Financeiro" do Super Admin para "Administrativo"; título "Financeiro — IPMS" virou "Financeiro"
-- [ ] Contratos (Natalia): status "Inativo" manual + filtro; ordenação por conjunto crescente/decrescente
-- [ ] Gráficos "Mês de Reajuste" (aba Reajustes) e "Concentração das Revisionais" (aba Revisionais) no padrão Patria
+- [x] Contratos (Natalia): status "Inativo" manual + filtro; ordenação por conjunto crescente/decrescente
+- [x] Gráficos "Mês de Reajuste" (aba Reajustes) e "Concentração das Revisionais" (aba Revisionais) no padrão Patria
 - [ ] Contrato via leitura de IA: migrar analyze-document-ai para openai/gpt-6-astra (Responses, streaming) + tela de revisão com seleção de ativo/andar/conjunto (teste: Chucri Zaidan 7º andar)
 - [ ] IPTU por conjunto (matrículas, devedor = locatário, histórico) alimentado pelo store
 - [ ] "Adicionar Ativo/Locatário/Contrato" gravando no store compartilhado (refletir nas duas visões)
