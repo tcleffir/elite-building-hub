@@ -786,9 +786,16 @@ export default function ProprietarioContratos() {
                           ) : <span className="text-muted-foreground text-xs">—</span>}
                         </TableCell>
                         <TableCell>
-                          {inactiveIds.includes(c.id)
-                            ? <Badge variant="secondary">Inativo</Badge>
-                            : <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
+                          <div className="flex items-center gap-1">
+                            {inactiveIds.includes(c.id)
+                              ? <Badge variant="secondary">Inativo</Badge>
+                              : <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
+                            {info.manual && !inactiveIds.includes(c.id) && (
+                              <TooltipProvider><Tooltip><TooltipTrigger asChild>
+                                <Pencil className="h-3 w-3 text-muted-foreground" />
+                              </TooltipTrigger><TooltipContent>Status definido manualmente</TooltipContent></Tooltip></TooltipProvider>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell onClick={e => e.stopPropagation()}>
                           <DropdownMenu>
@@ -1407,7 +1414,7 @@ export default function ProprietarioContratos() {
             const unitId = isTenant ? selectedContract.unit_id : (selectedContract as any).area_name;
             const bldg = buildings.find(b => b.id === selectedContract.building_id);
             const endDate = isTenant ? selectedContract.contract_end : (selectedContract as any).contract_end;
-            const info = endDate ? getContractStatusInfo({ ...selectedContract, contract_end: endDate } as TenantContract) : null;
+            const info = endDate ? effectiveInfo({ ...selectedContract, contract_end: endDate } as TenantContract) : null;
 
             return (
               <>
