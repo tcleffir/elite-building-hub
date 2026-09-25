@@ -99,7 +99,19 @@ const PortfolioAnalytics = ({ competencia = CURRENT_COMPETENCIA }: PortfolioAnal
 
   const revenueByNature = useMemo(() => groupRevenue('nature'), [revenueContracts]);
   const revenueBySegment = useMemo(() => groupRevenue('segment'), [revenueContracts]);
-  const revenueByState = useMemo(() => groupRevenue('state'), [revenueContracts]);
+  // Estado usa a receita integral dos ativos, inclusive aqueles ainda sem contratos
+  // individualizados na base (como Guaíba/RS e Teleporto/RJ).
+  const revenueByState = useMemo(() => {
+    const totals = portfolioBuildings.reduce<Record<string, number>>((acc, building) => {
+      const state = building.state || "—";
+      acc[state] = (acc[state] || 0) + (building.monthly_revenue || 0);
+      return acc;
+    }, {});
+    const total = Object.values(totals).reduce((sum, value) => sum + value, 0);
+    return Object.entries(totals)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, value]) => ({ name, value, pct: total > 0 ? (value / total) * 100 : 0 }));
+  }, [portfolioBuildings]);
 
   const [breakdownFilter, setBreakdownFilter] = useState<{ key: 'nature' | 'segment' | 'state'; value: string } | null>(null);
   const breakdownContracts = breakdownFilter
@@ -320,11 +332,12 @@ const PortfolioAnalytics = ({ competencia = CURRENT_COMPETENCIA }: PortfolioAnal
     const totalArea = contracts.reduce((s, c) => s + c.areaM2, 0);
     const totalRevenue = contracts.reduce((s, c) => s + c.monthly, 0);
     const avgAsset = totalArea > 0 ? Math.round(totalRevenue / totalArea) : 0;
+    const benchmark = building.id === 'b12' ? 110 : mercadoRef;
     const best = contracts[0];
     const worst = contracts[contracts.length - 1];
-    const belowBenchmark = contracts.filter(c => c.pricePerM2 < mercadoRef).length;
-    const upside = contracts.reduce((s, c) => s + Math.max(0, (mercadoRef - c.pricePerM2)) * c.areaM2, 0);
-    return { building, contracts, totalArea, totalRevenue, avgAsset, best, worst, belowBenchmark, upside };
+    const belowBenchmark = contracts.filter(c => c.pricePerM2 < benchmark).length;
+    const upside = contracts.reduce((s, c) => s + Math.max(0, (benchmark - c.pricePerM2)) * c.areaM2, 0);
+    return { building, contracts, totalArea, totalRevenue, avgAsset, benchmark, best, worst, belowBenchmark, upside };
   }, [snapshot, pricingAssetId]);
 
 
@@ -572,11 +585,11 @@ const PortfolioAnalytics = ({ competencia = CURRENT_COMPETENCIA }: PortfolioAnal
                     <XAxis type="number" tickFormatter={(v) => `R$ ${v}`} fontSize={11} domain={[0, 'auto']} />
                     <YAxis type="category" dataKey="name" width={180} fontSize={11} />
                     <Tooltip formatter={(v: number, _n, p: any) => [`R$ ${v}/m²`, `${p.payload.unit} · ${p.payload.areaM2.toLocaleString('pt-BR')} m²`]} />
-                    <ReferenceLine x={mercadoRef} stroke="#EF4444" strokeDasharray="6 3" strokeWidth={2} label={{ value: `Mercado R$ ${mercadoRef}/m² — ${competenciaLabel(competencia)}`, position: 'top', fontSize: 10, fill: '#EF4444' }} />
+                    <ReferenceLine x={assetTenantPricing.benchmark} stroke="hsl(var(--destructive))" strokeDasharray="6 3" strokeWidth={2} label={{ value: `Referência R$ ${assetTenantPricing.benchmark}/m² — ${competenciaLabel(competencia)}`, position: 'top', fontSize: 10, fill: 'hsl(var(--destructive))' }} />
                     <ReferenceLine x={assetTenantPricing.avgAsset} stroke="#6b7280" strokeDasharray="3 3" label={{ value: `Média ativo R$ ${assetTenantPricing.avgAsset}/m²`, position: 'insideTopRight', fontSize: 10, fill: '#6b7280' }} />
                     <Bar dataKey="pricePerM2" name="R$/m²" radius={[0, 4, 4, 0]}>
                       {assetTenantPricing.contracts.map((entry, i) => (
-                        <Cell key={i} fill={entry.pricePerM2 >= mercadoRef ? '#10b981' : '#3B82F6'} />
+                        <Cell key={i} fill={entry.pricePerM2 >= assetTenantPricing.benchmark ? 'hsl(var(--success))' : 'hsl(var(--primary))'} />
                       ))}
                       <LabelList dataKey="pricePerM2" position="right" formatter={(v: number) => `R$${v}/m²`} style={{ fontSize: 11, fill: '#374151' }} />
                     </Bar>
@@ -610,7 +623,7 @@ const PortfolioAnalytics = ({ competencia = CURRENT_COMPETENCIA }: PortfolioAnal
                       <span className="text-xs font-medium text-primary">Upside até Mercado</span>
                     </div>
                     <p className="text-sm font-semibold">{fmt(assetTenantPricing.upside)}/mês</p>
-                    <p className="text-xs text-muted-foreground">{assetTenantPricing.belowBenchmark} locatário{assetTenantPricing.belowBenchmark !== 1 ? 's' : ''} abaixo de R$ {mercadoRef}/m²</p>
+                    <p className="text-xs text-muted-foreground">{assetTenantPricing.belowBenchmark} locatário{assetTenantPricing.belowBenchmark !== 1 ? 's' : ''} abaixo de R$ {assetTenantPricing.benchmark}/m²</p>
                   </div>
                 </div>
 
@@ -635,7 +648,7 @@ const PortfolioAnalytics = ({ competencia = CURRENT_COMPETENCIA }: PortfolioAnal
                             <TableCell className="text-sm text-left font-medium">{c.name}</TableCell>
                             <TableCell className="text-sm text-left text-muted-foreground">{c.unit}</TableCell>
                             <TableCell className="text-sm text-right">{c.areaM2.toLocaleString('pt-BR')}</TableCell>
-                            <TableCell className={`text-sm text-right font-semibold ${c.pricePerM2 < mercadoRef ? 'text-amber-600' : 'text-emerald-600'}`}>R$ {c.pricePerM2}/m²</TableCell>
+                            <TableCell className={`text-sm text-right font-semibold ${c.pricePerM2 < assetTenantPricing.benchmark ? 'text-amber-600' : 'text-emerald-600'}`}>R$ {c.pricePerM2}/m²</TableCell>
                             <TableCell className="text-sm text-right">{fmt(c.monthly)}</TableCell>
                             <TableCell className={`text-xs text-right ${diff >= 0 ? 'text-emerald-600' : 'text-amber-600'}`}>
                               {diff >= 0 ? '+' : ''}{diff.toFixed(0)} ({diffPct >= 0 ? '+' : ''}{diffPct.toFixed(1)}%)

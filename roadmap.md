@@ -13,3 +13,5 @@
 - [ ] Contrato via leitura de IA: migrar analyze-document-ai para openai/gpt-6-astra (Responses, streaming) + tela de revisão com seleção de ativo/andar/conjunto (teste: Chucri Zaidan 7º andar)
 - [ ] IPTU por conjunto (matrículas, devedor = locatário, histórico) alimentado pelo store
 - [ ] "Adicionar Ativo/Locatário/Contrato" gravando no store compartilhado (refletir nas duas visões)
+- [x] Receita por Estado inclui SP, RS e RJ; referência do Chucri Zaidan ajustada para R$ 110/m²
+- [x] Alertas fiscais do IPTU convertidos em painel lateral rolável
