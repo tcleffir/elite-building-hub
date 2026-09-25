@@ -1450,6 +1450,30 @@ export default function ProprietarioContratos() {
                       <InfoField label="Próximo Reajuste" value={endDate && monthsDiff(endDate) < 0 ? '—' : selectedContract.contract_start ? formatMonthYear(getNextAdjustmentDate(selectedContract.contract_start)) : '—'} />
                     </div>
                     {isTenant && (
+                      <div className="rounded-lg border p-3 space-y-2">
+                        <Label className="text-xs font-semibold">Status do contrato</Label>
+                        <Select
+                          value={inactiveIds.includes(selectedContract.id) ? 'inactive' : (statusOverrides[selectedContract.id] || 'auto')}
+                          onValueChange={(v) => setManualStatus(selectedContract.id, v as ManualStatus | 'inactive' | 'auto')}
+                        >
+                          <SelectTrigger className="h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="auto">Automático (pela vigência){info && !info.manual && !inactiveIds.includes(selectedContract.id) ? ` — ${info.label}` : ''}</SelectItem>
+                            <SelectItem value="active">Ativo</SelectItem>
+                            <SelectItem value="expiring">Vencendo</SelectItem>
+                            <SelectItem value="expired">Vencido</SelectItem>
+                            <SelectItem value="negotiation">Em negociação</SelectItem>
+                            <SelectItem value="inactive">Inativo</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <p className="text-[11px] text-muted-foreground">
+                          O status manual substitui o cálculo pela vigência e vale para a tabela, os filtros e os gráficos. Contratos inativos só aparecem no filtro "Inativos".
+                        </p>
+                      </div>
+                    )}
+                    {isTenant && (
                       <>
                         <Separator />
                         <ContractManagementSection contract={selectedContract as TenantContract} autoOpen={drawerAction} />
