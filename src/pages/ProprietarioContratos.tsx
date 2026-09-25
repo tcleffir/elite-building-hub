@@ -224,10 +224,11 @@ export default function ProprietarioContratos() {
     }
     if (statusFilter !== 'all' && statusFilter !== 'inactive') {
       filtered = filtered.filter(c => {
-        const info = getContractStatusInfo(c);
-        if (statusFilter === 'expiring') return info.status === 'warning';
-        if (statusFilter === 'expired') return info.months < 0;
+        const info = effectiveInfo(c);
+        if (statusFilter === 'expiring') return info.status === 'warning' && info.months >= 0;
+        if (statusFilter === 'expired') return info.status === 'critical' && info.months < 0;
         if (statusFilter === 'active') return info.status === 'healthy';
+        if (statusFilter === 'negotiation') return statusOverrides[c.id] === 'negotiation';
         return false;
       });
     }
@@ -742,7 +743,7 @@ export default function ProprietarioContratos() {
                 </TableHeader>
                 <TableBody>
                   {tenantContracts.map(c => {
-                    const info = getContractStatusInfo(c);
+                    const info = effectiveInfo(c);
                     const g = mockGuarantees.find(g => g.contract_id === c.id);
                     const rpsm2 = c.price_per_m2 || 0;
                     const rpsm2Color = rpsm2 >= 110 ? 'text-emerald-600' : rpsm2 >= 90 ? 'text-amber-600' : 'text-red-600';
