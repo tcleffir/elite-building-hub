@@ -14,6 +14,8 @@ import {
 } from "@/lib/iptu-data";
 import { exportExcel } from "@/lib/export-service";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import IptuUnidades from "./IptuUnidades";
 
 const brl = (v: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v);
@@ -81,6 +83,13 @@ const IptuTab = () => {
   };
 
   return (
+    <Tabs defaultValue="unidade" className="space-y-4">
+      <TabsList>
+        <TabsTrigger value="unidade">Controle por unidade</TabsTrigger>
+        <TabsTrigger value="ativo">Controle global por ativo</TabsTrigger>
+      </TabsList>
+      <TabsContent value="unidade"><IptuUnidades /></TabsContent>
+      <TabsContent value="ativo">
     <div className="space-y-5">
       {/* Header + ações */}
       <div className="flex items-start justify-between flex-wrap gap-3">
@@ -336,6 +345,8 @@ const IptuTab = () => {
         automaticamente passam a ser identificados na coluna de origem.
       </p>
     </div>
+      </TabsContent>
+    </Tabs>
   );
 };
 
