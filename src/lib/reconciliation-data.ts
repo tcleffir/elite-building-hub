@@ -2,7 +2,8 @@
 // Hierarchy: Fundo → Ativo → Unidade → Contrato → Cobrança.
 // IMPORTANTE: nomes, endereços e vínculo de fundo dos ativos vêm SEMPRE de
 // mock-data (getHGRE11PortfolioBuildings) — fonte única de verdade do portfólio.
-import { getHGRE11PortfolioBuildings } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts } from "@/lib/mock-data";
+import { getUnitStackingData } from "@/lib/stacking-plan-data";
 
 
 export type StatusCobranca =
@@ -178,6 +179,15 @@ export const unidadesRec: UnidadeRec[] = [
   { id: 'u-b3-1501', edificioId: 'b3', identificacao: 'Conjunto 1501' },
 ];
 
+// ---------- Chucri Zaidan (b12) — ativo modelo ----------
+// Derivado de mockTenantContracts (mesma base do Stacking Plan e de Contratos):
+// aluguel = área × R$/m² do contrato; IPTU mensal = área × IPTU/m² do Stacking Plan.
+const czOcupados = mockTenantContracts.filter(c => c.building_id === 'b12' && c.status !== 'vacant' && c.tenant_name);
+const czSlug = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+const czTenantNames = Array.from(new Set(czOcupados.map(c => c.tenant_name!)));
+const czInquilinoId = (nome: string) => `i-cz-${czSlug(nome).slice(0, 16)}`;
+unidadesRec.push(...czOcupados.map(c => ({ id: `u-${c.id}`, edificioId: 'b12', identificacao: c.unit_id })));
+
 export const inquilinosRec: InquilinoRec[] = [
   { id: 'i1', nome: 'Vivo (Telefônica Brasil)',        documento: '11.260.134/0001-50', email: 'financeiro@vivo.com.br', telefone: '(11) 3000-1100' },
   { id: 'i2', nome: 'Capital & Energia S/A',   documento: '23.456.789/0001-01', email: 'pagamentos@capitaleenergia.com.br', telefone: '(11) 3000-2200' },
@@ -185,6 +195,11 @@ export const inquilinosRec: InquilinoRec[] = [
   { id: 'i4', nome: 'Mercatto Consultoria',    documento: '45.678.901/0001-23', email: 'fin@mercatto.com.br', telefone: '(11) 3000-4400' },
   { id: 'i5', nome: 'Northbridge Advisors',    documento: '56.789.012/0001-34', email: 'ap@northbridge.com.br', telefone: '(11) 3000-5500' },
   { id: 'i6', nome: 'Sigma Tech Brasil',       documento: '67.890.123/0001-45', email: 'financeiro@sigmatech.com.br', telefone: '(11) 3000-6600' },
+  ...czTenantNames.map(nome => {
+    const ct = czOcupados.find(c => c.tenant_name === nome)!;
+    const st = getUnitStackingData(ct);
+    return { id: czInquilinoId(nome), nome, documento: ct.tenant_cnpj ?? '—', email: st.contato.email, telefone: st.contato.telefone };
+  }),
 ];
 
 export const contratosRec: ContratoRec[] = [
@@ -224,6 +239,19 @@ export const contratosRec: ContratoRec[] = [
     diaVencimento: 5, descontos: [], revisionais: [],
     iptuValorAnual: 30000, iptuParcelas: 10, iptuPrimeiraParcelaMes: 2,
   },
+  ...czOcupados.map((c): ContratoRec => {
+    const st = getUnitStackingData(c);
+    const mesBase = (c.data_base_reajuste ?? c.contract_start ?? '2023-01-01').slice(5, 7);
+    return {
+      id: c.id, inquilinoId: czInquilinoId(c.tenant_name!), unidadeIds: [`u-${c.id}`], edificioId: 'b12',
+      valorAluguelBase: Math.round(c.area_m2 * (c.price_per_m2 ?? 0)),
+      indiceReajuste: c.indice_reajuste === 'IGP-M' ? 'IGPM' : 'IPCA',
+      // Último aniversário aplicado em 2025 — o próximo reajuste incide no aniversário de 2026.
+      dataBaseReajuste: `2025-${mesBase}-01`,
+      diaVencimento: c.dia_vencimento ?? 5, descontos: [], revisionais: [],
+      iptuValorAnual: Math.round(c.area_m2 * st.iptuM2 * 12), iptuParcelas: 12, iptuPrimeiraParcelaMes: 1,
+    };
+  }),
 ];
 
 // Helper para construir uma cobrança seed (esperado é recalculado pelo engine na renderização).
@@ -362,6 +390,25 @@ export const cobrancasSeed: CobrancaRec[] = [
     dataEnvioBancoEfetiva: '2026-03-30',
     status: 'aberto_cliente',
   }),
+
+  // Chucri Zaidan — Fev–Abr: maioria conciliada; casos reais de atraso e inadimplência.
+  ...czOcupados.flatMap(c => (['2026-02', '2026-03', '2026-04'] as const).map(comp => {
+    const [y, m] = comp.split('-').map(Number);
+    const dia = c.dia_vencimento ?? 5;
+    const envio = new Date(y, m - 1, Math.max(1, dia - 4)).toISOString().slice(0, 10);
+    const pago = (d: number) => new Date(y, m - 1, d).toISOString().slice(0, 10);
+    const base = { valorCobradoBoleto: -1, dataEnvioBancoEfetiva: envio, identificadorCobranca: `COB-${c.id}-${comp}` };
+    // WeWork (cj 141): abril em aberto, vencido — inadimplente.
+    if (c.id === 'b12-ct141' && comp === '2026-04')
+      return mkCobranca(c.id, comp, { ...base, valorRecebido: null, status: 'inadimplente' });
+    // Befly (cj 81): março pago com 12 dias de atraso (gera multa e juros).
+    if (c.id === 'b12-ct81' && comp === '2026-03')
+      return mkCobranca(c.id, comp, { ...base, valorRecebido: -1, dataPagamentoEfetiva: pago(dia + 12), status: 'conciliado' });
+    // DHL (cj 131): abril ainda aguardando pagamento dentro do prazo de tolerância.
+    if (c.id === 'b12-ct131' && comp === '2026-04')
+      return mkCobranca(c.id, comp, { ...base, valorRecebido: null, status: 'aberto_cliente' });
+    return mkCobranca(c.id, comp, { ...base, valorRecebido: -1, dataPagamentoEfetiva: pago(dia), status: 'conciliado' });
+  })),
 ];
 
 export const acoesSeed: AcaoRegistro[] = [

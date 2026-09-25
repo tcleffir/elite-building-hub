@@ -22,12 +22,12 @@ import {
 import { toast } from "sonner";
 import { useFinance } from "@/contexts/FinanceContext";
 import {
-  buildFechamento, buildInadimplencia, calcIndiceInadimplencia,
+  buildFechamento, buildInadimplencia, contratoInEscopo, HOJE, calcIndiceInadimplencia,
   competenciasAte, compLabel, fmtBRL, fmtDateBR, COMPETENCIA_ATUAL,
   METODOLOGIA_LABEL, type EscopoFinanceiro, type FechamentoMes,
   type InadimplenciaRow, type MetodologiaInadimplencia, type StatusContato,
 } from "@/lib/finance-core";
-import { fundos, edificiosRec, contratosRec } from "@/lib/reconciliation-data";
+import { fundos, edificiosRec, contratosRec, inquilinosRec, unidadesRec } from "@/lib/reconciliation-data";
 import { exportExcel, TEMPLATE_PADRAO } from "@/lib/export-service";
 
 const STATUS_CONTATO_META: Record<StatusContato, { label: string; cls: string }> = {
@@ -37,13 +37,20 @@ const STATUS_CONTATO_META: Record<StatusContato, { label: string; cls: string }>
   acordo:        { label: "Acordo firmado", cls: "bg-emerald-100 text-emerald-700 border-emerald-200" },
 };
 
+function SituacaoBadge({ s }: { s: string }) {
+  const cls = s === "Recebido" ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+    : s === "Em atraso" ? "bg-rose-100 text-rose-700 border-rose-200"
+    : "bg-amber-100 text-amber-700 border-amber-200";
+  return <Badge variant="outline" className={`shrink-0 ${cls}`}>{s}</Badge>;
+}
+
 interface ContatoLog { id: string; data: string; canal: string; texto: string; }
 
 export default function ProprietarioFinanceiroLocacao() {
   const { cobrancas, politica, metodologiaInad, setMetodologiaInad } = useFinance();
 
   const [fundoId, setFundoId] = useState("all");
-  const [edificioId, setEdificioId] = useState("all");
+  const [edificioId, setEdificioId] = useState("b12");
   const [competencia, setCompetencia] = useState(COMPETENCIA_ATUAL);
   const [mesDetalhe, setMesDetalhe] = useState<FechamentoMes | null>(null);
 
@@ -69,6 +76,31 @@ export default function ProprietarioFinanceiroLocacao() {
     () => calcIndiceInadimplencia(inadRows, serie, metodologiaInad, competencia),
     [inadRows, serie, metodologiaInad, competencia],
   );
+
+  const porConjunto = useMemo(() => {
+    const rows = cobrancas
+      .filter(c => c.competencia === competencia && contratoInEscopo(c.contratoId, escopo))
+      .map(c => {
+        const ct = contratosRec.find(x => x.id === c.contratoId)!;
+        const ed = edificiosRec.find(e => e.id === ct.edificioId);
+        const un = ct.unidadeIds.map(u => unidadesRec.find(x => x.id === u)?.identificacao).filter(Boolean).join(", ") || "—";
+        const esperado = c.aluguelEsperado + c.iptuEsperado + (c.ajustes ?? []).reduce((s, a) => s + a.valor, 0);
+        const recebido = c.valorRecebido ?? 0;
+        const vencido = new Date(c.dataVencimento + "T12:00:00") < HOJE;
+        const aberto = Math.max(0, esperado - recebido);
+        const situacao = aberto <= 0.5 ? "Recebido" : vencido ? "Em atraso" : "A vencer";
+        return {
+          id: c.id, unidade: un, num: Number(un.match(/\d+/)?.[0] ?? 0),
+          ativo: ed?.nome ?? "—",
+          locatario: inquilinosRec.find(i => i.id === ct.inquilinoId)?.nome ?? "—",
+          vencimento: c.dataVencimento, pagamento: c.dataPagamentoEfetiva,
+          aluguel: c.aluguelEsperado, iptu: c.iptuEsperado, esperado, recebido, aberto, situacao,
+        };
+      });
+    return rows.sort((a, b) => a.ativo.localeCompare(b.ativo) || a.num - b.num);
+  }, [cobrancas, competencia, escopo]);
+  const [unitSort, setUnitSort] = useState<"asc" | "desc">("asc");
+  const porConjuntoOrd = unitSort === "asc" ? porConjunto : porConjunto.slice().reverse();
 
   const chartData = serie.map(m => ({
     competencia: m.competencia,
@@ -257,6 +289,80 @@ export default function ProprietarioFinanceiroLocacao() {
                   </button>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2 flex-row flex-wrap items-center justify-between gap-2 space-y-0">
+              <div>
+                <CardTitle className="text-base">Fechamento por conjunto — {compLabel(competencia)}</CardTitle>
+                <p className="text-xs text-muted-foreground">{porConjunto.length} contratos · aluguel e IPTU iguais aos de Contratos e Stacking Plan</p>
+              </div>
+              <Select value={unitSort} onValueChange={v => setUnitSort(v as "asc" | "desc")}>
+                <SelectTrigger className="w-full sm:w-[200px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="asc">Conjunto: menor → maior</SelectItem>
+                  <SelectItem value="desc">Conjunto: maior → menor</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardHeader>
+            <CardContent className="p-3 sm:p-0">
+              {porConjunto.length === 0 ? (
+                <p className="p-4 text-sm text-muted-foreground">Nenhuma cobrança nesta competência para o filtro selecionado.</p>
+              ) : (<>
+              <div className="hidden lg:block">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b text-xs text-muted-foreground">
+                      {["Conjunto", "Locatário", "Vencimento", "Aluguel", "IPTU", "Esperado", "Recebido", "Em aberto", "Situação"].map(h => (
+                        <th key={h} className="text-left py-2 px-3 font-medium">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {porConjuntoOrd.map(r => (
+                      <tr key={r.id} className="border-b last:border-0">
+                        <td className="py-2.5 px-3 font-medium">{r.unidade}{edificioId === "all" && <span className="block text-[11px] text-muted-foreground">{r.ativo}</span>}</td>
+                        <td className="py-2.5 px-3">{r.locatario}</td>
+                        <td className="py-2.5 px-3">{fmtDateBR(r.vencimento)}</td>
+                        <td className="py-2.5 px-3">{fmtBRL(r.aluguel)}</td>
+                        <td className="py-2.5 px-3">{fmtBRL(r.iptu)}</td>
+                        <td className="py-2.5 px-3 font-medium">{fmtBRL(r.esperado)}</td>
+                        <td className="py-2.5 px-3 text-emerald-600">{fmtBRL(r.recebido)}</td>
+                        <td className="py-2.5 px-3 text-rose-600">{fmtBRL(r.aberto)}</td>
+                        <td className="py-2.5 px-3"><SituacaoBadge s={r.situacao} /></td>
+                      </tr>
+                    ))}
+                    <tr className="bg-muted/40 font-semibold">
+                      <td className="py-2.5 px-3" colSpan={3}>Total</td>
+                      <td className="py-2.5 px-3">{fmtBRL(porConjunto.reduce((s, r) => s + r.aluguel, 0))}</td>
+                      <td className="py-2.5 px-3">{fmtBRL(porConjunto.reduce((s, r) => s + r.iptu, 0))}</td>
+                      <td className="py-2.5 px-3">{fmtBRL(porConjunto.reduce((s, r) => s + r.esperado, 0))}</td>
+                      <td className="py-2.5 px-3 text-emerald-600">{fmtBRL(porConjunto.reduce((s, r) => s + r.recebido, 0))}</td>
+                      <td className="py-2.5 px-3 text-rose-600">{fmtBRL(porConjunto.reduce((s, r) => s + r.aberto, 0))}</td>
+                      <td />
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="space-y-2 lg:hidden">
+                {porConjuntoOrd.map(r => (
+                  <div key={r.id} className="rounded-md border p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0"><div className="font-semibold">{r.unidade}</div><div className="text-xs text-muted-foreground truncate">{r.locatario}</div></div>
+                      <SituacaoBadge s={r.situacao} />
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+                      <div><span className="block text-muted-foreground">Aluguel</span><strong>{fmtBRL(r.aluguel)}</strong></div>
+                      <div><span className="block text-muted-foreground">IPTU</span><strong>{fmtBRL(r.iptu)}</strong></div>
+                      <div><span className="block text-muted-foreground">Recebido</span><strong className="text-emerald-600">{fmtBRL(r.recebido)}</strong></div>
+                      <div><span className="block text-muted-foreground">Em aberto</span><strong className="text-rose-600">{fmtBRL(r.aberto)}</strong></div>
+                      <div className="col-span-2 text-muted-foreground">Vencimento {fmtDateBR(r.vencimento)}{r.pagamento ? ` · pago em ${fmtDateBR(r.pagamento)}` : ""}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              </>)}
             </CardContent>
           </Card>
         </TabsContent>
