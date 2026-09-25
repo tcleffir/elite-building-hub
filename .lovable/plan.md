@@ -1,7 +1,7 @@
-# Unificação Super Admin x Natalia + Chucri Zaidan como ativo modelo
+# Super Admin x Natalia: visões separadas, base de dados única
 
 ## Objetivo
-Uma única base de ativos/locatários/contratos/IPTU compartilhada pelas duas visões (Administradora CBRE e Natalia Landi), com o Chucri Zaidan 100% coerente em todos os módulos.
+As duas visões (Administradora CBRE e Natalia Landi) NÃO são unificadas — cada uma mantém seus módulos e telas. Porém ambas leem e gravam na MESMA base de dados: ativos, andares, conjuntos, locatários, contratos e IPTU. Um ativo/número/conjunto que existe em uma visão existe na outra, sempre com os mesmos valores.
 
 ## 1. Base única de dados (fonte da verdade)
 - Remover 360JK, You, Capitale, Lux e demais ativos antigos da visão Super Admin; ambas as visões passam a ler os 13 ativos HGRE11.
