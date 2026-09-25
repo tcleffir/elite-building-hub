@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { AlertTriangle, Building2, ChevronDown, Download, FileCheck2, Landmark, RefreshCw, Scale } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { AlertTriangle, Bell, Building2, ChevronDown, ChevronRight, Download, FileCheck2, Landmark, RefreshCw, Scale } from "lucide-react";
 import { COMPETENCIAS, CURRENT_COMPETENCIA, competenciaLabel } from "@/lib/portfolio-competencia";
 import { getHGRE11PortfolioBuildings } from "@/lib/mock-data";
 import {
@@ -154,35 +155,9 @@ const IptuTab = () => {
         ))}
       </div>
 
-      {/* Alertas de zoneamento / alíquota */}
-      {(alertas.length > 0 || dividaAtiva.length > 0) && (
-        <Card className="border-destructive/30 bg-destructive/5">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2 text-destructive">
-              <AlertTriangle size={15} /> Alertas fiscais e notificações da prefeitura
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {dividaAtiva.map((r) => (
-              <p key={`da-${r.buildingId}`} className="text-sm text-left">
-                <Badge className="bg-red-100 text-red-700 mr-2">Dívida ativa</Badge>
-                {r.building} — {r.debitosAnteriores.filter((d) => d.dividaAtiva).map((d) => d.processo).join(", ")}
-              </p>
-            ))}
-            {alertas.map((a, idx) => (
-              <p key={idx} className="text-sm text-left">
-                <Badge className={a.severidade === "alta" ? "bg-amber-100 text-amber-700 mr-2" : "bg-sky-100 text-sky-700 mr-2"}>
-                  {a.titulo}
-                </Badge>
-                {a.building} — {a.detalhe} <span className="text-xs text-muted-foreground">({a.data})</span>
-              </p>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-
+      <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
       {/* Lista por ativo */}
-      <div className="space-y-3">
+      <div className="min-w-0 space-y-3">
         {visible.map((r) => {
           const debitos = r.debitosAnteriores.reduce((a, d) => a + debitoTotal(d), 0);
           const atrasadas = r.parcelas.filter((p) => p.status === "em_atraso").length;
@@ -303,6 +278,57 @@ const IptuTab = () => {
         {visible.length === 0 && (
           <Card><CardContent className="p-8 text-center text-muted-foreground">Nenhum lançamento de IPTU para o filtro.</CardContent></Card>
         )}
+      </div>
+
+      {/* Painel lateral de alertas fiscais */}
+      {(alertas.length > 0 || dividaAtiva.length > 0) && (
+        <Card className="min-w-0 overflow-hidden xl:sticky xl:top-4">
+          <CardHeader className="border-b bg-accent/5 px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Bell size={15} className="text-accent" /> Alertas ativos
+              </CardTitle>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-accent text-accent-foreground">{alertas.length + dividaAtiva.length}</Badge>
+                <Button variant="ghost" size="sm" className="h-8 gap-1 px-2 text-xs">
+                  Ver todos <ChevronRight size={13} />
+                </Button>
+              </div>
+            </div>
+            <p className="text-[11px] text-muted-foreground">Fiscal e notificações das prefeituras</p>
+          </CardHeader>
+          <ScrollArea className="h-[520px] max-h-[65vh]">
+            <CardContent className="divide-y p-0">
+              {dividaAtiva.map((r) => (
+                <div key={`da-${r.buildingId}`} className="flex items-start gap-2.5 px-4 py-3 text-left">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-destructive" />
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <AlertTriangle size={12} className="text-destructive" /> Dívida ativa
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      {r.building} — {r.debitosAnteriores.filter((d) => d.dividaAtiva).map((d) => d.processo).join(", ")}
+                    </p>
+                    <p className="mt-1 text-[10px] text-muted-foreground">{r.municipio}/{r.uf}</p>
+                  </div>
+                </div>
+              ))}
+              {alertas.map((a, idx) => (
+                <div key={`${a.building}-${a.tipo}-${idx}`} className="flex items-start gap-2.5 px-4 py-3 text-left">
+                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${a.severidade === "alta" ? "bg-destructive" : "bg-accent"}`} />
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <AlertTriangle size={12} className={a.severidade === "alta" ? "text-destructive" : "text-accent"} /> {a.titulo}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{a.detalhe}</p>
+                    <p className="mt-1 text-[10px] text-muted-foreground">{a.building} · {a.data}</p>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </ScrollArea>
+        </Card>
+      )}
       </div>
 
       <p className="text-xs text-muted-foreground text-left">
