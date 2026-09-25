@@ -50,12 +50,12 @@ export const roleColors: Record<UserRole, string> = {
   gestor_fundo: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
 };
 
-// ─── Mock Users — 360JK Real ──────────────────────────
+// ─── Mock Users — Chucri Zaidan — HGRE11 ──────────────────────────
 export const mockUsers: User[] = [
   {
     id: '1', email: 'esg@luxenergia.com.br', password: 'Lux@2026',
     full_name: 'Administradora (CBRE)', role: 'super_admin',
-    building_ids: ['b1', 'b2'], company: 'CBRE', position: 'Administração',
+    building_ids: ['b12', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b13', 'b14'], company: 'CBRE', position: 'Administração',
     avatar_bg: '#0B2A3D', avatar_initials: 'CB',
   },
   {
@@ -396,14 +396,6 @@ export const isHGRE11Asset = (buildingId?: string | null): buildingId is HGRE11A
 
 // ─── Mock Buildings ───────────────
 export const mockBuildings: Building[] = [
-  {
-    id: 'b1', name: 'Condomínio 360JK', short_name: '360JK',
-    address: 'Av. Juscelino Kubitschek, 360 — Itaim Bibi, SP', city: 'São Paulo', state: 'SP',
-    total_floors: 18, total_area_m2: 35000, certification_leed_level: 'Gold', occupancy_rate: 100,
-    lux_client: false,
-    administrator_company: 'Administradora', administrator_cnpj: '', status: 'active', urgent_tickets: 2,
-    full_address: 'Av. Juscelino Kubitschek, 360 — Itaim Bibi, SP',
-  },
   // ─── Carteira HGRE11 — Patria Escritórios FII (13 ativos, 143.387 m² de ABL) ───
   {
     id: 'b12', name: 'Chucri Zaidan', short_name: 'Chucri Zaidan',
@@ -540,19 +532,26 @@ export const mockBuildings: Building[] = [
 
 export const getHGRE11PortfolioBuildings = () => mockBuildings.filter((b) => isHGRE11Asset(b.id));
 
-// ─── Tenant Contracts seed data ──────────────────────
-// Chucri Zaidan (b12) — HGRE11 portfolio: 8 locatários corporativos
+// ─── Tenant Contracts seed — mesma base do portfolio-store (visões conversam) ───
+// Chucri Zaidan (b12): 17 andares, conjuntos 11–171; conjunto 71 VAGO (teste IA).
 export const mockTenantContracts: TenantContract[] = [
-  { id: 'tc1', building_id: 'b12', unit_id: 'Conjunto A1', tenant_name: 'Vivo (Telefônica Brasil)', tenant_cnpj: '11.260.134/0001-50', area_m2: 3358, price_per_m2: 110, contract_type: 'net', contract_start: '2022-03-01', contract_end: '2027-02-28', status: 'active', lease_nature: 'tipico', tenant_segment: 'Varejo' },
-  { id: 'tc2', building_id: 'b12', unit_id: 'Conjunto A2', tenant_name: 'Totvs S.A.', tenant_cnpj: '07.526.557/0001-00', area_m2: 4029, price_per_m2: 106, contract_type: 'net', contract_start: '2021-08-01', contract_end: '2026-07-31', status: 'active', lease_nature: 'atipico', tenant_segment: 'Bebidas' },
-  { id: 'tc3', building_id: 'b12', unit_id: 'Conjunto B1', tenant_name: 'Befly Viagens', tenant_cnpj: '13.453.928/0001-77', area_m2: 2910, price_per_m2: 115, contract_type: 'net', contract_start: '2023-01-01', contract_end: '2028-12-31', status: 'active', lease_nature: 'atipico', tenant_segment: 'Serviços Corporativos' },
-  { id: 'tc4', building_id: 'b12', unit_id: 'Conjunto B2', tenant_name: 'Hospital Sírio-Libanês', tenant_cnpj: '54.137.319/0001-03', area_m2: 2597, price_per_m2: 101, contract_type: 'gross', contract_start: '2022-11-01', contract_end: '2026-10-31', status: 'active', lease_nature: 'tipico', tenant_segment: 'Varejo' },
-  { id: 'tc5', building_id: 'b12', unit_id: 'Conjunto C1', tenant_name: 'BP Brasil', tenant_cnpj: '04.870.532/0001-66', area_m2: 1880, price_per_m2: 97, contract_type: 'semi-gross', contract_start: '2024-02-01', contract_end: '2027-01-31', status: 'active', lease_nature: 'tipico', tenant_segment: 'Serviços' },
-  { id: 'tc6', building_id: 'b12', unit_id: 'Conjunto C2', tenant_name: 'DHL', tenant_cnpj: '03.420.926/0001-08', area_m2: 3492, price_per_m2: 120, contract_type: 'net', contract_start: '2023-06-01', contract_end: '2028-05-31', status: 'active', lease_nature: 'atipico', tenant_segment: 'Serviços Corporativos' },
-  { id: 'tc7', building_id: 'b12', unit_id: 'Conjunto D1', tenant_name: 'WeWork Brasil', tenant_cnpj: '08.913.572/0001-19', area_m2: 2015, price_per_m2: 106, contract_type: 'gross', contract_start: '2024-04-01', contract_end: '2027-03-31', status: 'active', lease_nature: 'tipico', tenant_segment: 'Serviços Corporativos' },
-  { id: 'tc8', building_id: 'b12', unit_id: 'Conjunto D2', tenant_name: 'Deloitte Brasil', tenant_cnpj: '05.629.244/0001-50', area_m2: 1639, price_per_m2: 101, contract_type: 'net', contract_start: '2023-09-01', contract_end: '2026-08-31', status: 'active', lease_nature: 'tipico', tenant_segment: 'Vestuário' },
-
-  { id: 'tc9', building_id: 'b12', unit_id: 'Conjunto D3', tenant_name: null, area_m2: 913, price_per_m2: null, contract_type: null, status: 'vacant' },
+  { id: 'b12-ct11',  building_id: 'b12', unit_id: 'Conjunto 11',  tenant_name: 'Nubank', tenant_cnpj: '18.236.120/0001-58', area_m2: 1450, price_per_m2: 128, contract_type: 'net', contract_start: '2023-02-01', contract_end: '2028-01-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2023-02-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 10, lease_nature: 'atipico', tenant_segment: 'Serviços Financeiros' },
+  { id: 'b12-ct21',  building_id: 'b12', unit_id: 'Conjunto 21',  tenant_name: 'Ambev', tenant_cnpj: '07.526.557/0002-81', area_m2: 1380, price_per_m2: 124, contract_type: 'net', contract_start: '2022-06-01', contract_end: '2027-05-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2022-06-01', periodicidade_reajuste: 'anual', garantia: 'Seguro fiança', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Bebidas' },
+  { id: 'b12-ct31',  building_id: 'b12', unit_id: 'Conjunto 31',  tenant_name: 'Vivo (Telefônica Brasil)', tenant_cnpj: '11.260.134/0001-50', area_m2: 1420, price_per_m2: 118, contract_type: 'net', contract_start: '2022-03-01', contract_end: '2027-02-28', status: 'active', indice_reajuste: 'IGP-M', data_base_reajuste: '2022-03-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Telecomunicações' },
+  { id: 'b12-ct41',  building_id: 'b12', unit_id: 'Conjunto 41',  tenant_name: 'Vivo (Telefônica Brasil)', tenant_cnpj: '11.260.134/0001-50', area_m2: 1390, price_per_m2: 118, contract_type: 'net', contract_start: '2022-03-01', contract_end: '2027-02-28', status: 'active', indice_reajuste: 'IGP-M', data_base_reajuste: '2022-03-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Telecomunicações' },
+  { id: 'b12-ct51',  building_id: 'b12', unit_id: 'Conjunto 51',  tenant_name: 'Totvs S.A.', tenant_cnpj: '07.526.557/0001-00', area_m2: 1410, price_per_m2: 112, contract_type: 'net', contract_start: '2021-08-01', contract_end: '2026-07-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2021-08-01', periodicidade_reajuste: 'anual', garantia: 'Depósito caução', dia_vencimento: 10, lease_nature: 'atipico', tenant_segment: 'Tecnologia' },
+  { id: 'b12-ct61',  building_id: 'b12', unit_id: 'Conjunto 61',  tenant_name: 'Totvs S.A.', tenant_cnpj: '07.526.557/0001-00', area_m2: 1370, price_per_m2: 112, contract_type: 'net', contract_start: '2021-08-01', contract_end: '2026-07-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2021-08-01', periodicidade_reajuste: 'anual', garantia: 'Depósito caução', dia_vencimento: 10, lease_nature: 'atipico', tenant_segment: 'Tecnologia' },
+  { id: 'b12-cj71',  building_id: 'b12', unit_id: 'Conjunto 71',  tenant_name: null, area_m2: 1350, price_per_m2: null, contract_type: null, status: 'vacant' },
+  { id: 'b12-ct81',  building_id: 'b12', unit_id: 'Conjunto 81',  tenant_name: 'Befly Viagens', tenant_cnpj: '13.453.928/0001-77', area_m2: 1400, price_per_m2: 121, contract_type: 'net', contract_start: '2023-01-01', contract_end: '2028-12-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2023-01-01', periodicidade_reajuste: 'anual', garantia: 'Seguro fiança', dia_vencimento: 10, lease_nature: 'atipico', tenant_segment: 'Serviços Corporativos' },
+  { id: 'b12-ct91',  building_id: 'b12', unit_id: 'Conjunto 91',  tenant_name: 'Hospital Sírio-Libanês', tenant_cnpj: '54.137.319/0001-03', area_m2: 1330, price_per_m2: 109, contract_type: 'gross', contract_start: '2022-11-01', contract_end: '2026-10-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2022-11-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Saúde' },
+  { id: 'b12-ct101', building_id: 'b12', unit_id: 'Conjunto 101', tenant_name: 'Hospital Sírio-Libanês', tenant_cnpj: '54.137.319/0001-03', area_m2: 1360, price_per_m2: 109, contract_type: 'gross', contract_start: '2022-11-01', contract_end: '2026-10-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2022-11-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Saúde' },
+  { id: 'b12-ct111', building_id: 'b12', unit_id: 'Conjunto 111', tenant_name: 'BP Brasil', tenant_cnpj: '04.870.532/0001-66', area_m2: 1340, price_per_m2: 104, contract_type: 'semi-gross', contract_start: '2024-02-01', contract_end: '2027-01-31', status: 'active', indice_reajuste: 'IGP-M', data_base_reajuste: '2024-02-01', periodicidade_reajuste: 'anual', garantia: 'Fiador', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Energia' },
+  { id: 'b12-ct121', building_id: 'b12', unit_id: 'Conjunto 121', tenant_name: 'DHL Supply Chain', tenant_cnpj: '03.420.926/0001-08', area_m2: 1380, price_per_m2: 126, contract_type: 'net', contract_start: '2023-06-01', contract_end: '2028-05-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2023-06-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 10, lease_nature: 'atipico', tenant_segment: 'Logística' },
+  { id: 'b12-ct131', building_id: 'b12', unit_id: 'Conjunto 131', tenant_name: 'DHL Supply Chain', tenant_cnpj: '03.420.926/0001-08', area_m2: 1320, price_per_m2: 126, contract_type: 'net', contract_start: '2023-06-01', contract_end: '2028-05-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2023-06-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 10, lease_nature: 'atipico', tenant_segment: 'Logística' },
+  { id: 'b12-ct141', building_id: 'b12', unit_id: 'Conjunto 141', tenant_name: 'WeWork Brasil', tenant_cnpj: '08.913.572/0001-19', area_m2: 1350, price_per_m2: 113, contract_type: 'gross', contract_start: '2024-04-01', contract_end: '2027-03-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2024-04-01', periodicidade_reajuste: 'anual', garantia: 'Sem garantia', dia_vencimento: 10, lease_nature: 'tipico', tenant_segment: 'Coworking' },
+  { id: 'b12-ct151', building_id: 'b12', unit_id: 'Conjunto 151', tenant_name: 'Deloitte Brasil', tenant_cnpj: '05.629.244/0001-50', area_m2: 1300, price_per_m2: 108, contract_type: 'net', contract_start: '2023-09-01', contract_end: '2026-08-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2023-09-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Consultoria' },
+  { id: 'b12-ct161', building_id: 'b12', unit_id: 'Conjunto 161', tenant_name: 'Deloitte Brasil', tenant_cnpj: '05.629.244/0001-50', area_m2: 1330, price_per_m2: 108, contract_type: 'net', contract_start: '2023-09-01', contract_end: '2026-08-31', status: 'active', indice_reajuste: 'IPCA', data_base_reajuste: '2023-09-01', periodicidade_reajuste: 'anual', garantia: 'Fiança bancária', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Consultoria' },
+  { id: 'b12-ct171', building_id: 'b12', unit_id: 'Conjunto 171', tenant_name: 'BP Brasil', tenant_cnpj: '04.870.532/0001-66', area_m2: 1290, price_per_m2: 104, contract_type: 'semi-gross', contract_start: '2024-02-01', contract_end: '2027-01-31', status: 'active', indice_reajuste: 'IGP-M', data_base_reajuste: '2024-02-01', periodicidade_reajuste: 'anual', garantia: 'Fiador', dia_vencimento: 5, lease_nature: 'tipico', tenant_segment: 'Energia' },
 ];
 
 // ─── Building Documents seed data ────────────────────
@@ -599,7 +598,7 @@ export const mockLEEDData: LEEDData[] = [
     ],
   },
   {
-    id: 'leed2', building_id: 'b1', certification_status: 'none', total_score: 0, max_score: 110, categories: [],
+    id: 'leed2', building_id: 'b12', certification_status: 'none', total_score: 0, max_score: 110, categories: [],
   },
 ];
 
@@ -751,38 +750,38 @@ export const mockFunds: Fund[] = [
 ];
 
 
-// ─── Mock Tickets — 360JK Real ────────────────────────
+// ─── Mock Tickets — Chucri Zaidan — HGRE11 ────────────────────────
 export const mockTickets: Ticket[] = [
   {
     id: 'CH-001', title: 'Solicitação de limpeza pós-evento — 7º andar',
-    description: 'Necessário limpeza extra na sala de reuniões do 7º andar após evento corporativo da Lux Energia.',
+    description: 'Necessário limpeza extra na sala de reuniões do 7º andar após evento corporativo da Vivo (Telefônica Brasil).',
     category: 'Limpeza', sphere: 'Limpeza e Conservação', priority: 'normal', status: 'open',
-    requester: 'Lux Energia', floor: 7, building_id: 'b1',
+    requester: 'Vivo (Telefônica Brasil)', floor: 7, building_id: 'b12',
     created_at: '2026-03-09T08:30:00', sla_deadline: '2026-03-11T08:30:00',
     comments_count: 0, attachments_count: 0, timeline: [
-      { id: 'e1', type: 'created', description: 'Chamado aberto por Lux Energia', author: 'Lux Energia — Administrador', created_at: '2026-03-09T08:30:00' },
+      { id: 'e1', type: 'created', description: 'Chamado aberto por Vivo (Telefônica Brasil)', author: 'Vivo (Telefônica Brasil) — Administrador', created_at: '2026-03-09T08:30:00' },
     ]
   },
   {
     id: 'CH-002', title: 'Ar-condicionado com ruído — sala reunião 13º andar',
     description: 'O ar condicionado da sala de reunião principal do 13º andar está emitindo ruído constante. Solicitar inspeção técnica.',
     category: 'Climatização', sphere: 'Manutenção', priority: 'high', status: 'in_progress',
-    requester: 'Capitale', assigned_to: 'ClimaTech Solutions', floor: 13, building_id: 'b1', vendor_id: 'vd1', asset_id: 'AT-002',
+    requester: 'Totvs S.A.', assigned_to: 'ClimaTech Solutions', floor: 13, building_id: 'b12', vendor_id: 'vd1', asset_id: 'AT-002',
     created_at: '2026-03-07T14:00:00', sla_deadline: '2026-03-09T14:00:00',
     comments_count: 2, attachments_count: 1, timeline: [
-      { id: 'e2', type: 'created', description: 'Chamado aberto por Capitale', author: 'Capitale — Administrador', created_at: '2026-03-07T14:00:00' },
+      { id: 'e2', type: 'created', description: 'Chamado aberto por Totvs S.A.', author: 'Totvs S.A. — Administrador', created_at: '2026-03-07T14:00:00' },
       { id: 'e3', type: 'assigned', description: 'Atribuído a ClimaTech Solutions', author: 'Tatiana Caracciolo', created_at: '2026-03-07T15:00:00' },
       { id: 'e4', type: 'status_changed', description: 'Status alterado para Em Execução', author: 'ClimaTech Solutions', created_at: '2026-03-08T09:00:00' },
     ]
   },
   {
     id: 'CH-003', title: 'Porta de acesso travada — 3º andar',
-    description: 'Porta de acesso principal do 3º andar (You.inc) não está abrindo com o crachá.',
+    description: 'Porta de acesso principal do 3º andar (WeWork Brasil) não está abrindo com o crachá.',
     category: 'Manutenção', sphere: 'Segurança Patrimonial', priority: 'high', status: 'in_analysis',
-    requester: 'You.inc', assigned_to: 'SecTech Segurança', floor: 3, building_id: 'b1', vendor_id: 'vd2',
+    requester: 'WeWork Brasil', assigned_to: 'SecTech Segurança', floor: 3, building_id: 'b12', vendor_id: 'vd2',
     created_at: '2026-03-08T16:45:00', sla_deadline: '2026-03-09T16:45:00',
     comments_count: 1, attachments_count: 0, timeline: [
-      { id: 'e5', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-08T16:45:00' },
+      { id: 'e5', type: 'created', description: 'Chamado aberto por WeWork Brasil', author: 'WeWork Brasil — Administrador', created_at: '2026-03-08T16:45:00' },
       { id: 'e6', type: 'assigned', description: 'Atribuído a SecTech Segurança', author: 'Tatiana Caracciolo', created_at: '2026-03-08T17:00:00' },
       { id: 'e7', type: 'status_changed', description: 'Status alterado para Em Análise', author: 'SecTech Segurança', created_at: '2026-03-09T08:00:00' },
     ]
@@ -791,7 +790,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-004', title: 'Manutenção de bicicletário — SS3',
     description: 'Continuidade da reforma do bicicletário no subsolo 3.',
     category: 'Manutenção', sphere: 'Gestão de Ativos', priority: 'normal', status: 'in_progress',
-    requester: 'Gestão (Tatiana)', assigned_to: 'Empreiteira SS3', floor: -3, building_id: 'b1',
+    requester: 'Gestão (CBRE)', assigned_to: 'Empreiteira SS3', floor: -3, building_id: 'b12',
     created_at: '2026-02-15T08:00:00', sla_deadline: '2026-04-30T08:00:00',
     comments_count: 5, attachments_count: 3, timeline: [
       { id: 'e8', type: 'created', description: 'Chamado aberto pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-02-15T08:00:00' },
@@ -802,7 +801,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-005', title: 'Instalação vagas EV — SS2',
     description: 'Instalação de 20 pontos de recarga para veículos elétricos no subsolo 2.',
     category: 'Estacionamento', sphere: 'Gestão de Ativos', priority: 'normal', status: 'in_progress',
-    requester: 'Gestão (Tatiana)', assigned_to: 'EV Solutions', floor: -2, building_id: 'b1',
+    requester: 'Gestão (CBRE)', assigned_to: 'EV Solutions', floor: -2, building_id: 'b12',
     created_at: '2026-02-01T08:00:00', sla_deadline: '2026-05-15T08:00:00',
     comments_count: 4, attachments_count: 2, timeline: [
       { id: 'e10', type: 'created', description: 'Chamado aberto pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-02-01T08:00:00' },
@@ -812,10 +811,10 @@ export const mockTickets: Ticket[] = [
     id: 'CH-006', title: 'Lâmpada queimada corredor — 2º andar',
     description: 'Lâmpada LED do corredor principal do 2º andar queimada.',
     category: 'Elétrica', sphere: 'Manutenção', priority: 'low', status: 'completed',
-    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 2, building_id: 'b1', vendor_id: 'vd5', asset_id: 'AT-008',
+    requester: 'WeWork Brasil', assigned_to: 'Manutenção Interna', floor: 2, building_id: 'b12', vendor_id: 'vd5', asset_id: 'AT-008',
     created_at: '2026-03-01T10:00:00', sla_deadline: '2026-03-03T10:00:00',
     comments_count: 1, attachments_count: 0, satisfaction_rating: 5, timeline: [
-      { id: 'e11', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-01T10:00:00' },
+      { id: 'e11', type: 'created', description: 'Chamado aberto por WeWork Brasil', author: 'WeWork Brasil — Administrador', created_at: '2026-03-01T10:00:00' },
       { id: 'e12', type: 'completed', description: 'Chamado concluído', author: 'Manutenção Interna', created_at: '2026-03-01T16:00:00' },
     ]
   },
@@ -823,31 +822,31 @@ export const mockTickets: Ticket[] = [
     id: 'CH-007', title: 'Vazamento torneira banheiro — 4º andar',
     description: 'Torneira do banheiro masculino do 4º andar com gotejamento constante.',
     category: 'Hidráulica', sphere: 'Manutenção', priority: 'normal', status: 'completed',
-    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 4, building_id: 'b1',
+    requester: 'WeWork Brasil', assigned_to: 'Manutenção Interna', floor: 4, building_id: 'b12',
     created_at: '2026-03-02T14:00:00', sla_deadline: '2026-03-04T14:00:00',
     comments_count: 2, attachments_count: 1, satisfaction_rating: 4, timeline: [
-      { id: 'e13', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-02T14:00:00' },
+      { id: 'e13', type: 'created', description: 'Chamado aberto por WeWork Brasil', author: 'WeWork Brasil — Administrador', created_at: '2026-03-02T14:00:00' },
       { id: 'e14', type: 'completed', description: 'Chamado concluído', author: 'Manutenção Interna', created_at: '2026-03-03T11:00:00' },
     ]
   },
   {
     id: 'CH-008', title: 'Solicitação de proposta — Eficiência Energética',
-    description: 'Lux Energia solicita proposta para auditoria de eficiência energética do 7º andar.',
+    description: 'Vivo (Telefônica Brasil) solicita proposta para auditoria de eficiência energética do 7º andar.',
     category: 'TI', sphere: 'Gestão de Ativos', priority: 'low', status: 'open',
-    requester: 'Lux Energia', floor: 7, building_id: 'b1',
+    requester: 'Vivo (Telefônica Brasil)', floor: 7, building_id: 'b12',
     created_at: '2026-03-09T10:30:00', sla_deadline: '2026-03-16T10:30:00',
     comments_count: 0, attachments_count: 0, timeline: [
-      { id: 'e15', type: 'created', description: 'Chamado aberto por Lux Energia', author: 'Lux Energia — Administrador', created_at: '2026-03-09T10:30:00' },
+      { id: 'e15', type: 'created', description: 'Chamado aberto por Vivo (Telefônica Brasil)', author: 'Vivo (Telefônica Brasil) — Administrador', created_at: '2026-03-09T10:30:00' },
     ]
   },
   {
     id: 'CH-009', title: 'Calibração sistema de controle de acesso — 13º',
     description: 'Sistema de controle de acesso do 13º andar necessita calibração após atualização de firmware.',
     category: 'Segurança', sphere: 'Segurança Patrimonial', priority: 'normal', status: 'awaiting_approval',
-    requester: 'Capitale', assigned_to: 'SecTech Segurança', floor: 13, building_id: 'b1', vendor_id: 'vd2',
+    requester: 'Totvs S.A.', assigned_to: 'SecTech Segurança', floor: 13, building_id: 'b12', vendor_id: 'vd2',
     created_at: '2026-03-06T09:00:00', sla_deadline: '2026-03-10T09:00:00',
     comments_count: 1, attachments_count: 0, timeline: [
-      { id: 'e16', type: 'created', description: 'Chamado aberto por Capitale', author: 'Capitale — Administrador', created_at: '2026-03-06T09:00:00' },
+      { id: 'e16', type: 'created', description: 'Chamado aberto por Totvs S.A.', author: 'Totvs S.A. — Administrador', created_at: '2026-03-06T09:00:00' },
       { id: 'e17', type: 'assigned', description: 'Atribuído a SecTech Segurança', author: 'Tatiana Caracciolo', created_at: '2026-03-06T10:00:00' },
     ]
   },
@@ -855,7 +854,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-010', title: 'Revisão semestral grupo gerador',
     description: 'Revisão semestral programada do grupo gerador do ativo.',
     category: 'Manutenção', sphere: 'Gestão de Ativos', priority: 'normal', status: 'open',
-    requester: 'Gestão (Tatiana)', floor: 0, building_id: 'b1',
+    requester: 'Gestão (CBRE)', floor: 0, building_id: 'b12',
     created_at: '2026-03-05T08:00:00', sla_deadline: '2026-03-20T08:00:00',
     comments_count: 0, attachments_count: 0, timeline: [
       { id: 'e18', type: 'created', description: 'Chamado programado pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-03-05T08:00:00' },
@@ -896,7 +895,7 @@ export const mockTickets: Ticket[] = [
   },
 ];
 
-// ─── Mock Announcements — 360JK ──────────────────────
+// ─── Mock Announcements — Chucri Zaidan ──────────────────────
 export const mockAnnouncements: Announcement[] = [
   {
     id: 'a1', title: '⚠️ Manutenção elevadores centrais — 12/03 das 8h às 12h',
@@ -904,9 +903,9 @@ export const mockAnnouncements: Announcement[] = [
     category: 'Manutenção', priority: 'urgent', published_at: '2026-03-09T08:00:00', expires_at: '2026-03-12T12:00:00',
     read: false, author: { name: 'Tatiana Caracciolo', company: 'Administradora', position: 'Gerente de Ativos' },
     target_type: 'all', read_count: 45, total_recipients: 120, allow_comments: true, has_poll: false, requires_confirmation: true,
-    building_id: 'b1', unit: 'Todos',
+    building_id: 'b12', unit: 'Todos',
     comments: [
-      { id: 'c1', author: 'Lux Energia', company: 'Lux Energia', text: 'Podemos usar o elevador de serviço para visitantes neste período?', created_at: '2026-03-09T09:30:00' },
+      { id: 'c1', author: 'Vivo (Telefônica Brasil)', company: 'Vivo (Telefônica Brasil)', text: 'Podemos usar o elevador de serviço para visitantes neste período?', created_at: '2026-03-09T09:30:00' },
     ],
   },
   {
@@ -915,7 +914,7 @@ export const mockAnnouncements: Announcement[] = [
     category: 'Administrativo', priority: 'normal', published_at: '2026-03-08T10:00:00',
     read: false, author: { name: 'Tatiana Caracciolo', company: 'Administradora', position: 'Gerente de Ativos' },
     target_type: 'all', read_count: 78, total_recipients: 120, allow_comments: true, has_poll: false, requires_confirmation: false,
-    building_id: 'b1', unit: 'SS3',
+    building_id: 'b12', unit: 'SS3',
   },
   {
     id: 'a3', title: '⚡ Instalação de 20 pontos de recarga EV no SS2',
@@ -967,133 +966,86 @@ export const mockAnnouncements: Announcement[] = [
   },
 ];
 
-// ─── Mock Contracts — 360JK Real ─────────────────────
+// ─── Mock Contracts — Prestadores de serviço do edifício (Super Admin) ───
+// Contratos com terceiros ligados ao edifício (recorrentes e pontuais):
+// limpeza, segurança, manutenção, elevadores etc. Sem locatários.
 export const mockContracts: Contract[] = [
   {
-    id: 'c1', number: '#CTR-360JK-001', tenant_name: 'Lux Energy', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [7], area_m2: 500, start_date: '2025-01-01', end_date: '2027-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-01', value: 0, status: 'paid', paid_at: '2026-01-05' }, { month: '2026-02', value: 0, status: 'paid', paid_at: '2026-02-03' }, { month: '2026-03', value: 0, status: 'pending' }],
-    adjustments: [], documents: [{ id: 'd1', name: 'Contrato_LuxEnergy_2025.pdf', type: 'pdf', size: '2.4 MB', uploaded_at: '2025-01-01' }],
+    id: 'c1', number: '#CTR-CZ-P001', tenant_name: 'CBRE — Administração Predial', cnpj: '02.740.991/0001-09', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2025-01-01', end_date: '2027-12-31',
+    monthly_value: 85000, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
+    payments: [{ month: '2026-01', value: 85000, status: 'paid', paid_at: '2026-01-05' }, { month: '2026-02', value: 85000, status: 'paid', paid_at: '2026-02-03' }, { month: '2026-03', value: 85000, status: 'pending' }],
+    adjustments: [], documents: [{ id: 'd1', name: 'Contrato_Administracao_C_2025.pdf', type: 'pdf', size: '2.4 MB', uploaded_at: '2025-01-01' }],
   },
   {
-    id: 'c2', number: '#CTR-360JK-002', tenant_name: 'Capitale Energia', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [13], area_m2: 960, start_date: '2024-06-01', end_date: '2027-05-31',
-    monthly_value: 0, adjustment_index: 'IGP-M', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-01', value: 0, status: 'paid', paid_at: '2026-01-04' }, { month: '2026-02', value: 0, status: 'paid', paid_at: '2026-02-05' }, { month: '2026-03', value: 0, status: 'pending' }],
-    adjustments: [], documents: [{ id: 'd2', name: 'Contrato_Capitale_2024.pdf', type: 'pdf', size: '3.1 MB', uploaded_at: '2024-06-01' }],
+    id: 'c2', number: '#CTR-CZ-P002', tenant_name: 'SecTech Segurança 24h', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2024-06-01', end_date: '2027-05-31',
+    monthly_value: 62000, adjustment_index: 'IGP-M', next_adjustment: '2026-06-01', status: 'active',
+    payments: [{ month: '2026-01', value: 62000, status: 'paid', paid_at: '2026-01-04' }, { month: '2026-02', value: 62000, status: 'paid', paid_at: '2026-02-05' }, { month: '2026-03', value: 62000, status: 'pending' }],
+    adjustments: [], documents: [{ id: 'd2', name: 'Contrato_Seguranca_2024.pdf', type: 'pdf', size: '3.1 MB', uploaded_at: '2024-06-01' }],
   },
   {
-    id: 'c3', number: '#CTR-360JK-003', tenant_name: 'You Intermediação', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [2, 4], area_m2: 960, start_date: '2023-03-01', end_date: '2026-02-28',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-03-01', status: 'expiring',
-    payments: [{ month: '2026-01', value: 0, status: 'paid', paid_at: '2026-01-06' }, { month: '2026-02', value: 0, status: 'paid', paid_at: '2026-02-04' }],
-    adjustments: [], documents: [{ id: 'd3', name: 'Contrato_YouIntermediacao_2023.pdf', type: 'pdf', size: '2.8 MB', uploaded_at: '2023-03-01' }],
+    id: 'c3', number: '#CTR-CZ-P003', tenant_name: 'CleanPro Facilities — Limpeza', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2023-03-01', end_date: '2026-02-28',
+    monthly_value: 48000, adjustment_index: 'IPCA', next_adjustment: '2026-03-01', status: 'expiring',
+    payments: [{ month: '2026-01', value: 48000, status: 'paid', paid_at: '2026-01-06' }, { month: '2026-02', value: 48000, status: 'paid', paid_at: '2026-02-04' }],
+    adjustments: [], documents: [{ id: 'd3', name: 'Contrato_Limpeza_2023.pdf', type: 'pdf', size: '2.8 MB', uploaded_at: '2023-03-01' }],
   },
   {
-    id: 'c4', number: '#CTR-360JK-004', tenant_name: 'Windmöller & Hölscher', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [3], area_m2: 480, start_date: '2024-01-01', end_date: '2026-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c4', number: '#CTR-CZ-P004', tenant_name: 'OTIS — Manutenção de Elevadores', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2024-01-01', end_date: '2026-12-31',
+    monthly_value: 27500, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
+    payments: [{ month: '2026-03', value: 27500, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c5', number: '#CTR-360JK-005', tenant_name: 'Apex Partners', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [3, 5, 19], area_m2: 1440, start_date: '2023-06-01', end_date: '2028-05-31',
-    monthly_value: 0, adjustment_index: 'IGP-M', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c5', number: '#CTR-CZ-P005', tenant_name: 'ClimaTech — HVAC e CAG', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2023-06-01', end_date: '2028-05-31',
+    monthly_value: 34000, adjustment_index: 'IGP-M', next_adjustment: '2026-06-01', status: 'active',
+    payments: [{ month: '2026-03', value: 34000, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c6', number: '#CTR-360JK-006', tenant_name: 'Costa Pereira e Di Pietro', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [5], area_m2: 480, start_date: '2024-03-01', end_date: '2027-02-28',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-03-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c6', number: '#CTR-CZ-P006', tenant_name: 'VerdeVale — Paisagismo', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2024-03-01', end_date: '2027-02-28',
+    monthly_value: 9800, adjustment_index: 'IPCA', next_adjustment: '2026-03-01', status: 'active',
+    payments: [{ month: '2026-03', value: 9800, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c7', number: '#CTR-360JK-007', tenant_name: 'Barros Pimentel Advogados', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [6], area_m2: 480, start_date: '2024-01-01', end_date: '2026-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c7', number: '#CTR-CZ-P007', tenant_name: 'AquaClean — Tratamento de Água', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2024-01-01', end_date: '2026-12-31',
+    monthly_value: 7200, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
+    payments: [{ month: '2026-03', value: 7200, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c8', number: '#CTR-360JK-008', tenant_name: 'Bladex Representações', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [6], area_m2: 480, start_date: '2024-06-01', end_date: '2027-05-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c8', number: '#CTR-CZ-P008', tenant_name: 'PragaZero — Controle de Pragas', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2024-06-01', end_date: '2027-05-31',
+    monthly_value: 4300, adjustment_index: 'IPCA', next_adjustment: '2026-06-01', status: 'active',
+    payments: [{ month: '2026-03', value: 4300, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c9', number: '#CTR-360JK-009', tenant_name: 'Baggio Transportes', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [7], area_m2: 480, start_date: '2024-01-01', end_date: '2026-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c9', number: '#CTR-CZ-P009', tenant_name: 'Enel — Fornecimento de Energia', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2024-01-01', end_date: '2026-12-31',
+    monthly_value: 96000, adjustment_index: 'Fixo', next_adjustment: '2026-01-01', status: 'active',
+    payments: [{ month: '2026-03', value: 96000, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c10', number: '#CTR-360JK-010', tenant_name: 'Sul América', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [8], area_m2: 960, start_date: '2023-01-01', end_date: '2027-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c10', number: '#CTR-CZ-P010', tenant_name: 'Sabesp — Água e Esgoto', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2023-01-01', end_date: '2027-12-31',
+    monthly_value: 18500, adjustment_index: 'Fixo', next_adjustment: '2026-01-01', status: 'active',
+    payments: [{ month: '2026-03', value: 18500, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c11', number: '#CTR-360JK-011', tenant_name: 'Lass Capital', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [9], area_m2: 480, start_date: '2024-01-01', end_date: '2026-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c11', number: '#CTR-CZ-P011', tenant_name: 'Empreiteira SS3 — Retrofit Lobby (pontual)', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [0], area_m2: 0, start_date: '2026-01-15', end_date: '2026-09-30',
+    monthly_value: 0, adjustment_index: 'Fixo', next_adjustment: '2026-01-15', status: 'active',
+    payments: [{ month: '2026-03', value: 120000, status: 'pending' }], adjustments: [], documents: [],
   },
   {
-    id: 'c12', number: '#CTR-360JK-012', tenant_name: 'Barkana Investimentos', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [9], area_m2: 480, start_date: '2024-06-01', end_date: '2027-05-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c13', number: '#CTR-360JK-013', tenant_name: 'Geribá Energy', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [10, 11], area_m2: 1920, start_date: '2023-01-01', end_date: '2027-12-31',
-    monthly_value: 0, adjustment_index: 'IGP-M', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c14', number: '#CTR-360JK-014', tenant_name: 'Ibitu Energias', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [12], area_m2: 960, start_date: '2023-06-01', end_date: '2028-05-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c15', number: '#CTR-360JK-015', tenant_name: 'Sherman (A&O Shearman)', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [14], area_m2: 480, start_date: '2024-01-01', end_date: '2026-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c16', number: '#CTR-360JK-016', tenant_name: 'DLA Piper', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [14], area_m2: 480, start_date: '2024-06-01', end_date: '2027-05-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c17', number: '#CTR-360JK-017', tenant_name: 'Bronstein Zilberberg', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [15], area_m2: 960, start_date: '2023-01-01', end_date: '2027-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c18', number: '#CTR-360JK-018', tenant_name: 'Graça Couto Advogados', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [16], area_m2: 480, start_date: '2024-01-01', end_date: '2026-12-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-01-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c19', number: '#CTR-360JK-019', tenant_name: 'More Invest', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [16], area_m2: 480, start_date: '2024-06-01', end_date: '2027-05-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
-  },
-  {
-    id: 'c20', number: '#CTR-360JK-020', tenant_name: 'FKG Advogados', cnpj: 'A confirmar', owner: 'Administradora',
-    floors: [17], area_m2: 960, start_date: '2023-06-01', end_date: '2028-05-31',
-    monthly_value: 0, adjustment_index: 'IPCA', next_adjustment: '2026-06-01', status: 'active',
-    payments: [{ month: '2026-03', value: 0, status: 'pending' }], adjustments: [], documents: [],
+    id: 'c12', number: '#CTR-CZ-P012', tenant_name: 'EV Solutions — Eletropostos (pontual)', cnpj: 'A confirmar', owner: 'Administradora',
+    floors: [-2], area_m2: 0, start_date: '2026-02-01', end_date: '2026-07-31',
+    monthly_value: 0, adjustment_index: 'Fixo', next_adjustment: '2026-02-01', status: 'active',
+    payments: [{ month: '2026-03', value: 45000, status: 'pending' }], adjustments: [], documents: [],
   },
 ];
-
 // ─── Mock Energy/Water/Gas Data ───────────────────────
 export const mockEnergyData = [
   { month: 'Set', kwh: 142000, water: 1850, gas: 4200, target: 135000 },
@@ -1113,7 +1065,7 @@ export const mockTicketsByStatus = [
   { name: 'Concluídos', value: 2, fill: 'hsl(88, 50%, 53%)' },
 ];
 
-// ─── Floor Config — 360JK Real (from tenant list Excel) ────────────────────────
+// ─── Floor Config — Chucri Zaidan — HGRE11 (from tenant list Excel) ────────────────────────
 export const mockFloorConfig: FloorConfig[] = [
   { floor: -4, name: 'Subsolo 4 (SS4)', type: 'subsolo', area_m2: 2000, status: 'building_use', tenant: 'Estacionamento', special_icon: '🅿️', tickets_count: 0 },
   { floor: -3, name: 'Subsolo 3 (SS3)', type: 'subsolo', area_m2: 2000, status: 'work', tenant: 'Estacionamento + Bicicletário', special_status: 'Reforma do Bicicletário', special_icon: '🚧', tickets_count: 1, works: [{ title: 'Reforma do Bicicletário', status: 'Em andamento', progress: 45, end_date: '2026-04-30' }] },
@@ -1182,9 +1134,9 @@ export const mockFloorConfig: FloorConfig[] = [
   { floor: 12, name: '12º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Ibitu Energias', employees: 177,
     tenants: [{ name: 'Ibitu Energias', suites: 'Conj. 121, 122', employees: 177, email: 'juliana.jesus@ibituenergia.com' }],
     tickets_count: 0 },
-  // 13º andar — Capitale Energia (131, 132) — andar inteiro
-  { floor: 13, name: '13º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Capitale Energia', employees: 64,
-    tenants: [{ name: 'Capitale Energia', suites: 'Conj. 131, 132', employees: 64, email: 'adriana.bertolucci@capitaleenergia.com.br' }],
+  // 13º andar — Totvs S.A. Energia (131, 132) — andar inteiro
+  { floor: 13, name: '13º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Totvs S.A. Energia', employees: 64,
+    tenants: [{ name: 'Totvs S.A. Energia', suites: 'Conj. 131, 132', employees: 64, email: 'adriana.bertolucci@capitaleenergia.com.br' }],
     tickets_count: 1 },
   // 14º andar — Sherman (141) + DLA Piper (142)
   { floor: 14, name: '14º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Sherman / DLA Piper', employees: 41,
@@ -1234,26 +1186,26 @@ export const mockRooms: Room[] = [
 ];
 
 export const mockReservations: Reservation[] = [
-  { id: 'res1', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Reunião de Planejamento', date: '2026-03-10', start_time: '09:00', end_time: '10:30', tenant: 'Lux Energia', user: 'Lux Energia — Administrador', participants: 6, status: 'confirmed', resources: [] },
-  { id: 'res2', room_id: 'r3', room_name: 'Auditório Principal', title: 'Apresentação Q1', date: '2026-03-11', start_time: '14:00', end_time: '17:00', tenant: 'Capitale', user: 'Capitale — Administrador', participants: 80, status: 'confirmed', resources: ['Coffee Break'] },
-  { id: 'res3', room_id: 'r4', room_name: 'Sala de Treinamento', title: 'Workshop de Inovação', date: '2026-03-12', start_time: '08:00', end_time: '12:00', tenant: 'You.inc', user: 'You.inc — Administrador', participants: 25, status: 'confirmed', resources: ['Suporte TI'] },
-  { id: 'res4', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Alinhamento Comercial', date: '2026-03-10', start_time: '14:00', end_time: '15:30', tenant: 'Lux Energia', user: 'Lux Energia — Administrador', participants: 4, status: 'pending', resources: [] },
-  { id: 'res5', room_id: 'r6', room_name: 'Sala Compacta C', title: 'Call com Cliente', date: '2026-03-11', start_time: '10:00', end_time: '11:00', tenant: 'Capitale', user: 'Capitale — Administrador', participants: 3, status: 'confirmed', resources: [] },
-  { id: 'res6', room_id: 'r2', room_name: 'Sala de Conferência B', title: 'Board Meeting', date: '2026-03-10', start_time: '10:00', end_time: '12:00', tenant: 'You.inc', user: 'You.inc — Administrador', participants: 12, status: 'confirmed', resources: ['Coffee Break', 'Videoconferência'] },
+  { id: 'res1', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Reunião de Planejamento', date: '2026-03-10', start_time: '09:00', end_time: '10:30', tenant: 'Vivo (Telefônica Brasil)', user: 'Vivo (Telefônica Brasil) — Administrador', participants: 6, status: 'confirmed', resources: [] },
+  { id: 'res2', room_id: 'r3', room_name: 'Auditório Principal', title: 'Apresentação Q1', date: '2026-03-11', start_time: '14:00', end_time: '17:00', tenant: 'Totvs S.A.', user: 'Totvs S.A. — Administrador', participants: 80, status: 'confirmed', resources: ['Coffee Break'] },
+  { id: 'res3', room_id: 'r4', room_name: 'Sala de Treinamento', title: 'Workshop de Inovação', date: '2026-03-12', start_time: '08:00', end_time: '12:00', tenant: 'WeWork Brasil', user: 'WeWork Brasil — Administrador', participants: 25, status: 'confirmed', resources: ['Suporte TI'] },
+  { id: 'res4', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Alinhamento Comercial', date: '2026-03-10', start_time: '14:00', end_time: '15:30', tenant: 'Vivo (Telefônica Brasil)', user: 'Vivo (Telefônica Brasil) — Administrador', participants: 4, status: 'pending', resources: [] },
+  { id: 'res5', room_id: 'r6', room_name: 'Sala Compacta C', title: 'Call com Cliente', date: '2026-03-11', start_time: '10:00', end_time: '11:00', tenant: 'Totvs S.A.', user: 'Totvs S.A. — Administrador', participants: 3, status: 'confirmed', resources: [] },
+  { id: 'res6', room_id: 'r2', room_name: 'Sala de Conferência B', title: 'Board Meeting', date: '2026-03-10', start_time: '10:00', end_time: '12:00', tenant: 'WeWork Brasil', user: 'WeWork Brasil — Administrador', participants: 12, status: 'confirmed', resources: ['Coffee Break', 'Videoconferência'] },
 ];
 
-// ─── Mock Visitors — 360JK Today ─────────────────────
+// ─── Mock Visitors — Chucri Zaidan Today ─────────────────────
 export const mockVisitors: Visitor[] = [
-  { id: 'v1', name: 'Pedro Alves', company: 'LuxTech Soluções', document: '***.***.789-00', destination_floor: 7, destination_company: 'Lux Energia', host_name: 'Lux Energia — Administrador', scheduled_at: '2026-03-09T14:00:00', status: 'waiting', type: 'client', auto_release: false, qr_code: 'QR-V1-2026', recurrent: false },
-  { id: 'v2', name: 'Mariana Costa', company: 'Investidora independente', document: '***.***.456-00', destination_floor: 13, destination_company: 'Capitale', host_name: 'Capitale — Administrador', scheduled_at: '2026-03-09T15:30:00', status: 'scheduled', type: 'client', auto_release: false, qr_code: 'QR-V2-2026', recurrent: false },
-  { id: 'v3', name: 'Roberto Sarti', company: 'Consultor You.inc', document: '***.***.123-00', destination_floor: 2, destination_company: 'You.inc', host_name: 'You.inc — Administrador', scheduled_at: '2026-03-09T16:00:00', checked_in_at: '2026-03-09T15:55:00', status: 'present', type: 'service', auto_release: true, qr_code: 'QR-V3-2026', recurrent: true },
+  { id: 'v1', name: 'Pedro Alves', company: 'LuxTech Soluções', document: '***.***.789-00', destination_floor: 7, destination_company: 'Vivo (Telefônica Brasil)', host_name: 'Vivo (Telefônica Brasil) — Administrador', scheduled_at: '2026-03-09T14:00:00', status: 'waiting', type: 'client', auto_release: false, qr_code: 'QR-V1-2026', recurrent: false },
+  { id: 'v2', name: 'Mariana Costa', company: 'Investidora independente', document: '***.***.456-00', destination_floor: 13, destination_company: 'Totvs S.A.', host_name: 'Totvs S.A. — Administrador', scheduled_at: '2026-03-09T15:30:00', status: 'scheduled', type: 'client', auto_release: false, qr_code: 'QR-V2-2026', recurrent: false },
+  { id: 'v3', name: 'Roberto Sarti', company: 'Consultor WeWork Brasil', document: '***.***.123-00', destination_floor: 2, destination_company: 'WeWork Brasil', host_name: 'WeWork Brasil — Administrador', scheduled_at: '2026-03-09T16:00:00', checked_in_at: '2026-03-09T15:55:00', status: 'present', type: 'service', auto_release: true, qr_code: 'QR-V3-2026', recurrent: true },
   { id: 'v4', name: 'Carlos Eduardo Prado', company: 'ClimaTech', document: '***.***.321-00', destination_floor: 0, destination_company: 'Administradora', host_name: 'Tatiana Caracciolo', scheduled_at: '2026-03-09T08:00:00', checked_in_at: '2026-03-09T07:50:00', checked_out_at: '2026-03-09T12:00:00', status: 'departed', type: 'service', auto_release: true, qr_code: 'QR-V4-2026', recurrent: true },
 ];
 
 // ─── Vendor Reviews ───────────────────────────────────
 export const mockVendorReviews: VendorReview[] = [
-  { id: 'vr1', vendor_id: 'vd5', ticket_id: 'CH-006', rating: 5, comment: 'Excelente atendimento, rápido e eficiente!', recommend: true, reviewer_name: 'You.inc', reviewer_company: 'You.inc', created_at: '2026-03-01T17:00:00' },
-  { id: 'vr2', vendor_id: 'vd5', ticket_id: 'CH-007', rating: 4, comment: 'Bom serviço, resolveu o problema rapidamente.', recommend: true, reviewer_name: 'You.inc', reviewer_company: 'You.inc', created_at: '2026-03-03T12:00:00' },
+  { id: 'vr1', vendor_id: 'vd5', ticket_id: 'CH-006', rating: 5, comment: 'Excelente atendimento, rápido e eficiente!', recommend: true, reviewer_name: 'WeWork Brasil', reviewer_company: 'WeWork Brasil', created_at: '2026-03-01T17:00:00' },
+  { id: 'vr2', vendor_id: 'vd5', ticket_id: 'CH-007', rating: 4, comment: 'Bom serviço, resolveu o problema rapidamente.', recommend: true, reviewer_name: 'WeWork Brasil', reviewer_company: 'WeWork Brasil', created_at: '2026-03-03T12:00:00' },
 ];
 
 // ─── Nexus Solutions ──────────────────────────────────

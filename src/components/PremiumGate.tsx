@@ -29,7 +29,7 @@ export default function PremiumGate({
 
   if (!blocked) return <>{children}</>;
 
-  const subject = contactSubject || `${t('premium.requestCta')} — ${moduleName} | Patria 360JK`;
+  const subject = contactSubject || `${t('premium.requestCta')} — ${moduleName} | Patria Chucri Zaidan`;
   const body = `${t('premium.contact')}\n\n${user.full_name}`;
   const mailtoHref = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 

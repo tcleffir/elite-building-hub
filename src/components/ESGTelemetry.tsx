@@ -42,7 +42,7 @@ const ESGTelemetry = () => {
     const id = `mtr-${Date.now()}`;
     const tenant = tenantDirectory.find(t => t.id === newMeter.tenantId);
     const meter: UtilityMeter = {
-      id, buildingId: 'b1', name: newMeter.name, type: newMeter.type,
+      id, buildingId: 'b12', name: newMeter.name, type: newMeter.type,
       unit: newMeter.unit, location: newMeter.location,
       tenantId: tenant?.id, tenantName: tenant?.company,
       integrationType: newMeter.integrationType,

@@ -437,7 +437,7 @@ const pt = {
 
   // ── Financeiro ──
   "financeiro.title": "Financeiro",
-  "financeiro.titleIPMS": "Financeiro — IPMS",
+  "financeiro.titleIPMS": "Financeiro",
   "financeiro.subtitle": "Visão consolidada de receitas, despesas e rateio condominial",
   "financeiro.income": "Receita",
   "financeiro.expenses": "Despesas",
@@ -599,7 +599,7 @@ const pt = {
 
   // ── Premium Gate ──
   "premium.title": "Módulo Premium",
-  "premium.contact": "Para contratar, entre em contato com a Lux Energia:",
+  "premium.contact": "Para contratar, entre em contato com a Patria Real Estate:",
   "premium.requestCta": "Solicitar Contratação",
   "premium.back": "← Voltar",
   "premium.tooltip": "Módulo Premium — clique para saber mais",
@@ -1210,7 +1210,7 @@ const es: Record<TranslationKey, string> = {
   "docs.days": "d",
 
   "premium.title": "Módulo Premium",
-  "premium.contact": "Para contratar, contacte a Lux Energia:",
+  "premium.contact": "Para contratar, contacte a Patria Real Estate:",
   "premium.requestCta": "Solicitar Contratación",
   "premium.back": "← Volver",
   "premium.tooltip": "Módulo Premium — haga clic para más información",
@@ -1816,7 +1816,7 @@ const en: Record<TranslationKey, string> = {
   "docs.days": "d",
 
   "premium.title": "Premium Module",
-  "premium.contact": "To subscribe, contact Lux Energia:",
+  "premium.contact": "To subscribe, contact Patria Real Estate:",
   "premium.requestCta": "Request Subscription",
   "premium.back": "← Back",
   "premium.tooltip": "Premium Module — click to learn more",

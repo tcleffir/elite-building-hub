@@ -84,7 +84,7 @@ export const navGroups: NavGroup[] = [
   },
   {
     id: 'financeiro',
-    label: 'Financeiro',
+    label: 'Administrativo',
     labelKey: 'nav.financeiro',
     icon: DollarSign,
     items: [
