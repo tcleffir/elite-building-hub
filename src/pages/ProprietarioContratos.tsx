@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from "react";
-import { getHGRE11PortfolioBuildings, mockTenantContracts, type TenantContract } from "@/lib/mock-data";
+import { getHGRE11PortfolioBuildings, mockTenantContracts, upsertTenantContract, TENANT_CONTRACTS_EVENT, type TenantContract } from "@/lib/mock-data";
 import {
   mockGuarantees, mockInsurances, mockIPTUs, mockCommonAreaContracts,
   mockReajustes, mockContractDocuments,
@@ -137,6 +137,35 @@ export default function ProprietarioContratos() {
     start: '', end: '', index: 'IPCA', guarantee: 'fianca_bancaria',
   });
   const [newContractFile, setNewContractFile] = useState<File | null>(null);
+  const [storeVersion, setStoreVersion] = useState(0);
+  useEffect(() => {
+    const h = () => setStoreVersion(v => v + 1);
+    window.addEventListener(TENANT_CONTRACTS_EVENT, h);
+    return () => window.removeEventListener(TENANT_CONTRACTS_EVENT, h);
+  }, []);
+  const saveNewContractToStore = () => {
+    const n = newContract;
+    const label = n.unit.trim();
+    const unit_id = /^\d+$/.test(label) ? `Conjunto ${label}` : (label || `Conjunto ${Date.now() % 1000}`);
+    const existing = mockTenantContracts.find(c => c.building_id === n.buildingId && c.unit_id.toLowerCase() === unit_id.toLowerCase());
+    if (existing && existing.tenant_name) { toast.error(`${unit_id} já está ocupado por ${existing.tenant_name}.`); return false; }
+    const garantiaMap: Record<string, TenantContract['garantia']> = { fianca_bancaria: 'Fiança bancária', seguro_fianca: 'Seguro fiança', caucao: 'Depósito caução', fiador: 'Fiador' };
+    upsertTenantContract({
+      ...(existing ?? {}),
+      id: existing?.id ?? `${n.buildingId}-ct${Date.now()}`,
+      building_id: n.buildingId, unit_id,
+      tenant_name: n.tenant.trim(),
+      area_m2: parseFloat(n.area) || existing?.area_m2 || 0,
+      price_per_m2: parseFloat(n.pricePerM2) || null,
+      contract_type: n.type as TenantContract['contract_type'],
+      contract_start: n.start || undefined, contract_end: n.end || undefined,
+      status: 'active',
+      indice_reajuste: n.index as TenantContract['indice_reajuste'], periodicidade_reajuste: 'anual',
+      data_base_reajuste: n.start || undefined,
+      garantia: garantiaMap[n.guarantee] ?? 'Fiança bancária',
+    } as TenantContract);
+    return true;
+  };
   const [drawerTab, setDrawerTab] = useState('resumo');
   const [drawerAction, setDrawerAction] = useState<'edit' | 'aditivo' | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('monthsRemaining');
@@ -264,13 +293,13 @@ export default function ProprietarioContratos() {
       return sortDir === 'asc' ? va - vb : vb - va;
     });
     return filtered;
-  }, [selectedBuildingId, statusFilter, searchQuery, sortKey, sortDir, showAllBuildings, portfolioBuildingIds, inactiveIds]);
+  }, [selectedBuildingId, statusFilter, searchQuery, sortKey, sortDir, showAllBuildings, portfolioBuildingIds, inactiveIds, storeVersion]);
 
   // ── Common area contracts ──
   const commonContracts = useMemo(() => {
     if (showAllBuildings) return mockCommonAreaContracts.filter(c => portfolioBuildingIds.has(c.building_id));
     return mockCommonAreaContracts.filter(c => c.building_id === selectedBuildingId);
-  }, [selectedBuildingId, showAllBuildings, portfolioBuildingIds]);
+  }, [selectedBuildingId, showAllBuildings, portfolioBuildingIds, storeVersion]);
 
   // ── Guarantees for current building selection ──
   const allGuarantees = useMemo(() => {
@@ -1781,8 +1810,9 @@ export default function ProprietarioContratos() {
             <Button
               disabled={!newContract.tenant || !newContract.buildingId}
               onClick={() => {
+                if (!saveNewContractToStore()) return;
                 setShowNewContract(false);
-                toast.success(`Contrato de ${newContract.tenant} cadastrado.`);
+                toast.success(`Contrato de ${newContract.tenant} cadastrado — ocupação do ativo atualizada.`);
                 setNewContract({ tenant: '', buildingId: '', unit: '', area: '', pricePerM2: '', type: 'net', start: '', end: '', index: 'IPCA', guarantee: 'fianca_bancaria' });
                 setNewContractFile(null);
               }}
