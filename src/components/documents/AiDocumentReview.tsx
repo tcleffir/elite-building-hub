@@ -19,8 +19,8 @@ interface Props {
   fileName: string;
 }
 
-const Section = ({ icon: Icon, title, children }: { icon: typeof FileText; title: string; children: React.ReactNode }) => (
-  <div className="rounded-xl border border-border bg-card">
+const Section = ({ icon: Icon, title, className, children }: { icon: typeof FileText; title: string; className?: string; children: React.ReactNode }) => (
+  <div className={`rounded-xl border border-border bg-card ${className ?? ""}`}>
     <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border">
       <Icon size={14} className="text-primary" />
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
