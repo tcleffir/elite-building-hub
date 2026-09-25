@@ -619,9 +619,9 @@ const ProprietarioEdificios = () => {
         </Dialog>
 
         {/* Edit Dialog */}
-        <Dialog open={showEdit} onOpenChange={setShowEdit}>
+        <Dialog open={showNewTenant} onOpenChange={setShowNewTenant}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Editar Contrato — {selectedContract?.unit_id}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{newTenant.target !== "new" && contracts.find(c => c.id === newTenant.target)?.tenant_name ? "Editar locatário e contrato" : "Adicionar locatário"}</DialogTitle></DialogHeader>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[65vh] overflow-y-auto pr-1">
               <div className="sm:col-span-2"><Label className="text-xs">Unidade</Label>
                 <Select value={newTenant.target} onValueChange={v => setNewTenant(p => ({ ...p, target: v }))}>
