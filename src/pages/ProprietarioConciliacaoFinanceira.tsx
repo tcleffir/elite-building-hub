@@ -228,12 +228,28 @@ export default function ProprietarioConciliacaoFinanceira() {
     }).sort((a, b) => {
       const ca = contratosRec.find(x => x.id === a.cobranca.contratoId)!;
       const cb = contratosRec.find(x => x.id === b.cobranca.contratoId)!;
+      if (ordenarPor === 'conjunto') {
+        // Conjunto numérico: 21, 22, 31, 41... (ignora o prefixo "Conjunto ")
+        const num = (cid: string) => {
+          const ct = contratosRec.find(x => x.id === cid);
+          const unid = ct?.unidadeIds[0];
+          const identificacao = unid ? unidadesRec.find(u => u.id === unid)?.identificacao ?? '' : '';
+          return parseInt(identificacao.replace(/\D+/g, ''), 10) || Number.MAX_SAFE_INTEGER;
+        };
+        const n = num(ca.id) - num(cb.id);
+        if (n !== 0) return ordenarInquilino === 'asc' ? n : -n;
+        // Empate: nome do locatário como desempate
+        const ia = inquilinosRec.find(i => i.id === ca.inquilinoId)!;
+        const ib = inquilinosRec.find(i => i.id === cb.inquilinoId)!;
+        const cmp = ia.nome.localeCompare(ib.nome, 'pt-BR');
+        return ordenarInquilino === 'asc' ? cmp : -cmp;
+      }
       const ia = inquilinosRec.find(i => i.id === ca.inquilinoId)!;
       const ib = inquilinosRec.find(i => i.id === cb.inquilinoId)!;
       const cmp = ia.nome.localeCompare(ib.nome, 'pt-BR');
       return ordenarInquilino === 'asc' ? cmp : -cmp;
     });
-  }, [cobrancasFiltradas, categoriaFiltro, statusFiltro, acaoFiltro, soPendencias, ordenarInquilino]);
+  }, [cobrancasFiltradas, categoriaFiltro, statusFiltro, acaoFiltro, soPendencias, ordenarInquilino, ordenarPor]);
 
   // KPIs
   const totalEsperado = linhas.reduce((s, l) => s + l.esperado, 0);
