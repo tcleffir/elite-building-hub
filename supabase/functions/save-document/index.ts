@@ -44,7 +44,10 @@ serve(async (req) => {
     }
 
     // Build storage path
-    const sanitize = (s: string) => s.replace(/[^a-zA-Z0-9À-ÿ._\- ]/g, "_");
+    // Storage keys must be ASCII-safe: strip accents, spaces and special chars
+    const sanitize = (s: string) =>
+      s.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9._-]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "") || "arquivo";
     const storagePath = `${sanitize(buildingId)}/${sanitize(category)}/${Date.now()}_${sanitize(fileName)}`;
 
     // Determine content type
