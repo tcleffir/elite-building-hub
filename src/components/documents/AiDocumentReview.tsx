@@ -173,7 +173,7 @@ const AiDocumentReview = ({ analysis, onChange, fileName }: Props) => {
             <Label className="text-xs">Validade / Vencimento</Label>
             <Input type="date" value={analysis.dataValidade || ""} onChange={e => set({ dataValidade: e.target.value })} />
           </div>
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-2 lg:col-span-3">
             <Label className="text-xs">Resumo</Label>
             <Textarea rows={3} value={analysis.resumo || ""} onChange={e => set({ resumo: e.target.value })} />
           </div>
