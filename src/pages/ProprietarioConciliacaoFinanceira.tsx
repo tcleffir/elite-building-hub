@@ -185,6 +185,7 @@ export default function ProprietarioConciliacaoFinanceira() {
   const [categoriaFiltro, setCategoriaFiltro] = useState<Categoria | 'all'>('all');
   const [statusFiltro, setStatusFiltro] = useState<StatusCobranca | 'all'>('all');
   const [acaoFiltro, setAcaoFiltro] = useState<'all' | 'com_acao' | 'sem_acao' | NonNullable<SubStatus>>('all');
+  const [ordenarPor, setOrdenarPor] = useState<'inquilino' | 'conjunto'>('inquilino');
   const [ordenarInquilino, setOrdenarInquilino] = useState<'asc' | 'desc'>('asc');
 
   const [actionDialog, setActionDialog] = useState<{ cobrancaId: string; status: StatusCobranca } | null>(null);
@@ -227,12 +228,28 @@ export default function ProprietarioConciliacaoFinanceira() {
     }).sort((a, b) => {
       const ca = contratosRec.find(x => x.id === a.cobranca.contratoId)!;
       const cb = contratosRec.find(x => x.id === b.cobranca.contratoId)!;
+      if (ordenarPor === 'conjunto') {
+        // Conjunto numérico: 21, 22, 31, 41... (ignora o prefixo "Conjunto ")
+        const num = (cid: string) => {
+          const ct = contratosRec.find(x => x.id === cid);
+          const unid = ct?.unidadeIds[0];
+          const identificacao = unid ? unidadesRec.find(u => u.id === unid)?.identificacao ?? '' : '';
+          return parseInt(identificacao.replace(/\D+/g, ''), 10) || Number.MAX_SAFE_INTEGER;
+        };
+        const n = num(ca.id) - num(cb.id);
+        if (n !== 0) return ordenarInquilino === 'asc' ? n : -n;
+        // Empate: nome do locatário como desempate
+        const ia = inquilinosRec.find(i => i.id === ca.inquilinoId)!;
+        const ib = inquilinosRec.find(i => i.id === cb.inquilinoId)!;
+        const cmp = ia.nome.localeCompare(ib.nome, 'pt-BR');
+        return ordenarInquilino === 'asc' ? cmp : -cmp;
+      }
       const ia = inquilinosRec.find(i => i.id === ca.inquilinoId)!;
       const ib = inquilinosRec.find(i => i.id === cb.inquilinoId)!;
       const cmp = ia.nome.localeCompare(ib.nome, 'pt-BR');
       return ordenarInquilino === 'asc' ? cmp : -cmp;
     });
-  }, [cobrancasFiltradas, categoriaFiltro, statusFiltro, acaoFiltro, soPendencias, ordenarInquilino]);
+  }, [cobrancasFiltradas, categoriaFiltro, statusFiltro, acaoFiltro, soPendencias, ordenarInquilino, ordenarPor]);
 
   // KPIs
   const totalEsperado = linhas.reduce((s, l) => s + l.esperado, 0);
@@ -483,12 +500,22 @@ export default function ProprietarioConciliacaoFinanceira() {
                 </Select>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground">Ordenar por Inquilino</span>
+                <span className="text-xs text-muted-foreground">Ordenar por</span>
+                <Select value={ordenarPor} onValueChange={(v) => setOrdenarPor(v as typeof ordenarPor)}>
+                  <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="inquilino">Inquilino</SelectItem>
+                    <SelectItem value="conjunto">Conjunto</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-muted-foreground">{ordenarPor === 'conjunto' ? 'Ordem' : 'Ordem (Inquilino)'}</span>
                 <Select value={ordenarInquilino} onValueChange={(v) => setOrdenarInquilino(v as 'asc' | 'desc')}>
                   <SelectTrigger className="w-full sm:w-32"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="asc">A → Z</SelectItem>
-                    <SelectItem value="desc">Z → A</SelectItem>
+                    <SelectItem value="asc">{ordenarPor === 'conjunto' ? 'Menor → maior' : 'A → Z'}</SelectItem>
+                    <SelectItem value="desc">{ordenarPor === 'conjunto' ? 'Maior → menor' : 'Z → A'}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
