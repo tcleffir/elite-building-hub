@@ -500,12 +500,22 @@ export default function ProprietarioConciliacaoFinanceira() {
                 </Select>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground">Ordenar por Inquilino</span>
+                <span className="text-xs text-muted-foreground">Ordenar por</span>
+                <Select value={ordenarPor} onValueChange={(v) => setOrdenarPor(v as typeof ordenarPor)}>
+                  <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="inquilino">Inquilino</SelectItem>
+                    <SelectItem value="conjunto">Conjunto</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-muted-foreground">{ordenarPor === 'conjunto' ? 'Ordem' : 'Ordem (Inquilino)'}</span>
                 <Select value={ordenarInquilino} onValueChange={(v) => setOrdenarInquilino(v as 'asc' | 'desc')}>
                   <SelectTrigger className="w-full sm:w-32"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="asc">A → Z</SelectItem>
-                    <SelectItem value="desc">Z → A</SelectItem>
+                    <SelectItem value="asc">{ordenarPor === 'conjunto' ? 'Menor → maior' : 'A → Z'}</SelectItem>
+                    <SelectItem value="desc">{ordenarPor === 'conjunto' ? 'Maior → menor' : 'Z → A'}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
