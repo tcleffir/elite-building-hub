@@ -37,13 +37,15 @@ const floorOf = (unitId: string) => {
   return digits.length >= 3 ? parseInt(digits.slice(0, digits.length - 2)) || 1 : parseInt(digits.charAt(0)) || 1;
 };
 
+import { floorOfContract } from "@/lib/mock-data";
+
 const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], levelLabel = "andar", onOpenContract }: Props) => {
   const [selected, setSelected] = useState<TenantContract | null>(null);
 
   const floors = useMemo(() => {
     const map = new Map<number, TenantContract[]>();
     contracts.forEach((c) => {
-      const f = floorOf(c.unit_id);
+      const f = floorOfContract(c);
       if (!map.has(f)) map.set(f, []);
       map.get(f)!.push(c);
     });
@@ -80,7 +82,7 @@ const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], leve
   };
 
   const sel = selected ? getUnitStackingData(selected) : null;
-  const selTickets = selected ? tickets.filter((t) => t.floor === floorOf(selected.unit_id)) : [];
+  const selTickets = selected ? tickets.filter((t) => t.floor === floorOfContract(selected)) : [];
 
   return (
     <div className="space-y-4">
@@ -183,7 +185,7 @@ const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], leve
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex items-center gap-2 mt-2 flex-wrap">
-                  <Badge variant="secondary" className="text-[10px]">{floorOf(selected.unit_id)}º {levelLabel}</Badge>
+                  <Badge variant="secondary" className="text-[10px]">{floorOfContract(selected)}º {levelLabel}</Badge>
                   {selected.contract_end ? (
                     <Badge className={`${healthColors[getContractHealth(selected.contract_end)].badge} text-[10px]`}>
                       {healthLabels[getContractHealth(selected.contract_end)].pt} · {daysUntil(selected.contract_end)}d
