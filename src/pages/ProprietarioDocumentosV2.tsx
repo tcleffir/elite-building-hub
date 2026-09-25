@@ -1011,7 +1011,7 @@ const ProprietarioDocumentosV2 = () => {
 
         {/* ═══ UPLOAD DIALOG ═══ */}
         <Dialog open={showUpload} onOpenChange={v => { setShowUpload(v); if (!v) { setUploadFile(null); setAiResult(null); setAiAnalyzing(false); } }}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-5xl w-[95vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Upload de Documento</DialogTitle>
               <DialogDescription>A IA lê o documento, identifica o tipo, extrai os dados relevantes e sugere a pasta de arquivamento</DialogDescription>
