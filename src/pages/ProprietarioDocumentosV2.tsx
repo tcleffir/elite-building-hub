@@ -376,7 +376,7 @@ const ProprietarioDocumentosV2 = () => {
     const tenant = (a.contraparte || a.empresa || '').trim();
     if (!tenant) return null;
     const idx = (a.reajuste?.indice || 'IPCA').toUpperCase();
-    const g = (a.garantia?.tipo || '').toLowerCase();
+    const g = (a.garantia?.tipo || (JSON.stringify(a).toLowerCase().includes('fiador') ? 'fiador' : '')).toLowerCase();
     const garantia: TenantContract['garantia'] = g.includes('seguro') ? 'Seguro fiança' : g.includes('cau') ? 'Depósito caução' : g.includes('fiad') ? 'Fiador' : 'Fiança bancária';
     const area = a.financeiro?.areaM2 || unit.area_m2;
     const m2 = a.financeiro?.valorPorM2 || (a.financeiro?.valorAluguel && area ? Math.round((a.financeiro.valorAluguel / area) * 100) / 100 : null);
