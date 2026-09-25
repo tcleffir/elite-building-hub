@@ -44,6 +44,16 @@ type SortDir = 'asc' | 'desc';
 type GuaranteeFilter = 'all' | 'fianca_bancaria' | 'caucao' | 'seguro_fianca' | 'titulo_capitalizacao' | 'expiring' | 'expired';
 
 const INACTIVE_KEY = 'patria:inactive-contracts:v1';
+const STATUS_OVERRIDE_KEY = 'patria:contract-status-override:v1';
+
+type ManualStatus = 'active' | 'expiring' | 'expired' | 'negotiation';
+
+const manualStatusInfo: Record<ManualStatus, { label: string; status: 'healthy' | 'warning' | 'critical' }> = {
+  active: { label: 'Ativo', status: 'healthy' },
+  expiring: { label: 'Vencendo', status: 'warning' },
+  expired: { label: 'Vencido', status: 'critical' },
+  negotiation: { label: 'Em negociação', status: 'warning' },
+};
 function unitNumber(u: string): number {
   const n = parseInt((u.match(/\d+/g) || []).join('') || '', 10);
   return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
@@ -167,6 +177,38 @@ export default function ProprietarioContratos() {
     });
   };
 
+  // ── Status manual (override) ──
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, ManualStatus>>(() => {
+    try { return JSON.parse(localStorage.getItem(STATUS_OVERRIDE_KEY) || '{}'); } catch { return {}; }
+  });
+  const setManualStatus = (id: string, value: ManualStatus | 'inactive' | 'auto') => {
+    if (value === 'inactive') {
+      if (!inactiveIds.includes(id)) toggleInactive(id);
+      setStatusOverrides(prev => {
+        const next = { ...prev }; delete next[id];
+        localStorage.setItem(STATUS_OVERRIDE_KEY, JSON.stringify(next));
+        return next;
+      });
+      return;
+    }
+    if (inactiveIds.includes(id)) toggleInactive(id);
+    setStatusOverrides(prev => {
+      const next = { ...prev };
+      if (value === 'auto') delete next[id]; else next[id] = value;
+      localStorage.setItem(STATUS_OVERRIDE_KEY, JSON.stringify(next));
+      return next;
+    });
+    if (value !== 'auto') toast.success(`Status alterado para "${manualStatusInfo[value as ManualStatus].label}"`);
+  };
+  const effectiveInfo = (c: TenantContract) => {
+    const ov = statusOverrides[c.id];
+    if (ov) {
+      const m = manualStatusInfo[ov];
+      return { label: m.label, status: m.status, months: c.contract_end ? monthsDiff(c.contract_end) : -999, manual: true };
+    }
+    return { ...getContractStatusInfo(c), manual: false };
+  };
+
   // ── Tenant contracts filtered ──
   const tenantContracts = useMemo(() => {
     let filtered = mockTenantContracts.filter(c => c.tenant_name);
@@ -182,10 +224,11 @@ export default function ProprietarioContratos() {
     }
     if (statusFilter !== 'all' && statusFilter !== 'inactive') {
       filtered = filtered.filter(c => {
-        const info = getContractStatusInfo(c);
-        if (statusFilter === 'expiring') return info.status === 'warning';
-        if (statusFilter === 'expired') return info.months < 0;
+        const info = effectiveInfo(c);
+        if (statusFilter === 'expiring') return info.status === 'warning' && info.months >= 0;
+        if (statusFilter === 'expired') return info.status === 'critical' && info.months < 0;
         if (statusFilter === 'active') return info.status === 'healthy';
+        if (statusFilter === 'negotiation') return statusOverrides[c.id] === 'negotiation';
         return false;
       });
     }
@@ -700,7 +743,7 @@ export default function ProprietarioContratos() {
                 </TableHeader>
                 <TableBody>
                   {tenantContracts.map(c => {
-                    const info = getContractStatusInfo(c);
+                    const info = effectiveInfo(c);
                     const g = mockGuarantees.find(g => g.contract_id === c.id);
                     const rpsm2 = c.price_per_m2 || 0;
                     const rpsm2Color = rpsm2 >= 110 ? 'text-emerald-600' : rpsm2 >= 90 ? 'text-amber-600' : 'text-red-600';
@@ -743,9 +786,16 @@ export default function ProprietarioContratos() {
                           ) : <span className="text-muted-foreground text-xs">—</span>}
                         </TableCell>
                         <TableCell>
-                          {inactiveIds.includes(c.id)
-                            ? <Badge variant="secondary">Inativo</Badge>
-                            : <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
+                          <div className="flex items-center gap-1">
+                            {inactiveIds.includes(c.id)
+                              ? <Badge variant="secondary">Inativo</Badge>
+                              : <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
+                            {info.manual && !inactiveIds.includes(c.id) && (
+                              <TooltipProvider><Tooltip><TooltipTrigger asChild>
+                                <Pencil className="h-3 w-3 text-muted-foreground" />
+                              </TooltipTrigger><TooltipContent>Status definido manualmente</TooltipContent></Tooltip></TooltipProvider>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell onClick={e => e.stopPropagation()}>
                           <DropdownMenu>
@@ -1364,14 +1414,16 @@ export default function ProprietarioContratos() {
             const unitId = isTenant ? selectedContract.unit_id : (selectedContract as any).area_name;
             const bldg = buildings.find(b => b.id === selectedContract.building_id);
             const endDate = isTenant ? selectedContract.contract_end : (selectedContract as any).contract_end;
-            const info = endDate ? getContractStatusInfo({ ...selectedContract, contract_end: endDate } as TenantContract) : null;
+            const info = endDate ? effectiveInfo({ ...selectedContract, contract_end: endDate } as TenantContract) : null;
 
             return (
               <>
                 <SheetHeader>
                   <div className="flex items-center gap-2">
                     <SheetTitle className="text-lg">{name}</SheetTitle>
-                    {info && <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
+                    {isTenant && inactiveIds.includes(selectedContract.id)
+                      ? <Badge variant="secondary">Inativo</Badge>
+                      : info && <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
                   </div>
                   <p className="text-sm text-muted-foreground">{bldg?.name} — {unitId}</p>
                 </SheetHeader>
@@ -1399,6 +1451,30 @@ export default function ProprietarioContratos() {
                       <InfoField label="Meses Restantes" value={endDate ? (monthsDiff(endDate) < 0 ? 'VENCIDO' : `${monthsDiff(endDate)} meses`) : '—'} />
                       <InfoField label="Próximo Reajuste" value={endDate && monthsDiff(endDate) < 0 ? '—' : selectedContract.contract_start ? formatMonthYear(getNextAdjustmentDate(selectedContract.contract_start)) : '—'} />
                     </div>
+                    {isTenant && (
+                      <div className="rounded-lg border p-3 space-y-2">
+                        <Label className="text-xs font-semibold">Status do contrato</Label>
+                        <Select
+                          value={inactiveIds.includes(selectedContract.id) ? 'inactive' : (statusOverrides[selectedContract.id] || 'auto')}
+                          onValueChange={(v) => setManualStatus(selectedContract.id, v as ManualStatus | 'inactive' | 'auto')}
+                        >
+                          <SelectTrigger className="h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="auto">Automático (pela vigência){info && !info.manual && !inactiveIds.includes(selectedContract.id) ? ` — ${info.label}` : ''}</SelectItem>
+                            <SelectItem value="active">Ativo</SelectItem>
+                            <SelectItem value="expiring">Vencendo</SelectItem>
+                            <SelectItem value="expired">Vencido</SelectItem>
+                            <SelectItem value="negotiation">Em negociação</SelectItem>
+                            <SelectItem value="inactive">Inativo</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <p className="text-[11px] text-muted-foreground">
+                          O status manual substitui o cálculo pela vigência e vale para a tabela, os filtros e os gráficos. Contratos inativos só aparecem no filtro "Inativos".
+                        </p>
+                      </div>
+                    )}
                     {isTenant && (
                       <>
                         <Separator />
