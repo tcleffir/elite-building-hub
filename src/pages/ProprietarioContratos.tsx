@@ -1421,7 +1421,9 @@ export default function ProprietarioContratos() {
                 <SheetHeader>
                   <div className="flex items-center gap-2">
                     <SheetTitle className="text-lg">{name}</SheetTitle>
-                    {info && <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
+                    {isTenant && inactiveIds.includes(selectedContract.id)
+                      ? <Badge variant="secondary">Inativo</Badge>
+                      : info && <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
                   </div>
                   <p className="text-sm text-muted-foreground">{bldg?.name} — {unitId}</p>
                 </SheetHeader>
