@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatusBadge from "@/components/StatusBadge";
 import StackingPlan from "@/components/assets/StackingPlan";
 
-import { mockBuildings, mockTenantContracts, mockTickets, mockUsers, isHGRE11Asset, TenantContract } from "@/lib/mock-data";
+import { mockBuildings, mockTenantContracts, mockTickets, mockUsers, isHGRE11Asset, TenantContract, upsertTenantContract, floorOfContract, TENANT_CONTRACTS_EVENT } from "@/lib/mock-data";
 import { getContractHealth, getOccupancyStatus, daysUntil, healthColors, healthLabels } from "@/lib/health-utils";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
@@ -73,7 +73,16 @@ const ProprietarioEdificios = () => {
   const [showNewBuilding, setShowNewBuilding] = useState(false);
   const [showNewTenant, setShowNewTenant] = useState(false);
   const [newBuilding, setNewBuilding] = useState({ name: '', city: '', state: '', segment: 'office', floors: '', gla: '', address: '' });
-  const [newTenant, setNewTenant] = useState({ name: '', unit: '', floor: '', area: '', pricePerM2: '', start: '', end: '', contact: '', email: '' });
+  const emptyTenant = { name: '', cnpj: '', target: 'new', unit: '', floor: '', area: '', pricePerM2: '', start: '', end: '', contact: '', email: '', dueDay: '10', index: 'IPCA', garantia: 'Fiança bancária' };
+  const [newTenant, setNewTenant] = useState<typeof emptyTenant>(emptyTenant);
+  const [showNewUnit, setShowNewUnit] = useState(false);
+  const [newUnit, setNewUnit] = useState({ floor: '', unit: '', area: '' });
+  const [storeVersion, setStoreVersion] = useState(0);
+  useEffect(() => {
+    const h = () => setStoreVersion(v => v + 1);
+    window.addEventListener(TENANT_CONTRACTS_EVENT, h);
+    return () => window.removeEventListener(TENANT_CONTRACTS_EVENT, h);
+  }, []);
   const [editForm, setEditForm] = useState({ tenant: '', type: 'net', area: '', price: '', start: '', end: '' });
   const [renewForm, setRenewForm] = useState({ endDate: '', value: '', index: '4.82' });
 
@@ -87,7 +96,57 @@ const ProprietarioEdificios = () => {
   const allowedBuildingIds: string[] = fundManager?.building_ids ?? user.building_ids;
   const userBuildings = mockBuildings.filter(b => (allowedBuildingIds.includes(b.id) || isHGRE11Asset(b.id)) && b.segment);
   const building = userBuildings.find(b => b.id === selectedBuildingId);
-  const contracts = useMemo(() => mockTenantContracts.filter(c => c.building_id === selectedBuildingId), [selectedBuildingId]);
+  const contracts = useMemo(() => mockTenantContracts.filter(c => c.building_id === selectedBuildingId), [selectedBuildingId, storeVersion]);
+  const vacantUnits = useMemo(() => contracts.filter(c => c.status === 'vacant' || !c.tenant_name)
+    .sort((a, b) => floorOfContract(a) - floorOfContract(b) || a.unit_id.localeCompare(b.unit_id, 'pt-BR', { numeric: true })), [contracts]);
+
+  const openNewTenant = (unit?: TenantContract) => {
+    setNewTenant({ ...emptyTenant, target: unit ? unit.id : (vacantUnits[0]?.id ?? 'new') });
+    setShowNewTenant(true);
+  };
+
+  const saveNewUnit = () => {
+    if (!building) return;
+    const floor = parseInt(newUnit.floor);
+    const area = parseFloat(newUnit.area);
+    const label = newUnit.unit.trim();
+    if (!floor || !label || !area) { toast.error('Informe andar, conjunto e área.'); return; }
+    const unit_id = /^\d+$/.test(label) ? `Conjunto ${label}` : label;
+    if (contracts.some(c => c.unit_id.toLowerCase() === unit_id.toLowerCase())) { toast.error(`${unit_id} já existe neste ativo.`); return; }
+    upsertTenantContract({ id: `${building.id}-u${Date.now()}`, building_id: building.id, unit_id, floor, tenant_name: null, area_m2: area, price_per_m2: null, contract_type: null, status: 'vacant' });
+    toast.success(`${unit_id} cadastrado como vago no ${floor}º andar.`);
+    setShowNewUnit(false); setNewUnit({ floor: '', unit: '', area: '' });
+  };
+
+  const saveNewTenant = () => {
+    if (!building) return;
+    const t = newTenant;
+    const base = t.target !== 'new' ? contracts.find(c => c.id === t.target) : undefined;
+    let unit_id = base?.unit_id ?? '';
+    let floor = base ? floorOfContract(base) : parseInt(t.floor);
+    let area = parseFloat(t.area) || base?.area_m2 || 0;
+    if (!base) {
+      const label = t.unit.trim();
+      if (!label || !floor || !area) { toast.error('Informe conjunto, andar e área.'); return; }
+      unit_id = /^\d+$/.test(label) ? `Conjunto ${label}` : label;
+      if (contracts.some(c => c.unit_id.toLowerCase() === unit_id.toLowerCase() && c.tenant_name)) { toast.error(`${unit_id} já está ocupado.`); return; }
+    }
+    const occupiedSame = !base ? contracts.find(c => c.unit_id.toLowerCase() === unit_id.toLowerCase()) : undefined;
+    const id = base?.id ?? occupiedSame?.id ?? `${building.id}-ct${Date.now()}`;
+    const contract: TenantContract = {
+      ...(base ?? occupiedSame ?? {}),
+      id, building_id: building.id, unit_id, floor,
+      tenant_name: t.name.trim(), tenant_cnpj: t.cnpj || undefined,
+      area_m2: area, price_per_m2: parseFloat(t.pricePerM2) || null, contract_type: 'net',
+      contract_start: t.start || undefined, contract_end: t.end || undefined, status: 'active',
+      indice_reajuste: t.index as TenantContract['indice_reajuste'], periodicidade_reajuste: 'anual',
+      data_base_reajuste: t.start || undefined, garantia: t.garantia as TenantContract['garantia'],
+      dia_vencimento: parseInt(t.dueDay) || 10, tenant_contact: t.contact || undefined, tenant_email: t.email || undefined,
+    };
+    upsertTenantContract(contract);
+    toast.success(`${contract.tenant_name} alocado em ${unit_id} (${floor}º andar).`);
+    setShowNewTenant(false); setNewTenant(emptyTenant);
+  };
   const buildingTickets = useMemo(() => mockTickets.filter(t => t.building_id === selectedBuildingId && t.status !== 'completed' && t.status !== 'cancelled'), [selectedBuildingId]);
 
   const synthFloors = useMemo<SynthFloor[]>(() => {
@@ -184,7 +243,12 @@ const ProprietarioEdificios = () => {
               <Plus size={12} /> Adicionar Ativo
             </Button>
             {building && (
-              <Button variant="outline" size="sm" className="text-xs gap-1" onClick={() => setShowNewTenant(true)}>
+              <Button variant="outline" size="sm" className="text-xs gap-1" onClick={() => setShowNewUnit(true)}>
+                <Plus size={12} /> Adicionar Unidade
+              </Button>
+            )}
+            {building && (
+              <Button variant="outline" size="sm" className="text-xs gap-1" onClick={() => openNewTenant()}>
                 <UserPlus size={12} /> Adicionar Locatário
               </Button>
             )}
@@ -242,8 +306,21 @@ const ProprietarioEdificios = () => {
               contracts={contracts}
               tickets={buildingTickets as any}
               levelLabel={building.segment === 'logistics' ? 'conjunto' : 'andar'}
-              onOpenContract={(c) => setSelectedContract(c)}
+              onOpenContract={(c) => (c.status === 'vacant' || !c.tenant_name) ? openNewTenant(c) : setSelectedContract(c)}
             />
+
+            {vacantUnits.length > 0 && (
+              <div className="bg-card rounded-2xl p-4 premium-shadow">
+                <p className="text-sm font-semibold mb-2">Unidades vagas ({vacantUnits.length})</p>
+                <div className="flex flex-wrap gap-2">
+                  {vacantUnits.map(u => (
+                    <Button key={u.id} variant="outline" size="sm" className="text-xs gap-1" onClick={() => openNewTenant(u)}>
+                      <UserPlus size={12} /> {u.unit_id} · {floorOfContract(u)}º · {u.area_m2.toLocaleString('pt-BR')} m²
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-card rounded-2xl p-5 premium-shadow text-center">
@@ -490,115 +567,64 @@ const ProprietarioEdificios = () => {
         <Dialog open={showEdit} onOpenChange={setShowEdit}>
           <DialogContent>
             <DialogHeader><DialogTitle>Editar Contrato — {selectedContract?.unit_id}</DialogTitle></DialogHeader>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2"><Label className="text-xs">Locatário</Label><Input value={editForm.tenant} onChange={e => setEditForm(p => ({ ...p, tenant: e.target.value }))} /></div>
-              <div><Label className="text-xs">Tipo</Label>
-                <Select value={editForm.type} onValueChange={v => setEditForm(p => ({ ...p, type: v }))}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[65vh] overflow-y-auto pr-1">
+              <div className="sm:col-span-2"><Label className="text-xs">Unidade</Label>
+                <Select value={newTenant.target} onValueChange={v => setNewTenant(p => ({ ...p, target: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="net">Net</SelectItem>
-                    <SelectItem value="gross">Gross</SelectItem>
-                    <SelectItem value="semi-gross">Semi-gross</SelectItem>
+                    {vacantUnits.map(u => <SelectItem key={u.id} value={u.id}>{u.unit_id} — {floorOfContract(u)}º andar · {u.area_m2.toLocaleString('pt-BR')} m² (vago)</SelectItem>)}
+                    <SelectItem value="new">+ Nova unidade</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label className="text-xs">Área (m²)</Label><Input type="number" value={editForm.area} onChange={e => setEditForm(p => ({ ...p, area: e.target.value }))} /></div>
-              <div><Label className="text-xs">R$/m²</Label><Input type="number" value={editForm.price} onChange={e => setEditForm(p => ({ ...p, price: e.target.value }))} /></div>
-              <div><Label className="text-xs">Data Início</Label><Input type="date" value={editForm.start} onChange={e => setEditForm(p => ({ ...p, start: e.target.value }))} /></div>
-              <div className="col-span-2"><Label className="text-xs">Data Fim</Label><Input type="date" value={editForm.end} onChange={e => setEditForm(p => ({ ...p, end: e.target.value }))} /></div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowEdit(false)}>Cancelar</Button>
-              <Button onClick={() => { setShowEdit(false); toast.success("Contrato atualizado!"); }}>Salvar alterações</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Renew Dialog */}
-        <Dialog open={showRenew} onOpenChange={setShowRenew}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Renovar contrato de {selectedContract?.tenant_name} — {selectedContract?.unit_id}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-3">
-              <div><Label className="text-xs">Nova data de fim</Label><Input type="date" value={renewForm.endDate} onChange={e => setRenewForm(p => ({ ...p, endDate: e.target.value }))} /></div>
-              <div><Label className="text-xs">Valor mensal atual (R$)</Label><Input type="number" value={renewForm.value} onChange={e => setRenewForm(p => ({ ...p, value: e.target.value }))} /></div>
-              <div><Label className="text-xs">Índice de reajuste (%)</Label><Input type="number" step="0.01" value={renewForm.index} onChange={e => setRenewForm(p => ({ ...p, index: e.target.value }))} /></div>
-              <div className="bg-muted/30 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground">Novo valor após reajuste:</p>
-                <p className="text-lg font-bold">{fmt(renewPreviewValue)}</p>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowRenew(false)}>Cancelar</Button>
-              <Button onClick={() => { setShowRenew(false); toast.success("Contrato renovado com sucesso!"); }}>Confirmar Renovação</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Novo Ativo */}
-        <Dialog open={showNewBuilding} onOpenChange={setShowNewBuilding}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Adicionar ativo</DialogTitle>
-              <DialogDescription>Cadastre um novo ativo no portfólio do fundo.</DialogDescription>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2"><Label className="text-xs">Nome do ativo</Label><Input value={newBuilding.name} onChange={e => setNewBuilding(p => ({ ...p, name: e.target.value }))} placeholder="Ex.: Edifício Faria Lima 3477" /></div>
-              <div className="col-span-2"><Label className="text-xs">Endereço</Label><Input value={newBuilding.address} onChange={e => setNewBuilding(p => ({ ...p, address: e.target.value }))} /></div>
-              <div><Label className="text-xs">Município</Label><Input value={newBuilding.city} onChange={e => setNewBuilding(p => ({ ...p, city: e.target.value }))} /></div>
-              <div><Label className="text-xs">UF</Label><Input value={newBuilding.state} onChange={e => setNewBuilding(p => ({ ...p, state: e.target.value }))} maxLength={2} /></div>
-              <div><Label className="text-xs">Segmento</Label>
-                <Select value={newBuilding.segment} onValueChange={v => setNewBuilding(p => ({ ...p, segment: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="office">Escritório</SelectItem>
-                    <SelectItem value="logistics">Logística</SelectItem>
-                    <SelectItem value="retail">Varejo</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div><Label className="text-xs">Andares / conjuntos</Label><Input type="number" value={newBuilding.floors} onChange={e => setNewBuilding(p => ({ ...p, floors: e.target.value }))} /></div>
-              <div className="col-span-2"><Label className="text-xs">ABL / GLA (m²)</Label><Input type="number" value={newBuilding.gla} onChange={e => setNewBuilding(p => ({ ...p, gla: e.target.value }))} /></div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowNewBuilding(false)}>Cancelar</Button>
-              <Button
-                disabled={!newBuilding.name}
-                onClick={() => { setShowNewBuilding(false); toast.success(`Ativo ${newBuilding.name} cadastrado.`); setNewBuilding({ name: '', city: '', state: '', segment: 'office', floors: '', gla: '', address: '' }); }}
-              >
-                Salvar ativo
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Novo Locatário */}
-        <Dialog open={showNewTenant} onOpenChange={setShowNewTenant}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Adicionar locatário — {building?.name}</DialogTitle>
-              <DialogDescription>Vincule um locatário a uma unidade do ativo selecionado.</DialogDescription>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2"><Label className="text-xs">Locatário</Label><Input value={newTenant.name} onChange={e => setNewTenant(p => ({ ...p, name: e.target.value }))} /></div>
-              <div><Label className="text-xs">Unidade</Label><Input value={newTenant.unit} onChange={e => setNewTenant(p => ({ ...p, unit: e.target.value }))} placeholder="Ex.: 1201" /></div>
-              <div><Label className="text-xs">Andar / conjunto</Label><Input type="number" value={newTenant.floor} onChange={e => setNewTenant(p => ({ ...p, floor: e.target.value }))} /></div>
-              <div><Label className="text-xs">Área (m²)</Label><Input type="number" value={newTenant.area} onChange={e => setNewTenant(p => ({ ...p, area: e.target.value }))} /></div>
+              {newTenant.target === 'new' && (<>
+                <div><Label className="text-xs">Conjunto</Label><Input value={newTenant.unit} onChange={e => setNewTenant(p => ({ ...p, unit: e.target.value }))} placeholder="Ex.: 72" /></div>
+                <div><Label className="text-xs">Andar</Label><Input type="number" value={newTenant.floor} onChange={e => setNewTenant(p => ({ ...p, floor: e.target.value }))} /></div>
+                <div className="sm:col-span-2"><Label className="text-xs">Área (m²)</Label><Input type="number" value={newTenant.area} onChange={e => setNewTenant(p => ({ ...p, area: e.target.value }))} /></div>
+              </>)}
+              <div className="sm:col-span-2"><Label className="text-xs">Locatário</Label><Input value={newTenant.name} onChange={e => setNewTenant(p => ({ ...p, name: e.target.value }))} /></div>
+              <div><Label className="text-xs">CNPJ</Label><Input value={newTenant.cnpj} onChange={e => setNewTenant(p => ({ ...p, cnpj: e.target.value }))} /></div>
               <div><Label className="text-xs">R$/m²</Label><Input type="number" value={newTenant.pricePerM2} onChange={e => setNewTenant(p => ({ ...p, pricePerM2: e.target.value }))} /></div>
               <div><Label className="text-xs">Início do contrato</Label><Input type="date" value={newTenant.start} onChange={e => setNewTenant(p => ({ ...p, start: e.target.value }))} /></div>
               <div><Label className="text-xs">Fim do contrato</Label><Input type="date" value={newTenant.end} onChange={e => setNewTenant(p => ({ ...p, end: e.target.value }))} /></div>
+              <div><Label className="text-xs">Índice de reajuste</Label>
+                <Select value={newTenant.index} onValueChange={v => setNewTenant(p => ({ ...p, index: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{['IPCA','IGP-M','INPC','IGP-DI','Fixo'].map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div><Label className="text-xs">Garantia</Label>
+                <Select value={newTenant.garantia} onValueChange={v => setNewTenant(p => ({ ...p, garantia: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{['Fiança bancária','Seguro fiança','Depósito caução','Fiador','Sem garantia'].map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div><Label className="text-xs">Dia de vencimento</Label><Input type="number" min={1} max={31} value={newTenant.dueDay} onChange={e => setNewTenant(p => ({ ...p, dueDay: e.target.value }))} /></div>
               <div><Label className="text-xs">Contato</Label><Input value={newTenant.contact} onChange={e => setNewTenant(p => ({ ...p, contact: e.target.value }))} /></div>
-              <div><Label className="text-xs">E-mail</Label><Input type="email" value={newTenant.email} onChange={e => setNewTenant(p => ({ ...p, email: e.target.value }))} /></div>
+              <div className="sm:col-span-2"><Label className="text-xs">E-mail</Label><Input type="email" value={newTenant.email} onChange={e => setNewTenant(p => ({ ...p, email: e.target.value }))} /></div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowNewTenant(false)}>Cancelar</Button>
-              <Button
-                disabled={!newTenant.name || !newTenant.unit}
-                onClick={() => { setShowNewTenant(false); toast.success(`Locatário ${newTenant.name} vinculado à unidade ${newTenant.unit}.`); setNewTenant({ name: '', unit: '', floor: '', area: '', pricePerM2: '', start: '', end: '', contact: '', email: '' }); }}
-              >
-                Salvar locatário
-              </Button>
+              <Button disabled={!newTenant.name.trim()} onClick={saveNewTenant}>Salvar locatário</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Nova Unidade */}
+        <Dialog open={showNewUnit} onOpenChange={setShowNewUnit}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Adicionar unidade — {building?.name}</DialogTitle>
+              <DialogDescription>A unidade entra como vaga e pode receber um locatário em seguida.</DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div><Label className="text-xs">Andar</Label><Input type="number" value={newUnit.floor} onChange={e => setNewUnit(p => ({ ...p, floor: e.target.value }))} /></div>
+              <div><Label className="text-xs">Conjunto</Label><Input value={newUnit.unit} onChange={e => setNewUnit(p => ({ ...p, unit: e.target.value }))} placeholder="Ex.: 72" /></div>
+              <div><Label className="text-xs">Área (m²)</Label><Input type="number" value={newUnit.area} onChange={e => setNewUnit(p => ({ ...p, area: e.target.value }))} /></div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNewUnit(false)}>Cancelar</Button>
+              <Button onClick={saveNewUnit}>Salvar unidade</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
