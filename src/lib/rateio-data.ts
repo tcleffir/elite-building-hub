@@ -82,9 +82,9 @@ export const statusConfig: Record<RateioStatus, { label: string; icon: string; c
 
 // ─── Seed configs ─────────────────────────────────────
 export const seedRateioConfigs: RateioConfig[] = [
-  { id: 'rc1', buildingId: 'b1', utilityType: 'energy', defaultMethod: 'individual', tariffValue: 0.60, tariffSince: '2025-07-01', alertVariancePct: 20, alertDueDay: 10, updatedBy: 'Tatiana Caracciolo', updatedAt: '2025-07-01' },
-  { id: 'rc2', buildingId: 'b1', utilityType: 'water', defaultMethod: 'ideal_fraction', tariffValue: 12.50, tariffSince: '2025-07-01', alertVariancePct: 20, alertDueDay: 10, updatedBy: 'Tatiana Caracciolo', updatedAt: '2025-07-01' },
-  { id: 'rc3', buildingId: 'b1', utilityType: 'gas', defaultMethod: 'simple', tariffValue: 4.80, tariffSince: '2025-07-01', alertVariancePct: 20, alertDueDay: 10, updatedBy: 'Tatiana Caracciolo', updatedAt: '2025-07-01' },
+  { id: 'rc1', buildingId: 'b12', utilityType: 'energy', defaultMethod: 'individual', tariffValue: 0.60, tariffSince: '2025-07-01', alertVariancePct: 20, alertDueDay: 10, updatedBy: 'Tatiana Caracciolo', updatedAt: '2025-07-01' },
+  { id: 'rc2', buildingId: 'b12', utilityType: 'water', defaultMethod: 'ideal_fraction', tariffValue: 12.50, tariffSince: '2025-07-01', alertVariancePct: 20, alertDueDay: 10, updatedBy: 'Tatiana Caracciolo', updatedAt: '2025-07-01' },
+  { id: 'rc3', buildingId: 'b12', utilityType: 'gas', defaultMethod: 'simple', tariffValue: 4.80, tariffSince: '2025-07-01', alertVariancePct: 20, alertDueDay: 10, updatedBy: 'Tatiana Caracciolo', updatedAt: '2025-07-01' },
 ];
 
 export const seedTariffHistory: Record<UtilityType, TariffHistory[]> = {
@@ -233,7 +233,7 @@ function makeHistory(month: number, year: number, utility: UtilityType, method: 
   const items = calculateRateio(utility, method, total, tariff);
   return {
     id: `rat-${utility}-${year}-${month}`,
-    buildingId: 'b1',
+    buildingId: 'b12',
     periodMonth: month,
     periodYear: year,
     utilityType: utility,

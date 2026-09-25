@@ -55,7 +55,7 @@ export const mockUsers: User[] = [
   {
     id: '1', email: 'esg@luxenergia.com.br', password: 'Lux@2026',
     full_name: 'Administradora (CBRE)', role: 'super_admin',
-    building_ids: ['b1', 'b2'], company: 'CBRE', position: 'Administração',
+    building_ids: ['b12', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b13', 'b14'], company: 'CBRE', position: 'Administração',
     avatar_bg: '#0B2A3D', avatar_initials: 'CB',
   },
   {
@@ -599,7 +599,7 @@ export const mockLEEDData: LEEDData[] = [
     ],
   },
   {
-    id: 'leed2', building_id: 'b1', certification_status: 'none', total_score: 0, max_score: 110, categories: [],
+    id: 'leed2', building_id: 'b12', certification_status: 'none', total_score: 0, max_score: 110, categories: [],
   },
 ];
 
@@ -757,7 +757,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-001', title: 'Solicitação de limpeza pós-evento — 7º andar',
     description: 'Necessário limpeza extra na sala de reuniões do 7º andar após evento corporativo da Lux Energia.',
     category: 'Limpeza', sphere: 'Limpeza e Conservação', priority: 'normal', status: 'open',
-    requester: 'Lux Energia', floor: 7, building_id: 'b1',
+    requester: 'Lux Energia', floor: 7, building_id: 'b12',
     created_at: '2026-03-09T08:30:00', sla_deadline: '2026-03-11T08:30:00',
     comments_count: 0, attachments_count: 0, timeline: [
       { id: 'e1', type: 'created', description: 'Chamado aberto por Lux Energia', author: 'Lux Energia — Administrador', created_at: '2026-03-09T08:30:00' },
@@ -767,7 +767,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-002', title: 'Ar-condicionado com ruído — sala reunião 13º andar',
     description: 'O ar condicionado da sala de reunião principal do 13º andar está emitindo ruído constante. Solicitar inspeção técnica.',
     category: 'Climatização', sphere: 'Manutenção', priority: 'high', status: 'in_progress',
-    requester: 'Capitale', assigned_to: 'ClimaTech Solutions', floor: 13, building_id: 'b1', vendor_id: 'vd1', asset_id: 'AT-002',
+    requester: 'Capitale', assigned_to: 'ClimaTech Solutions', floor: 13, building_id: 'b12', vendor_id: 'vd1', asset_id: 'AT-002',
     created_at: '2026-03-07T14:00:00', sla_deadline: '2026-03-09T14:00:00',
     comments_count: 2, attachments_count: 1, timeline: [
       { id: 'e2', type: 'created', description: 'Chamado aberto por Capitale', author: 'Capitale — Administrador', created_at: '2026-03-07T14:00:00' },
@@ -779,7 +779,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-003', title: 'Porta de acesso travada — 3º andar',
     description: 'Porta de acesso principal do 3º andar (You.inc) não está abrindo com o crachá.',
     category: 'Manutenção', sphere: 'Segurança Patrimonial', priority: 'high', status: 'in_analysis',
-    requester: 'You.inc', assigned_to: 'SecTech Segurança', floor: 3, building_id: 'b1', vendor_id: 'vd2',
+    requester: 'You.inc', assigned_to: 'SecTech Segurança', floor: 3, building_id: 'b12', vendor_id: 'vd2',
     created_at: '2026-03-08T16:45:00', sla_deadline: '2026-03-09T16:45:00',
     comments_count: 1, attachments_count: 0, timeline: [
       { id: 'e5', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-08T16:45:00' },
@@ -791,7 +791,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-004', title: 'Manutenção de bicicletário — SS3',
     description: 'Continuidade da reforma do bicicletário no subsolo 3.',
     category: 'Manutenção', sphere: 'Gestão de Ativos', priority: 'normal', status: 'in_progress',
-    requester: 'Gestão (Tatiana)', assigned_to: 'Empreiteira SS3', floor: -3, building_id: 'b1',
+    requester: 'Gestão (Tatiana)', assigned_to: 'Empreiteira SS3', floor: -3, building_id: 'b12',
     created_at: '2026-02-15T08:00:00', sla_deadline: '2026-04-30T08:00:00',
     comments_count: 5, attachments_count: 3, timeline: [
       { id: 'e8', type: 'created', description: 'Chamado aberto pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-02-15T08:00:00' },
@@ -802,7 +802,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-005', title: 'Instalação vagas EV — SS2',
     description: 'Instalação de 20 pontos de recarga para veículos elétricos no subsolo 2.',
     category: 'Estacionamento', sphere: 'Gestão de Ativos', priority: 'normal', status: 'in_progress',
-    requester: 'Gestão (Tatiana)', assigned_to: 'EV Solutions', floor: -2, building_id: 'b1',
+    requester: 'Gestão (Tatiana)', assigned_to: 'EV Solutions', floor: -2, building_id: 'b12',
     created_at: '2026-02-01T08:00:00', sla_deadline: '2026-05-15T08:00:00',
     comments_count: 4, attachments_count: 2, timeline: [
       { id: 'e10', type: 'created', description: 'Chamado aberto pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-02-01T08:00:00' },
@@ -812,7 +812,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-006', title: 'Lâmpada queimada corredor — 2º andar',
     description: 'Lâmpada LED do corredor principal do 2º andar queimada.',
     category: 'Elétrica', sphere: 'Manutenção', priority: 'low', status: 'completed',
-    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 2, building_id: 'b1', vendor_id: 'vd5', asset_id: 'AT-008',
+    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 2, building_id: 'b12', vendor_id: 'vd5', asset_id: 'AT-008',
     created_at: '2026-03-01T10:00:00', sla_deadline: '2026-03-03T10:00:00',
     comments_count: 1, attachments_count: 0, satisfaction_rating: 5, timeline: [
       { id: 'e11', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-01T10:00:00' },
@@ -823,7 +823,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-007', title: 'Vazamento torneira banheiro — 4º andar',
     description: 'Torneira do banheiro masculino do 4º andar com gotejamento constante.',
     category: 'Hidráulica', sphere: 'Manutenção', priority: 'normal', status: 'completed',
-    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 4, building_id: 'b1',
+    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 4, building_id: 'b12',
     created_at: '2026-03-02T14:00:00', sla_deadline: '2026-03-04T14:00:00',
     comments_count: 2, attachments_count: 1, satisfaction_rating: 4, timeline: [
       { id: 'e13', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-02T14:00:00' },
@@ -834,7 +834,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-008', title: 'Solicitação de proposta — Eficiência Energética',
     description: 'Lux Energia solicita proposta para auditoria de eficiência energética do 7º andar.',
     category: 'TI', sphere: 'Gestão de Ativos', priority: 'low', status: 'open',
-    requester: 'Lux Energia', floor: 7, building_id: 'b1',
+    requester: 'Lux Energia', floor: 7, building_id: 'b12',
     created_at: '2026-03-09T10:30:00', sla_deadline: '2026-03-16T10:30:00',
     comments_count: 0, attachments_count: 0, timeline: [
       { id: 'e15', type: 'created', description: 'Chamado aberto por Lux Energia', author: 'Lux Energia — Administrador', created_at: '2026-03-09T10:30:00' },
@@ -844,7 +844,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-009', title: 'Calibração sistema de controle de acesso — 13º',
     description: 'Sistema de controle de acesso do 13º andar necessita calibração após atualização de firmware.',
     category: 'Segurança', sphere: 'Segurança Patrimonial', priority: 'normal', status: 'awaiting_approval',
-    requester: 'Capitale', assigned_to: 'SecTech Segurança', floor: 13, building_id: 'b1', vendor_id: 'vd2',
+    requester: 'Capitale', assigned_to: 'SecTech Segurança', floor: 13, building_id: 'b12', vendor_id: 'vd2',
     created_at: '2026-03-06T09:00:00', sla_deadline: '2026-03-10T09:00:00',
     comments_count: 1, attachments_count: 0, timeline: [
       { id: 'e16', type: 'created', description: 'Chamado aberto por Capitale', author: 'Capitale — Administrador', created_at: '2026-03-06T09:00:00' },
@@ -855,7 +855,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-010', title: 'Revisão semestral grupo gerador',
     description: 'Revisão semestral programada do grupo gerador do ativo.',
     category: 'Manutenção', sphere: 'Gestão de Ativos', priority: 'normal', status: 'open',
-    requester: 'Gestão (Tatiana)', floor: 0, building_id: 'b1',
+    requester: 'Gestão (Tatiana)', floor: 0, building_id: 'b12',
     created_at: '2026-03-05T08:00:00', sla_deadline: '2026-03-20T08:00:00',
     comments_count: 0, attachments_count: 0, timeline: [
       { id: 'e18', type: 'created', description: 'Chamado programado pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-03-05T08:00:00' },
@@ -904,7 +904,7 @@ export const mockAnnouncements: Announcement[] = [
     category: 'Manutenção', priority: 'urgent', published_at: '2026-03-09T08:00:00', expires_at: '2026-03-12T12:00:00',
     read: false, author: { name: 'Tatiana Caracciolo', company: 'Administradora', position: 'Gerente de Ativos' },
     target_type: 'all', read_count: 45, total_recipients: 120, allow_comments: true, has_poll: false, requires_confirmation: true,
-    building_id: 'b1', unit: 'Todos',
+    building_id: 'b12', unit: 'Todos',
     comments: [
       { id: 'c1', author: 'Lux Energia', company: 'Lux Energia', text: 'Podemos usar o elevador de serviço para visitantes neste período?', created_at: '2026-03-09T09:30:00' },
     ],
@@ -915,7 +915,7 @@ export const mockAnnouncements: Announcement[] = [
     category: 'Administrativo', priority: 'normal', published_at: '2026-03-08T10:00:00',
     read: false, author: { name: 'Tatiana Caracciolo', company: 'Administradora', position: 'Gerente de Ativos' },
     target_type: 'all', read_count: 78, total_recipients: 120, allow_comments: true, has_poll: false, requires_confirmation: false,
-    building_id: 'b1', unit: 'SS3',
+    building_id: 'b12', unit: 'SS3',
   },
   {
     id: 'a3', title: '⚡ Instalação de 20 pontos de recarga EV no SS2',

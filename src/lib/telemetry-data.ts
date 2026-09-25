@@ -54,14 +54,14 @@ const hoursAgo = (h: number) => new Date(now.getTime() - h * 3600000);
 // Seed meters
 export const seedMeters: UtilityMeter[] = [
   {
-    id: 'mtr-1', buildingId: 'b1', name: 'Medidor Principal — Energia',
+    id: 'mtr-1', buildingId: 'b12', name: 'Medidor Principal — Energia (Chucri Zaidan)',
     type: 'energy', unit: 'kWh', location: 'Geral Ativo',
     integrationType: 'manual', readingFrequency: 'monthly',
     lastReadingValue: 42350, lastReadingAt: daysAgo(2),
     status: 'manual', isActive: true, createdAt: daysAgo(365),
   },
   {
-    id: 'mtr-2', buildingId: 'b1', name: 'Sub-medidor — Lux Energia',
+    id: 'mtr-2', buildingId: 'b12', name: 'Sub-medidor — Lux Energia',
     type: 'energy', unit: 'kWh', location: '7º Andar',
     tenantId: 'c1', tenantName: 'Lux Energia',
     integrationType: 'manual', readingFrequency: 'monthly',
@@ -69,7 +69,7 @@ export const seedMeters: UtilityMeter[] = [
     status: 'manual', isActive: true, createdAt: daysAgo(300),
   },
   {
-    id: 'mtr-3', buildingId: 'b1', name: 'Sub-medidor — Capitale',
+    id: 'mtr-3', buildingId: 'b12', name: 'Sub-medidor — Capitale',
     type: 'energy', unit: 'kWh', location: '13º Andar',
     tenantId: 'c2', tenantName: 'Capitale',
     integrationType: 'manual', readingFrequency: 'monthly',
@@ -77,7 +77,7 @@ export const seedMeters: UtilityMeter[] = [
     status: 'manual', isActive: true, createdAt: daysAgo(300),
   },
   {
-    id: 'mtr-4', buildingId: 'b1', name: 'Sub-medidor — You.inc',
+    id: 'mtr-4', buildingId: 'b12', name: 'Sub-medidor — You.inc',
     type: 'energy', unit: 'kWh', location: '2º–4º Andar',
     tenantId: 'c3', tenantName: 'You.inc',
     integrationType: 'manual', readingFrequency: 'monthly',
@@ -85,14 +85,14 @@ export const seedMeters: UtilityMeter[] = [
     status: 'manual', isActive: true, createdAt: daysAgo(300),
   },
   {
-    id: 'mtr-5', buildingId: 'b1', name: 'Medidor Água — Geral Ativo',
+    id: 'mtr-5', buildingId: 'b12', name: 'Medidor Água — Geral Ativo',
     type: 'water', unit: 'm³', location: 'Geral Ativo',
     integrationType: 'manual', readingFrequency: 'monthly',
     lastReadingValue: 280, lastReadingAt: daysAgo(3),
     status: 'manual', isActive: true, createdAt: daysAgo(365),
   },
   {
-    id: 'mtr-6', buildingId: 'b1', name: 'Medidor Gás — Casa de Máquinas',
+    id: 'mtr-6', buildingId: 'b12', name: 'Medidor Gás — Casa de Máquinas',
     type: 'gas', unit: 'm³', location: 'Casa de Máquinas',
     integrationType: 'manual', readingFrequency: 'monthly',
     lastReadingValue: 95, lastReadingAt: daysAgo(3),
