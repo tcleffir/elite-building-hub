@@ -44,6 +44,16 @@ type SortDir = 'asc' | 'desc';
 type GuaranteeFilter = 'all' | 'fianca_bancaria' | 'caucao' | 'seguro_fianca' | 'titulo_capitalizacao' | 'expiring' | 'expired';
 
 const INACTIVE_KEY = 'patria:inactive-contracts:v1';
+const STATUS_OVERRIDE_KEY = 'patria:contract-status-override:v1';
+
+type ManualStatus = 'active' | 'expiring' | 'expired' | 'negotiation';
+
+const manualStatusInfo: Record<ManualStatus, { label: string; status: 'healthy' | 'warning' | 'critical' }> = {
+  active: { label: 'Ativo', status: 'healthy' },
+  expiring: { label: 'Vencendo', status: 'warning' },
+  expired: { label: 'Vencido', status: 'critical' },
+  negotiation: { label: 'Em negociação', status: 'warning' },
+};
 function unitNumber(u: string): number {
   const n = parseInt((u.match(/\d+/g) || []).join('') || '', 10);
   return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
@@ -165,6 +175,38 @@ export default function ProprietarioContratos() {
       toast.success(prev.includes(id) ? 'Contrato reativado' : 'Contrato marcado como inativo');
       return next;
     });
+  };
+
+  // ── Status manual (override) ──
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, ManualStatus>>(() => {
+    try { return JSON.parse(localStorage.getItem(STATUS_OVERRIDE_KEY) || '{}'); } catch { return {}; }
+  });
+  const setManualStatus = (id: string, value: ManualStatus | 'inactive' | 'auto') => {
+    if (value === 'inactive') {
+      if (!inactiveIds.includes(id)) toggleInactive(id);
+      setStatusOverrides(prev => {
+        const next = { ...prev }; delete next[id];
+        localStorage.setItem(STATUS_OVERRIDE_KEY, JSON.stringify(next));
+        return next;
+      });
+      return;
+    }
+    if (inactiveIds.includes(id)) toggleInactive(id);
+    setStatusOverrides(prev => {
+      const next = { ...prev };
+      if (value === 'auto') delete next[id]; else next[id] = value;
+      localStorage.setItem(STATUS_OVERRIDE_KEY, JSON.stringify(next));
+      return next;
+    });
+    if (value !== 'auto') toast.success(`Status alterado para "${manualStatusInfo[value as ManualStatus].label}"`);
+  };
+  const effectiveInfo = (c: TenantContract) => {
+    const ov = statusOverrides[c.id];
+    if (ov) {
+      const m = manualStatusInfo[ov];
+      return { label: m.label, status: m.status, months: c.contract_end ? monthsDiff(c.contract_end) : -999, manual: true };
+    }
+    return { ...getContractStatusInfo(c), manual: false };
   };
 
   // ── Tenant contracts filtered ──
