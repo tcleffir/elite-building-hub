@@ -221,7 +221,7 @@ const Assembleia = () => {
                     <span className="text-xs text-muted-foreground">{Math.round((selectedAssembly.confirmed / selectedAssembly.total) * 100)}%</span>
                   </div>
                   <div className="space-y-2">
-                    {['Lux Energia', 'Capitale', 'You Intermediação', 'Renault do Brasil', 'Accenture', 'Dentons Cardoso'].map((name, i) => (
+                    {['Vivo (Telefônica Brasil)', 'Totvs S.A.', 'You Intermediação', 'Renault do Brasil', 'Accenture', 'Dentons Cardoso'].map((name, i) => (
                       <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-muted/20">
                         <span className="text-sm">{name}</span>
                         <span className={`text-xs px-2 py-0.5 rounded-full ${i < 4 ? 'bg-success/10 text-success' : 'bg-amber-100 text-amber-800'}`}>

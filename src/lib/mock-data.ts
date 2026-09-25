@@ -396,14 +396,6 @@ export const isHGRE11Asset = (buildingId?: string | null): buildingId is HGRE11A
 
 // ─── Mock Buildings ───────────────
 export const mockBuildings: Building[] = [
-  {
-    id: 'b1', name: 'Condomínio 360JK', short_name: '360JK',
-    address: 'Av. Juscelino Kubitschek, 360 — Itaim Bibi, SP', city: 'São Paulo', state: 'SP',
-    total_floors: 18, total_area_m2: 35000, certification_leed_level: 'Gold', occupancy_rate: 100,
-    lux_client: false,
-    administrator_company: 'Administradora', administrator_cnpj: '', status: 'active', urgent_tickets: 2,
-    full_address: 'Av. Juscelino Kubitschek, 360 — Itaim Bibi, SP',
-  },
   // ─── Carteira HGRE11 — Patria Escritórios FII (13 ativos, 143.387 m² de ABL) ───
   {
     id: 'b12', name: 'Chucri Zaidan', short_name: 'Chucri Zaidan',
@@ -755,34 +747,34 @@ export const mockFunds: Fund[] = [
 export const mockTickets: Ticket[] = [
   {
     id: 'CH-001', title: 'Solicitação de limpeza pós-evento — 7º andar',
-    description: 'Necessário limpeza extra na sala de reuniões do 7º andar após evento corporativo da Lux Energia.',
+    description: 'Necessário limpeza extra na sala de reuniões do 7º andar após evento corporativo da Vivo (Telefônica Brasil).',
     category: 'Limpeza', sphere: 'Limpeza e Conservação', priority: 'normal', status: 'open',
-    requester: 'Lux Energia', floor: 7, building_id: 'b12',
+    requester: 'Vivo (Telefônica Brasil)', floor: 7, building_id: 'b12',
     created_at: '2026-03-09T08:30:00', sla_deadline: '2026-03-11T08:30:00',
     comments_count: 0, attachments_count: 0, timeline: [
-      { id: 'e1', type: 'created', description: 'Chamado aberto por Lux Energia', author: 'Lux Energia — Administrador', created_at: '2026-03-09T08:30:00' },
+      { id: 'e1', type: 'created', description: 'Chamado aberto por Vivo (Telefônica Brasil)', author: 'Vivo (Telefônica Brasil) — Administrador', created_at: '2026-03-09T08:30:00' },
     ]
   },
   {
     id: 'CH-002', title: 'Ar-condicionado com ruído — sala reunião 13º andar',
     description: 'O ar condicionado da sala de reunião principal do 13º andar está emitindo ruído constante. Solicitar inspeção técnica.',
     category: 'Climatização', sphere: 'Manutenção', priority: 'high', status: 'in_progress',
-    requester: 'Capitale', assigned_to: 'ClimaTech Solutions', floor: 13, building_id: 'b12', vendor_id: 'vd1', asset_id: 'AT-002',
+    requester: 'Totvs S.A.', assigned_to: 'ClimaTech Solutions', floor: 13, building_id: 'b12', vendor_id: 'vd1', asset_id: 'AT-002',
     created_at: '2026-03-07T14:00:00', sla_deadline: '2026-03-09T14:00:00',
     comments_count: 2, attachments_count: 1, timeline: [
-      { id: 'e2', type: 'created', description: 'Chamado aberto por Capitale', author: 'Capitale — Administrador', created_at: '2026-03-07T14:00:00' },
+      { id: 'e2', type: 'created', description: 'Chamado aberto por Totvs S.A.', author: 'Totvs S.A. — Administrador', created_at: '2026-03-07T14:00:00' },
       { id: 'e3', type: 'assigned', description: 'Atribuído a ClimaTech Solutions', author: 'Tatiana Caracciolo', created_at: '2026-03-07T15:00:00' },
       { id: 'e4', type: 'status_changed', description: 'Status alterado para Em Execução', author: 'ClimaTech Solutions', created_at: '2026-03-08T09:00:00' },
     ]
   },
   {
     id: 'CH-003', title: 'Porta de acesso travada — 3º andar',
-    description: 'Porta de acesso principal do 3º andar (You.inc) não está abrindo com o crachá.',
+    description: 'Porta de acesso principal do 3º andar (WeWork Brasil) não está abrindo com o crachá.',
     category: 'Manutenção', sphere: 'Segurança Patrimonial', priority: 'high', status: 'in_analysis',
-    requester: 'You.inc', assigned_to: 'SecTech Segurança', floor: 3, building_id: 'b12', vendor_id: 'vd2',
+    requester: 'WeWork Brasil', assigned_to: 'SecTech Segurança', floor: 3, building_id: 'b12', vendor_id: 'vd2',
     created_at: '2026-03-08T16:45:00', sla_deadline: '2026-03-09T16:45:00',
     comments_count: 1, attachments_count: 0, timeline: [
-      { id: 'e5', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-08T16:45:00' },
+      { id: 'e5', type: 'created', description: 'Chamado aberto por WeWork Brasil', author: 'WeWork Brasil — Administrador', created_at: '2026-03-08T16:45:00' },
       { id: 'e6', type: 'assigned', description: 'Atribuído a SecTech Segurança', author: 'Tatiana Caracciolo', created_at: '2026-03-08T17:00:00' },
       { id: 'e7', type: 'status_changed', description: 'Status alterado para Em Análise', author: 'SecTech Segurança', created_at: '2026-03-09T08:00:00' },
     ]
@@ -791,7 +783,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-004', title: 'Manutenção de bicicletário — SS3',
     description: 'Continuidade da reforma do bicicletário no subsolo 3.',
     category: 'Manutenção', sphere: 'Gestão de Ativos', priority: 'normal', status: 'in_progress',
-    requester: 'Gestão (Tatiana)', assigned_to: 'Empreiteira SS3', floor: -3, building_id: 'b12',
+    requester: 'Gestão (CBRE)', assigned_to: 'Empreiteira SS3', floor: -3, building_id: 'b12',
     created_at: '2026-02-15T08:00:00', sla_deadline: '2026-04-30T08:00:00',
     comments_count: 5, attachments_count: 3, timeline: [
       { id: 'e8', type: 'created', description: 'Chamado aberto pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-02-15T08:00:00' },
@@ -802,7 +794,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-005', title: 'Instalação vagas EV — SS2',
     description: 'Instalação de 20 pontos de recarga para veículos elétricos no subsolo 2.',
     category: 'Estacionamento', sphere: 'Gestão de Ativos', priority: 'normal', status: 'in_progress',
-    requester: 'Gestão (Tatiana)', assigned_to: 'EV Solutions', floor: -2, building_id: 'b12',
+    requester: 'Gestão (CBRE)', assigned_to: 'EV Solutions', floor: -2, building_id: 'b12',
     created_at: '2026-02-01T08:00:00', sla_deadline: '2026-05-15T08:00:00',
     comments_count: 4, attachments_count: 2, timeline: [
       { id: 'e10', type: 'created', description: 'Chamado aberto pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-02-01T08:00:00' },
@@ -812,10 +804,10 @@ export const mockTickets: Ticket[] = [
     id: 'CH-006', title: 'Lâmpada queimada corredor — 2º andar',
     description: 'Lâmpada LED do corredor principal do 2º andar queimada.',
     category: 'Elétrica', sphere: 'Manutenção', priority: 'low', status: 'completed',
-    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 2, building_id: 'b12', vendor_id: 'vd5', asset_id: 'AT-008',
+    requester: 'WeWork Brasil', assigned_to: 'Manutenção Interna', floor: 2, building_id: 'b12', vendor_id: 'vd5', asset_id: 'AT-008',
     created_at: '2026-03-01T10:00:00', sla_deadline: '2026-03-03T10:00:00',
     comments_count: 1, attachments_count: 0, satisfaction_rating: 5, timeline: [
-      { id: 'e11', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-01T10:00:00' },
+      { id: 'e11', type: 'created', description: 'Chamado aberto por WeWork Brasil', author: 'WeWork Brasil — Administrador', created_at: '2026-03-01T10:00:00' },
       { id: 'e12', type: 'completed', description: 'Chamado concluído', author: 'Manutenção Interna', created_at: '2026-03-01T16:00:00' },
     ]
   },
@@ -823,31 +815,31 @@ export const mockTickets: Ticket[] = [
     id: 'CH-007', title: 'Vazamento torneira banheiro — 4º andar',
     description: 'Torneira do banheiro masculino do 4º andar com gotejamento constante.',
     category: 'Hidráulica', sphere: 'Manutenção', priority: 'normal', status: 'completed',
-    requester: 'You.inc', assigned_to: 'Manutenção Interna', floor: 4, building_id: 'b12',
+    requester: 'WeWork Brasil', assigned_to: 'Manutenção Interna', floor: 4, building_id: 'b12',
     created_at: '2026-03-02T14:00:00', sla_deadline: '2026-03-04T14:00:00',
     comments_count: 2, attachments_count: 1, satisfaction_rating: 4, timeline: [
-      { id: 'e13', type: 'created', description: 'Chamado aberto por You.inc', author: 'You.inc — Administrador', created_at: '2026-03-02T14:00:00' },
+      { id: 'e13', type: 'created', description: 'Chamado aberto por WeWork Brasil', author: 'WeWork Brasil — Administrador', created_at: '2026-03-02T14:00:00' },
       { id: 'e14', type: 'completed', description: 'Chamado concluído', author: 'Manutenção Interna', created_at: '2026-03-03T11:00:00' },
     ]
   },
   {
     id: 'CH-008', title: 'Solicitação de proposta — Eficiência Energética',
-    description: 'Lux Energia solicita proposta para auditoria de eficiência energética do 7º andar.',
+    description: 'Vivo (Telefônica Brasil) solicita proposta para auditoria de eficiência energética do 7º andar.',
     category: 'TI', sphere: 'Gestão de Ativos', priority: 'low', status: 'open',
-    requester: 'Lux Energia', floor: 7, building_id: 'b12',
+    requester: 'Vivo (Telefônica Brasil)', floor: 7, building_id: 'b12',
     created_at: '2026-03-09T10:30:00', sla_deadline: '2026-03-16T10:30:00',
     comments_count: 0, attachments_count: 0, timeline: [
-      { id: 'e15', type: 'created', description: 'Chamado aberto por Lux Energia', author: 'Lux Energia — Administrador', created_at: '2026-03-09T10:30:00' },
+      { id: 'e15', type: 'created', description: 'Chamado aberto por Vivo (Telefônica Brasil)', author: 'Vivo (Telefônica Brasil) — Administrador', created_at: '2026-03-09T10:30:00' },
     ]
   },
   {
     id: 'CH-009', title: 'Calibração sistema de controle de acesso — 13º',
     description: 'Sistema de controle de acesso do 13º andar necessita calibração após atualização de firmware.',
     category: 'Segurança', sphere: 'Segurança Patrimonial', priority: 'normal', status: 'awaiting_approval',
-    requester: 'Capitale', assigned_to: 'SecTech Segurança', floor: 13, building_id: 'b12', vendor_id: 'vd2',
+    requester: 'Totvs S.A.', assigned_to: 'SecTech Segurança', floor: 13, building_id: 'b12', vendor_id: 'vd2',
     created_at: '2026-03-06T09:00:00', sla_deadline: '2026-03-10T09:00:00',
     comments_count: 1, attachments_count: 0, timeline: [
-      { id: 'e16', type: 'created', description: 'Chamado aberto por Capitale', author: 'Capitale — Administrador', created_at: '2026-03-06T09:00:00' },
+      { id: 'e16', type: 'created', description: 'Chamado aberto por Totvs S.A.', author: 'Totvs S.A. — Administrador', created_at: '2026-03-06T09:00:00' },
       { id: 'e17', type: 'assigned', description: 'Atribuído a SecTech Segurança', author: 'Tatiana Caracciolo', created_at: '2026-03-06T10:00:00' },
     ]
   },
@@ -855,7 +847,7 @@ export const mockTickets: Ticket[] = [
     id: 'CH-010', title: 'Revisão semestral grupo gerador',
     description: 'Revisão semestral programada do grupo gerador do ativo.',
     category: 'Manutenção', sphere: 'Gestão de Ativos', priority: 'normal', status: 'open',
-    requester: 'Gestão (Tatiana)', floor: 0, building_id: 'b12',
+    requester: 'Gestão (CBRE)', floor: 0, building_id: 'b12',
     created_at: '2026-03-05T08:00:00', sla_deadline: '2026-03-20T08:00:00',
     comments_count: 0, attachments_count: 0, timeline: [
       { id: 'e18', type: 'created', description: 'Chamado programado pela Gestão', author: 'Tatiana Caracciolo', created_at: '2026-03-05T08:00:00' },
@@ -906,7 +898,7 @@ export const mockAnnouncements: Announcement[] = [
     target_type: 'all', read_count: 45, total_recipients: 120, allow_comments: true, has_poll: false, requires_confirmation: true,
     building_id: 'b12', unit: 'Todos',
     comments: [
-      { id: 'c1', author: 'Lux Energia', company: 'Lux Energia', text: 'Podemos usar o elevador de serviço para visitantes neste período?', created_at: '2026-03-09T09:30:00' },
+      { id: 'c1', author: 'Vivo (Telefônica Brasil)', company: 'Vivo (Telefônica Brasil)', text: 'Podemos usar o elevador de serviço para visitantes neste período?', created_at: '2026-03-09T09:30:00' },
     ],
   },
   {
@@ -977,11 +969,11 @@ export const mockContracts: Contract[] = [
     adjustments: [], documents: [{ id: 'd1', name: 'Contrato_LuxEnergy_2025.pdf', type: 'pdf', size: '2.4 MB', uploaded_at: '2025-01-01' }],
   },
   {
-    id: 'c2', number: '#CTR-360JK-002', tenant_name: 'Capitale Energia', cnpj: 'A confirmar', owner: 'Administradora',
+    id: 'c2', number: '#CTR-360JK-002', tenant_name: 'Totvs S.A. Energia', cnpj: 'A confirmar', owner: 'Administradora',
     floors: [13], area_m2: 960, start_date: '2024-06-01', end_date: '2027-05-31',
     monthly_value: 0, adjustment_index: 'IGP-M', next_adjustment: '2026-06-01', status: 'active',
     payments: [{ month: '2026-01', value: 0, status: 'paid', paid_at: '2026-01-04' }, { month: '2026-02', value: 0, status: 'paid', paid_at: '2026-02-05' }, { month: '2026-03', value: 0, status: 'pending' }],
-    adjustments: [], documents: [{ id: 'd2', name: 'Contrato_Capitale_2024.pdf', type: 'pdf', size: '3.1 MB', uploaded_at: '2024-06-01' }],
+    adjustments: [], documents: [{ id: 'd2', name: 'Contrato_Totvs S.A._2024.pdf', type: 'pdf', size: '3.1 MB', uploaded_at: '2024-06-01' }],
   },
   {
     id: 'c3', number: '#CTR-360JK-003', tenant_name: 'You Intermediação', cnpj: 'A confirmar', owner: 'Administradora',
@@ -1182,9 +1174,9 @@ export const mockFloorConfig: FloorConfig[] = [
   { floor: 12, name: '12º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Ibitu Energias', employees: 177,
     tenants: [{ name: 'Ibitu Energias', suites: 'Conj. 121, 122', employees: 177, email: 'juliana.jesus@ibituenergia.com' }],
     tickets_count: 0 },
-  // 13º andar — Capitale Energia (131, 132) — andar inteiro
-  { floor: 13, name: '13º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Capitale Energia', employees: 64,
-    tenants: [{ name: 'Capitale Energia', suites: 'Conj. 131, 132', employees: 64, email: 'adriana.bertolucci@capitaleenergia.com.br' }],
+  // 13º andar — Totvs S.A. Energia (131, 132) — andar inteiro
+  { floor: 13, name: '13º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Totvs S.A. Energia', employees: 64,
+    tenants: [{ name: 'Totvs S.A. Energia', suites: 'Conj. 131, 132', employees: 64, email: 'adriana.bertolucci@capitaleenergia.com.br' }],
     tickets_count: 1 },
   // 14º andar — Sherman (141) + DLA Piper (142)
   { floor: 14, name: '14º Andar', type: 'corporativo', area_m2: 960, status: 'occupied', tenant: 'Sherman / DLA Piper', employees: 41,
@@ -1234,26 +1226,26 @@ export const mockRooms: Room[] = [
 ];
 
 export const mockReservations: Reservation[] = [
-  { id: 'res1', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Reunião de Planejamento', date: '2026-03-10', start_time: '09:00', end_time: '10:30', tenant: 'Lux Energia', user: 'Lux Energia — Administrador', participants: 6, status: 'confirmed', resources: [] },
-  { id: 'res2', room_id: 'r3', room_name: 'Auditório Principal', title: 'Apresentação Q1', date: '2026-03-11', start_time: '14:00', end_time: '17:00', tenant: 'Capitale', user: 'Capitale — Administrador', participants: 80, status: 'confirmed', resources: ['Coffee Break'] },
-  { id: 'res3', room_id: 'r4', room_name: 'Sala de Treinamento', title: 'Workshop de Inovação', date: '2026-03-12', start_time: '08:00', end_time: '12:00', tenant: 'You.inc', user: 'You.inc — Administrador', participants: 25, status: 'confirmed', resources: ['Suporte TI'] },
-  { id: 'res4', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Alinhamento Comercial', date: '2026-03-10', start_time: '14:00', end_time: '15:30', tenant: 'Lux Energia', user: 'Lux Energia — Administrador', participants: 4, status: 'pending', resources: [] },
-  { id: 'res5', room_id: 'r6', room_name: 'Sala Compacta C', title: 'Call com Cliente', date: '2026-03-11', start_time: '10:00', end_time: '11:00', tenant: 'Capitale', user: 'Capitale — Administrador', participants: 3, status: 'confirmed', resources: [] },
-  { id: 'res6', room_id: 'r2', room_name: 'Sala de Conferência B', title: 'Board Meeting', date: '2026-03-10', start_time: '10:00', end_time: '12:00', tenant: 'You.inc', user: 'You.inc — Administrador', participants: 12, status: 'confirmed', resources: ['Coffee Break', 'Videoconferência'] },
+  { id: 'res1', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Reunião de Planejamento', date: '2026-03-10', start_time: '09:00', end_time: '10:30', tenant: 'Vivo (Telefônica Brasil)', user: 'Vivo (Telefônica Brasil) — Administrador', participants: 6, status: 'confirmed', resources: [] },
+  { id: 'res2', room_id: 'r3', room_name: 'Auditório Principal', title: 'Apresentação Q1', date: '2026-03-11', start_time: '14:00', end_time: '17:00', tenant: 'Totvs S.A.', user: 'Totvs S.A. — Administrador', participants: 80, status: 'confirmed', resources: ['Coffee Break'] },
+  { id: 'res3', room_id: 'r4', room_name: 'Sala de Treinamento', title: 'Workshop de Inovação', date: '2026-03-12', start_time: '08:00', end_time: '12:00', tenant: 'WeWork Brasil', user: 'WeWork Brasil — Administrador', participants: 25, status: 'confirmed', resources: ['Suporte TI'] },
+  { id: 'res4', room_id: 'r1', room_name: 'Sala Executiva A', title: 'Alinhamento Comercial', date: '2026-03-10', start_time: '14:00', end_time: '15:30', tenant: 'Vivo (Telefônica Brasil)', user: 'Vivo (Telefônica Brasil) — Administrador', participants: 4, status: 'pending', resources: [] },
+  { id: 'res5', room_id: 'r6', room_name: 'Sala Compacta C', title: 'Call com Cliente', date: '2026-03-11', start_time: '10:00', end_time: '11:00', tenant: 'Totvs S.A.', user: 'Totvs S.A. — Administrador', participants: 3, status: 'confirmed', resources: [] },
+  { id: 'res6', room_id: 'r2', room_name: 'Sala de Conferência B', title: 'Board Meeting', date: '2026-03-10', start_time: '10:00', end_time: '12:00', tenant: 'WeWork Brasil', user: 'WeWork Brasil — Administrador', participants: 12, status: 'confirmed', resources: ['Coffee Break', 'Videoconferência'] },
 ];
 
 // ─── Mock Visitors — 360JK Today ─────────────────────
 export const mockVisitors: Visitor[] = [
-  { id: 'v1', name: 'Pedro Alves', company: 'LuxTech Soluções', document: '***.***.789-00', destination_floor: 7, destination_company: 'Lux Energia', host_name: 'Lux Energia — Administrador', scheduled_at: '2026-03-09T14:00:00', status: 'waiting', type: 'client', auto_release: false, qr_code: 'QR-V1-2026', recurrent: false },
-  { id: 'v2', name: 'Mariana Costa', company: 'Investidora independente', document: '***.***.456-00', destination_floor: 13, destination_company: 'Capitale', host_name: 'Capitale — Administrador', scheduled_at: '2026-03-09T15:30:00', status: 'scheduled', type: 'client', auto_release: false, qr_code: 'QR-V2-2026', recurrent: false },
-  { id: 'v3', name: 'Roberto Sarti', company: 'Consultor You.inc', document: '***.***.123-00', destination_floor: 2, destination_company: 'You.inc', host_name: 'You.inc — Administrador', scheduled_at: '2026-03-09T16:00:00', checked_in_at: '2026-03-09T15:55:00', status: 'present', type: 'service', auto_release: true, qr_code: 'QR-V3-2026', recurrent: true },
+  { id: 'v1', name: 'Pedro Alves', company: 'LuxTech Soluções', document: '***.***.789-00', destination_floor: 7, destination_company: 'Vivo (Telefônica Brasil)', host_name: 'Vivo (Telefônica Brasil) — Administrador', scheduled_at: '2026-03-09T14:00:00', status: 'waiting', type: 'client', auto_release: false, qr_code: 'QR-V1-2026', recurrent: false },
+  { id: 'v2', name: 'Mariana Costa', company: 'Investidora independente', document: '***.***.456-00', destination_floor: 13, destination_company: 'Totvs S.A.', host_name: 'Totvs S.A. — Administrador', scheduled_at: '2026-03-09T15:30:00', status: 'scheduled', type: 'client', auto_release: false, qr_code: 'QR-V2-2026', recurrent: false },
+  { id: 'v3', name: 'Roberto Sarti', company: 'Consultor WeWork Brasil', document: '***.***.123-00', destination_floor: 2, destination_company: 'WeWork Brasil', host_name: 'WeWork Brasil — Administrador', scheduled_at: '2026-03-09T16:00:00', checked_in_at: '2026-03-09T15:55:00', status: 'present', type: 'service', auto_release: true, qr_code: 'QR-V3-2026', recurrent: true },
   { id: 'v4', name: 'Carlos Eduardo Prado', company: 'ClimaTech', document: '***.***.321-00', destination_floor: 0, destination_company: 'Administradora', host_name: 'Tatiana Caracciolo', scheduled_at: '2026-03-09T08:00:00', checked_in_at: '2026-03-09T07:50:00', checked_out_at: '2026-03-09T12:00:00', status: 'departed', type: 'service', auto_release: true, qr_code: 'QR-V4-2026', recurrent: true },
 ];
 
 // ─── Vendor Reviews ───────────────────────────────────
 export const mockVendorReviews: VendorReview[] = [
-  { id: 'vr1', vendor_id: 'vd5', ticket_id: 'CH-006', rating: 5, comment: 'Excelente atendimento, rápido e eficiente!', recommend: true, reviewer_name: 'You.inc', reviewer_company: 'You.inc', created_at: '2026-03-01T17:00:00' },
-  { id: 'vr2', vendor_id: 'vd5', ticket_id: 'CH-007', rating: 4, comment: 'Bom serviço, resolveu o problema rapidamente.', recommend: true, reviewer_name: 'You.inc', reviewer_company: 'You.inc', created_at: '2026-03-03T12:00:00' },
+  { id: 'vr1', vendor_id: 'vd5', ticket_id: 'CH-006', rating: 5, comment: 'Excelente atendimento, rápido e eficiente!', recommend: true, reviewer_name: 'WeWork Brasil', reviewer_company: 'WeWork Brasil', created_at: '2026-03-01T17:00:00' },
+  { id: 'vr2', vendor_id: 'vd5', ticket_id: 'CH-007', rating: 4, comment: 'Bom serviço, resolveu o problema rapidamente.', recommend: true, reviewer_name: 'WeWork Brasil', reviewer_company: 'WeWork Brasil', created_at: '2026-03-03T12:00:00' },
 ];
 
 // ─── Nexus Solutions ──────────────────────────────────

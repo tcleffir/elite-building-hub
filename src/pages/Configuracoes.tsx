@@ -85,7 +85,7 @@ function getSections(role: UserRole): MenuSection[] {
 const configMockUsers = [
   { id: "u1", name: "Tatiana Caracciolo", email: "tatiana@administradora.com.br", role: "building_manager", company: "Administradora", status: "active", last_access: "2026-03-09T08:30:00" },
   { id: "u2", name: "Fábio Nunes", email: "administrativo@luxenergia.com.br", role: "tenant_admin", company: "Lux Energy", status: "active", last_access: "2026-03-09T09:15:00" },
-  { id: "u3", name: "Adriana Bertolucci", email: "adriana@capitaleenergia.com.br", role: "tenant_admin", company: "Capitale Energia", status: "active", last_access: "2026-03-08T14:00:00" },
+  { id: "u3", name: "Adriana Bertolucci", email: "adriana@capitaleenergia.com.br", role: "tenant_admin", company: "Totvs S.A. Energia", status: "active", last_access: "2026-03-08T14:00:00" },
   { id: "u4", name: "Cristiane Oliveira", email: "coliveira@youinc.com.br", role: "tenant_admin", company: "You Intermediação", status: "active", last_access: "2026-03-09T07:45:00" },
   { id: "u5", name: "Portaria 360JK", email: "concierge@360jk.com.br", role: "concierge", company: "Administradora", status: "active", last_access: "2026-03-09T06:00:00" },
   { id: "u6", name: "LuxNexus Manutenção", email: "fornecedor@nexus.com.br", role: "vendor", company: "LuxNexus Serviços", status: "active", last_access: "2026-03-06T11:00:00" },
@@ -577,7 +577,7 @@ const SegurancaSection = () => (
           <tbody>
             {[
               { date: '09/03/2026 10:15', user: 'Tatiana Caracciolo', action: 'Confirmou rateio de Energia — Fev/2026' },
-              { date: '08/03/2026 14:30', user: 'Lux Energia — Admin', action: 'Criou novo usuário: Daniel Amaro' },
+              { date: '08/03/2026 14:30', user: 'Vivo (Telefônica Brasil) — Admin', action: 'Criou novo usuário: Daniel Amaro' },
               { date: '07/03/2026 09:00', user: 'Tatiana Caracciolo', action: 'Alterou tarifa de Água para R$ 12,50/m³' },
               { date: '05/03/2026 16:45', user: 'Fábio Nunes', action: 'Convidou colaborador: Ana Paula' },
             ].map((log, i) => (

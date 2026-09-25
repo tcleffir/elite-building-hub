@@ -41,9 +41,9 @@ const DashboardGroupC = () => {
             </div>
           </div>
           <div className="text-xs space-y-1 text-muted-foreground">
-            <p>✅ Lux Energia — 7º</p>
-            <p>✅ Capitale — 13º</p>
-            <p>✅ You.inc — 2º–4º</p>
+            <p>✅ Vivo (Telefônica Brasil) — 7º</p>
+            <p>✅ Totvs S.A. — 13º</p>
+            <p>✅ WeWork Brasil — 2º–4º</p>
           </div>
         </div>
       </div>

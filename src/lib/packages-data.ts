@@ -42,9 +42,9 @@ export const packageStatusConfig: Record<PackageStatus, { label: string; color: 
 export const carriers = ['Correios', 'Mercado Livre', 'Amazon', 'iFood', 'Rappi', 'Courier', 'Outro'];
 
 export const tenantDirectory = [
-  { id: 't1', company: 'Lux Energia', floor: '7º andar', email: 'recepcao@luxenergia.com.br' },
-  { id: 't2', company: 'Capitale', floor: '13º andar', email: 'recepcao@capitale.com.br' },
-  { id: 't3', company: 'You.inc', floor: '2º–4º andar', email: 'recepcao@youinc.com.br' },
+  { id: 't1', company: 'Vivo (Telefônica Brasil)', floor: '7º andar', email: 'recepcao@luxenergia.com.br' },
+  { id: 't2', company: 'Totvs S.A.', floor: '13º andar', email: 'recepcao@capitale.com.br' },
+  { id: 't3', company: 'WeWork Brasil', floor: '2º–4º andar', email: 'recepcao@youinc.com.br' },
   { id: 't4', company: 'Administradora', floor: 'Térreo', email: 'adm@administradora.com.br' },
 ];
 
@@ -56,7 +56,7 @@ export const seedPackages: Package[] = [
   {
     id: 'pkg-1',
     type: 'package',
-    recipientCompany: 'Lux Energia',
+    recipientCompany: 'Vivo (Telefônica Brasil)',
     recipientFloor: '7º andar',
     senderName: 'Amazon',
     carrier: 'Amazon',
@@ -69,7 +69,7 @@ export const seedPackages: Package[] = [
   {
     id: 'pkg-2',
     type: 'letter',
-    recipientCompany: 'Capitale',
+    recipientCompany: 'Totvs S.A.',
     recipientFloor: '13º andar',
     carrier: 'Correios',
     volumes: 1,
@@ -94,7 +94,7 @@ export const seedPackages: Package[] = [
   {
     id: 'pkg-4',
     type: 'package',
-    recipientCompany: 'You.inc',
+    recipientCompany: 'WeWork Brasil',
     recipientFloor: '2º–4º andar',
     senderName: 'Mercado Livre',
     carrier: 'Mercado Livre',
@@ -108,7 +108,7 @@ export const seedPackages: Package[] = [
   {
     id: 'pkg-5',
     type: 'bag',
-    recipientCompany: 'Lux Energia',
+    recipientCompany: 'Vivo (Telefônica Brasil)',
     recipientName: 'Ana Paula',
     recipientFloor: '7º andar',
     senderName: 'iFood',

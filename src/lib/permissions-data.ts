@@ -176,7 +176,7 @@ export const roleDescriptions: Record<UserRole, { icon: string; description: str
 
 // ─── Mock tenants for wizard ──────────────────────
 export const tenantCompanies = [
-  { id: 'c1', name: 'Lux Energia', floors: [7] },
-  { id: 'c2', name: 'Capitale Energia', floors: [13] },
+  { id: 'c1', name: 'Vivo (Telefônica Brasil)', floors: [7] },
+  { id: 'c2', name: 'Totvs S.A. Energia', floors: [13] },
   { id: 'c3', name: 'You Intermediação', floors: [2, 4] },
 ];
