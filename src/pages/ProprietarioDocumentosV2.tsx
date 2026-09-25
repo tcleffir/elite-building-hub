@@ -355,6 +355,7 @@ const ProprietarioDocumentosV2 = () => {
   const isLeaseDoc = (a: AiDocumentAnalysis | null) => !!a && ['contrato_locacao', 'aditivo'].includes(a.docTypeKey || '');
   const [linkBuildingId, setLinkBuildingId] = useState('');
   const [linkUnitId, setLinkUnitId] = useState('');
+  const [newFloor, setNewFloor] = useState('7');
   const linkBuilding = linkBuildingId || selectedBuildingId || 'b12';
   const vacantUnits = useMemo(
     () => mockTenantContracts.filter(c => c.building_id === linkBuilding && (c.status === 'vacant' || !c.tenant_name)),
@@ -367,11 +368,24 @@ const ProprietarioDocumentosV2 = () => {
     const text = JSON.stringify(a).toLowerCase();
     const floorMatch = text.match(/(\d{1,2})\s*[ºo°]?\s*andar/);
     const byFloor = floorMatch ? vacantUnits.find(u => String(u.floor ?? '') === floorMatch[1] || u.unit_id.replace(/\D/g, '').startsWith(floorMatch[1])) : undefined;
-    setLinkUnitId(prev => (vacantUnits.some(u => u.id === prev) ? prev : (byFloor ?? vacantUnits[0])?.id ?? ''));
+    if (floorMatch) setNewFloor(floorMatch[1]);
+    setLinkUnitId(prev => (prev === 'new' || vacantUnits.some(u => u.id === prev) ? prev : (byFloor ?? vacantUnits[0])?.id ?? 'new'));
   }, [aiResult, vacantUnits]);
 
   const allocateLease = (a: AiDocumentAnalysis): string | null => {
-    const unit = mockTenantContracts.find(c => c.id === linkUnitId);
+    let unit = mockTenantContracts.find(c => c.id === linkUnitId);
+    if (!unit && linkUnitId === 'new') {
+      const floor = Math.max(1, parseInt(newFloor) || 7);
+      const taken = new Set(mockTenantContracts.filter(c => c.building_id === linkBuilding).map(c => c.unit_id.toLowerCase()));
+      let seq = 1; while (taken.has(`conjunto ${floor}${seq}`)) seq++;
+      const num = `${floor}${seq}`;
+      const sameFloor = mockTenantContracts.find(c => c.building_id === linkBuilding && c.area_m2);
+      unit = {
+        id: `${linkBuilding}-cj${num}-${Date.now() % 100000}`, building_id: linkBuilding,
+        unit_id: `Conjunto ${num}`, floor, area_m2: a.financeiro?.areaM2 || sameFloor?.area_m2 || 1350,
+        tenant_name: null, status: 'vacant', contract_type: 'net', price_per_m2: null,
+      } as unknown as TenantContract;
+    }
     if (!unit) return null;
     const tenant = (a.contraparte || a.empresa || '').trim();
     if (!tenant) return null;
@@ -1124,12 +1138,18 @@ const ProprietarioDocumentosV2 = () => {
                               <SelectTrigger><SelectValue /></SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="none">Não vincular</SelectItem>
+                                <SelectItem value="new">+ Criar nova unidade</SelectItem>
                                 {vacantUnits.map(u => <SelectItem key={u.id} value={u.id}>{u.unit_id} · {u.area_m2.toLocaleString('pt-BR')} m²</SelectItem>)}
                               </SelectContent>
                             </Select>
                           </div>
                         </div>
-                        {vacantUnits.length === 0 && <p className="text-xs text-muted-foreground">Nenhum conjunto vago neste ativo.</p>}
+                        {linkUnitId === 'new' && (
+                          <div className="max-w-[180px]"><Label className="text-xs">Andar da nova unidade</Label>
+                            <Input type="number" min={1} value={newFloor} onChange={e => setNewFloor(e.target.value)} />
+                          </div>
+                        )}
+                        {vacantUnits.length === 0 && <p className="text-xs text-muted-foreground">Nenhum conjunto vago — uma nova unidade será criada com o locatário.</p>}
                       </div>
                     )}
                     <div className="flex gap-2 sticky bottom-0 bg-background pt-2">
