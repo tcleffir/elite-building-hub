@@ -311,20 +311,23 @@ export let mockContractDocuments: ContractDocumentFile[] = [
 // ─── SEED DATA ─────────────────────────────────
 
 export let mockGuarantees: ContractGuarantee[] = [
-  // Chucri Zaidan (b12) — HGRE11
-  { id: 'g1', contract_id: 'tc1', type: 'fianca_bancaria', value: 540000, valid_until: '2026-07-01', guarantor: 'Bradesco', issueDate: '2022-02-01', certificateNumber: 'FB-2024-00847', documentUrl: 'mock-fb-magalu.pdf', documentUploadDate: '2024-03-10', renewalHistory: [
-    { year: 2024, expiryDate: '2024-07-01', documentUrl: 'mock-fb-magalu-2024.pdf', uploadDate: '2024-06-01' },
-    { year: 2023, expiryDate: '2023-07-01', documentUrl: 'mock-fb-magalu-2023.pdf', uploadDate: '2023-05-15' },
-  ] },
-  { id: 'g2', contract_id: 'tc2', type: 'seguro_fianca', value: 621000, valid_until: '2026-05-01', guarantor: 'Porto Seguro', issueDate: '2023-05-01', documentUrl: 'mock-sf-ambev.pdf', documentUploadDate: '2023-06-10', renewalHistory: [] },
-  { id: 'g3', contract_id: 'tc3', type: 'caucao', value: 487500, valid_until: null, guarantor: '—', issueDate: '2022-12-01', renewalHistory: [] },
-  { id: 'g4', contract_id: 'tc4', type: 'fianca_bancaria', value: 382800, valid_until: '2026-04-30', guarantor: 'Itaú BBA', issueDate: '2023-02-01', certificateNumber: 'FB-2023-02291', documentUrl: 'mock-fb-tokstok.pdf', documentUploadDate: '2023-03-15', renewalHistory: [
-    { year: 2025, expiryDate: '2025-04-30', documentUrl: 'mock-fb-tokstok-2025.pdf', uploadDate: '2025-03-20' },
-  ] },
-  { id: 'g5', contract_id: 'tc5', type: 'titulo_capitalizacao', value: 264600, valid_until: '2026-12-01', guarantor: 'Bradesco Vida', issueDate: '2023-12-01', renewalHistory: [] },
-  { id: 'g6', contract_id: 'tc6', type: 'seguro_fianca', value: 608400, valid_until: '2027-05-01', guarantor: 'Tokio Marine', issueDate: '2024-05-01', documentUrl: 'mock-sf-dhl.pdf', documentUploadDate: '2024-06-01', renewalHistory: [] },
-  { id: 'g7', contract_id: 'tc7', type: 'fianca_bancaria', value: 310500, valid_until: '2025-12-01', guarantor: 'Banco Pactual', issueDate: '2024-12-01', certificateNumber: 'FB-2024-09134', documentUrl: null, documentUploadDate: null, renewalHistory: [] },
-  { id: 'g8', contract_id: 'tc8', type: 'seguro_fianca', value: 241560, valid_until: '2026-05-31', guarantor: 'Mapfre Seguros', issueDate: '2022-05-01', certificateNumber: 'SF-2025-04412', documentUrl: 'mock-sf-caedu.pdf', documentUploadDate: '2022-06-01', renewalHistory: [] },
+  // Chucri Zaidan (b12) — vinculadas aos mesmos contratos exibidos em Locatários.
+  // Valor de cobertura demonstrativo: três aluguéis mensais por conjunto.
+  { id: 'g-b12-11', contract_id: 'b12-ct11', type: 'fianca_bancaria', value: 556800, valid_until: '2027-01-31', guarantor: 'Itaú BBA', issueDate: '2023-02-01', certificateNumber: 'FB-CZ-0011', documentUrl: 'fianca-nubank-cj11.pdf', documentUploadDate: '2026-01-15', renewalHistory: [{ year: 2025, expiryDate: '2026-01-31', documentUrl: 'fianca-nubank-cj11-2025.pdf', uploadDate: '2025-01-20' }] },
+  { id: 'g-b12-21', contract_id: 'b12-ct21', type: 'seguro_fianca', value: 513360, valid_until: '2026-10-31', guarantor: 'Porto Seguro', issueDate: '2022-06-01', certificateNumber: 'SF-CZ-0021', documentUrl: 'seguro-ambev-cj21.pdf', documentUploadDate: '2025-11-03', renewalHistory: [] },
+  { id: 'g-b12-31', contract_id: 'b12-ct31', type: 'fianca_bancaria', value: 502680, valid_until: '2027-02-28', guarantor: 'Bradesco', issueDate: '2022-03-01', certificateNumber: 'FB-CZ-0031', documentUrl: 'fianca-vivo-cj31.pdf', documentUploadDate: '2026-02-10', renewalHistory: [] },
+  { id: 'g-b12-41', contract_id: 'b12-ct41', type: 'fianca_bancaria', value: 492120, valid_until: '2026-09-15', guarantor: 'Bradesco', issueDate: '2022-03-01', certificateNumber: 'FB-CZ-0041', documentUrl: 'fianca-vivo-cj41.pdf', documentUploadDate: '2025-09-10', renewalHistory: [] },
+  { id: 'g-b12-51', contract_id: 'b12-ct51', type: 'caucao', value: 473760, valid_until: null, guarantor: 'Depósito vinculado', issueDate: '2021-08-01', certificateNumber: 'CAU-CZ-0051', documentUrl: 'caucao-totvs-cj51.pdf', documentUploadDate: '2021-08-05', renewalHistory: [] },
+  { id: 'g-b12-61', contract_id: 'b12-ct61', type: 'caucao', value: 460320, valid_until: null, guarantor: 'Depósito vinculado', issueDate: '2021-08-01', certificateNumber: 'CAU-CZ-0061', documentUrl: 'caucao-totvs-cj61.pdf', documentUploadDate: '2021-08-05', renewalHistory: [] },
+  { id: 'g-b12-81', contract_id: 'b12-ct81', type: 'seguro_fianca', value: 508200, valid_until: '2027-01-31', guarantor: 'Tokio Marine', issueDate: '2023-01-01', certificateNumber: 'SF-CZ-0081', documentUrl: 'seguro-befly-cj81.pdf', documentUploadDate: '2026-01-08', renewalHistory: [] },
+  { id: 'g-b12-91', contract_id: 'b12-ct91', type: 'fianca_bancaria', value: 434910, valid_until: '2026-10-10', guarantor: 'Banco Safra', issueDate: '2022-11-01', certificateNumber: 'FB-CZ-0091', documentUrl: 'fianca-sirio-cj91.pdf', documentUploadDate: '2025-10-06', renewalHistory: [] },
+  { id: 'g-b12-101', contract_id: 'b12-ct101', type: 'fianca_bancaria', value: 444720, valid_until: '2027-03-31', guarantor: 'Banco Safra', issueDate: '2022-11-01', certificateNumber: 'FB-CZ-0101', documentUrl: 'fianca-sirio-cj101.pdf', documentUploadDate: '2026-03-17', renewalHistory: [] },
+  { id: 'g-b12-111', contract_id: 'b12-ct111', type: 'fiador', value: 418080, valid_until: '2027-01-31', guarantor: 'BP Energy do Brasil Ltda.', issueDate: '2024-02-01', certificateNumber: 'FIA-CZ-0111', documentUrl: 'fiador-bp-cj111.pdf', documentUploadDate: '2024-02-01', renewalHistory: [] },
+  { id: 'g-b12-121', contract_id: 'b12-ct121', type: 'fianca_bancaria', value: 521640, valid_until: '2027-05-31', guarantor: 'Santander', issueDate: '2023-06-01', certificateNumber: 'FB-CZ-0121', documentUrl: 'fianca-dhl-cj121.pdf', documentUploadDate: '2026-05-14', renewalHistory: [] },
+  { id: 'g-b12-131', contract_id: 'b12-ct131', type: 'fianca_bancaria', value: 498960, valid_until: '2027-05-31', guarantor: 'Santander', issueDate: '2023-06-01', certificateNumber: 'FB-CZ-0131', documentUrl: 'fianca-dhl-cj131.pdf', documentUploadDate: '2026-05-14', renewalHistory: [] },
+  { id: 'g-b12-151', contract_id: 'b12-ct151', type: 'fianca_bancaria', value: 421200, valid_until: '2026-11-15', guarantor: 'Itaú BBA', issueDate: '2023-09-01', certificateNumber: 'FB-CZ-0151', documentUrl: null, documentUploadDate: null, renewalHistory: [] },
+  { id: 'g-b12-161', contract_id: 'b12-ct161', type: 'fianca_bancaria', value: 430920, valid_until: '2027-08-31', guarantor: 'Itaú BBA', issueDate: '2023-09-01', certificateNumber: 'FB-CZ-0161', documentUrl: 'fianca-deloitte-cj161.pdf', documentUploadDate: '2026-08-12', renewalHistory: [] },
+  { id: 'g-b12-171', contract_id: 'b12-ct171', type: 'fiador', value: 402480, valid_until: '2026-08-31', guarantor: 'BP Energy do Brasil Ltda.', issueDate: '2024-02-01', certificateNumber: 'FIA-CZ-0171', documentUrl: 'fiador-bp-cj171.pdf', documentUploadDate: '2024-02-01', renewalHistory: [] },
 ];
 
 export const mockInsurances: ContractInsurance[] = [
