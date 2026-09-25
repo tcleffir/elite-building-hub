@@ -37,13 +37,15 @@ const floorOf = (unitId: string) => {
   return digits.length >= 3 ? parseInt(digits.slice(0, digits.length - 2)) || 1 : parseInt(digits.charAt(0)) || 1;
 };
 
+import { floorOfContract } from "@/lib/mock-data";
+
 const StackingPlan = ({ buildingName, totalFloors, contracts, tickets = [], levelLabel = "andar", onOpenContract }: Props) => {
   const [selected, setSelected] = useState<TenantContract | null>(null);
 
   const floors = useMemo(() => {
     const map = new Map<number, TenantContract[]>();
     contracts.forEach((c) => {
-      const f = floorOf(c.unit_id);
+      const f = floorOfContract(c);
       if (!map.has(f)) map.set(f, []);
       map.get(f)!.push(c);
     });

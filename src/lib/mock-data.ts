@@ -125,6 +125,10 @@ export interface TenantContract {
   lease_nature?: 'tipico' | 'atipico';
   /** Segmento de atuação do locatário */
   tenant_segment?: string;
+  /** Andar explícito (cadastros manuais) */
+  floor?: number;
+  tenant_contact?: string;
+  tenant_email?: string;
 }
 
 
@@ -1433,3 +1437,47 @@ export const monthlySnapshots = [
     expenses: 1350000, alerts_new: 4,
   },
 ];
+
+
+// ============= Store persistente de conjuntos/locatários (cruzado entre módulos) =============
+const TENANT_STORE_KEY = 'patria:tenant-contracts:v1';
+export const TENANT_CONTRACTS_EVENT = 'patria:tenant-contracts-changed';
+
+export const floorOfContract = (c: Pick<TenantContract, 'unit_id' | 'building_id' | 'floor'>): number => {
+  if (c.floor && c.floor > 0) return c.floor;
+  const digits = (c.unit_id || '').replace(/\D/g, '');
+  if (!digits) return 1;
+  const n = parseInt(digits);
+  if (c.building_id === 'b12') return Math.max(1, Math.floor(n / 10));
+  return digits.length >= 3 ? parseInt(digits.slice(0, digits.length - 2)) || 1 : parseInt(digits.charAt(0)) || 1;
+};
+
+(function loadPersistedTenantContracts() {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = window.localStorage.getItem(TENANT_STORE_KEY);
+    if (!raw) return;
+    const saved: TenantContract[] = JSON.parse(raw);
+    saved.forEach(c => {
+      const i = mockTenantContracts.findIndex(x => x.id === c.id);
+      if (i >= 0) mockTenantContracts[i] = c; else mockTenantContracts.push(c);
+    });
+  } catch { /* ignore */ }
+})();
+
+const touchedIds = new Set<string>();
+(function initTouched() {
+  if (typeof window === 'undefined') return;
+  try { (JSON.parse(window.localStorage.getItem(TENANT_STORE_KEY) || '[]') as TenantContract[]).forEach(c => touchedIds.add(c.id)); } catch { /* ignore */ }
+})();
+
+export function upsertTenantContract(c: TenantContract) {
+  const i = mockTenantContracts.findIndex(x => x.id === c.id);
+  if (i >= 0) mockTenantContracts[i] = c; else mockTenantContracts.push(c);
+  touchedIds.add(c.id);
+  try {
+    const list = mockTenantContracts.filter(x => touchedIds.has(x.id));
+    window.localStorage.setItem(TENANT_STORE_KEY, JSON.stringify(list));
+    window.dispatchEvent(new Event(TENANT_CONTRACTS_EVENT));
+  } catch { /* ignore */ }
+}
