@@ -19,8 +19,8 @@ interface Props {
   fileName: string;
 }
 
-const Section = ({ icon: Icon, title, children }: { icon: typeof FileText; title: string; children: React.ReactNode }) => (
-  <div className="rounded-xl border border-border bg-card">
+const Section = ({ icon: Icon, title, className, children }: { icon: typeof FileText; title: string; className?: string; children: React.ReactNode }) => (
+  <div className={`rounded-xl border border-border bg-card ${className ?? ""}`}>
     <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border">
       <Icon size={14} className="text-primary" />
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
@@ -140,10 +140,12 @@ const AiDocumentReview = ({ analysis, onChange, fileName }: Props) => {
         </p>
       </Section>
 
+      {/* Detailed sections — two columns on wide screens */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       {/* Identification (editable) */}
-      <Section icon={FileText} title="Identificação">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="sm:col-span-2">
+      <Section icon={FileText} title="Identificação" className="lg:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="sm:col-span-2 lg:col-span-3">
             <Label className="text-xs">Nome do documento</Label>
             <Input value={analysis.nome || ""} onChange={e => set({ nome: e.target.value })} />
           </div>
@@ -171,7 +173,7 @@ const AiDocumentReview = ({ analysis, onChange, fileName }: Props) => {
             <Label className="text-xs">Validade / Vencimento</Label>
             <Input type="date" value={analysis.dataValidade || ""} onChange={e => set({ dataValidade: e.target.value })} />
           </div>
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-2 lg:col-span-3">
             <Label className="text-xs">Resumo</Label>
             <Textarea rows={3} value={analysis.resumo || ""} onChange={e => set({ resumo: e.target.value })} />
           </div>
@@ -284,6 +286,7 @@ const AiDocumentReview = ({ analysis, onChange, fileName }: Props) => {
           </ul>
         </Section>
       )}
+      </div>
     </div>
   );
 };
