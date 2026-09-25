@@ -144,8 +144,8 @@ const AiDocumentReview = ({ analysis, onChange, fileName }: Props) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       {/* Identification (editable) */}
       <Section icon={FileText} title="Identificação" className="lg:col-span-2">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="sm:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="sm:col-span-2 lg:col-span-3">
             <Label className="text-xs">Nome do documento</Label>
             <Input value={analysis.nome || ""} onChange={e => set({ nome: e.target.value })} />
           </div>
