@@ -50,7 +50,7 @@ export const roleColors: Record<UserRole, string> = {
   gestor_fundo: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
 };
 
-// ─── Mock Users — 360JK Real ──────────────────────────
+// ─── Mock Users — Chucri Zaidan — HGRE11 ──────────────────────────
 export const mockUsers: User[] = [
   {
     id: '1', email: 'esg@luxenergia.com.br', password: 'Lux@2026',
@@ -743,7 +743,7 @@ export const mockFunds: Fund[] = [
 ];
 
 
-// ─── Mock Tickets — 360JK Real ────────────────────────
+// ─── Mock Tickets — Chucri Zaidan — HGRE11 ────────────────────────
 export const mockTickets: Ticket[] = [
   {
     id: 'CH-001', title: 'Solicitação de limpeza pós-evento — 7º andar',
@@ -888,7 +888,7 @@ export const mockTickets: Ticket[] = [
   },
 ];
 
-// ─── Mock Announcements — 360JK ──────────────────────
+// ─── Mock Announcements — Chucri Zaidan ──────────────────────
 export const mockAnnouncements: Announcement[] = [
   {
     id: 'a1', title: '⚠️ Manutenção elevadores centrais — 12/03 das 8h às 12h',
@@ -959,7 +959,7 @@ export const mockAnnouncements: Announcement[] = [
   },
 ];
 
-// ─── Mock Contracts — 360JK Real ─────────────────────
+// ─── Mock Contracts — Chucri Zaidan — HGRE11 ─────────────────────
 export const mockContracts: Contract[] = [
   {
     id: 'c1', number: '#CTR-360JK-001', tenant_name: 'Lux Energy', cnpj: 'A confirmar', owner: 'Administradora',
@@ -1105,7 +1105,7 @@ export const mockTicketsByStatus = [
   { name: 'Concluídos', value: 2, fill: 'hsl(88, 50%, 53%)' },
 ];
 
-// ─── Floor Config — 360JK Real (from tenant list Excel) ────────────────────────
+// ─── Floor Config — Chucri Zaidan — HGRE11 (from tenant list Excel) ────────────────────────
 export const mockFloorConfig: FloorConfig[] = [
   { floor: -4, name: 'Subsolo 4 (SS4)', type: 'subsolo', area_m2: 2000, status: 'building_use', tenant: 'Estacionamento', special_icon: '🅿️', tickets_count: 0 },
   { floor: -3, name: 'Subsolo 3 (SS3)', type: 'subsolo', area_m2: 2000, status: 'work', tenant: 'Estacionamento + Bicicletário', special_status: 'Reforma do Bicicletário', special_icon: '🚧', tickets_count: 1, works: [{ title: 'Reforma do Bicicletário', status: 'Em andamento', progress: 45, end_date: '2026-04-30' }] },
@@ -1234,7 +1234,7 @@ export const mockReservations: Reservation[] = [
   { id: 'res6', room_id: 'r2', room_name: 'Sala de Conferência B', title: 'Board Meeting', date: '2026-03-10', start_time: '10:00', end_time: '12:00', tenant: 'WeWork Brasil', user: 'WeWork Brasil — Administrador', participants: 12, status: 'confirmed', resources: ['Coffee Break', 'Videoconferência'] },
 ];
 
-// ─── Mock Visitors — 360JK Today ─────────────────────
+// ─── Mock Visitors — Chucri Zaidan Today ─────────────────────
 export const mockVisitors: Visitor[] = [
   { id: 'v1', name: 'Pedro Alves', company: 'LuxTech Soluções', document: '***.***.789-00', destination_floor: 7, destination_company: 'Vivo (Telefônica Brasil)', host_name: 'Vivo (Telefônica Brasil) — Administrador', scheduled_at: '2026-03-09T14:00:00', status: 'waiting', type: 'client', auto_release: false, qr_code: 'QR-V1-2026', recurrent: false },
   { id: 'v2', name: 'Mariana Costa', company: 'Investidora independente', document: '***.***.456-00', destination_floor: 13, destination_company: 'Totvs S.A.', host_name: 'Totvs S.A. — Administrador', scheduled_at: '2026-03-09T15:30:00', status: 'scheduled', type: 'client', auto_release: false, qr_code: 'QR-V2-2026', recurrent: false },

@@ -179,7 +179,7 @@ export const unidadesRec: UnidadeRec[] = [
 ];
 
 export const inquilinosRec: InquilinoRec[] = [
-  { id: 'i1', nome: 'Lux Energia Ltda',        documento: '12.345.678/0001-90', email: 'financeiro@luxenergia.com.br', telefone: '(11) 3000-1100' },
+  { id: 'i1', nome: 'Vivo (Telefônica Brasil)',        documento: '11.260.134/0001-50', email: 'financeiro@vivo.com.br', telefone: '(11) 3000-1100' },
   { id: 'i2', nome: 'Capital & Energia S/A',   documento: '23.456.789/0001-01', email: 'pagamentos@capitaleenergia.com.br', telefone: '(11) 3000-2200' },
   { id: 'i3', nome: 'YouInc Participações',    documento: '34.567.890/0001-12', email: 'ap@youinc.com.br', telefone: '(11) 3000-3300' },
   { id: 'i4', nome: 'Mercatto Consultoria',    documento: '45.678.901/0001-23', email: 'fin@mercatto.com.br', telefone: '(11) 3000-4400' },
@@ -379,7 +379,7 @@ export const entradasBancariasSeed: EntradaBancaria[] = [
   {
     id: 'eb1', data: '2026-04-05', valor: 44900, tipo: 'boleto',
     identificadorBoleto: 'BOL-c1-2026-04', descricaoExtrato: 'LIQ BOLETO BOL-c1-2026-04',
-    pagadorNome: 'Lux Energia Ltda', pagadorDocumento: '12.345.678/0001-90',
+    pagadorNome: 'Vivo (Telefônica Brasil)', pagadorDocumento: '11.260.134/0001-50',
     origem: 'api',
   },
   // TED casa por valor + janela de data + nome do pagador
