@@ -33,11 +33,11 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
   }, [extraBuildings]);
 
   const addTenant = useCallback((t: PortfolioTenant) => {
-    setState((prev) => ({ ...prev, tenants: [...prev.filter((x) => x.id !== t.id), t] }));
+    setState((prev) => ({ ...prev, tenants: [...prev.tenants.filter((x) => x.id !== t.id), t] }));
   }, []);
 
   const addContract = useCallback((c: PortfolioContract) => {
-    setState((prev) => ({ ...prev, contracts: [...prev.filter((x) => x.id !== c.id), c] }));
+    setState((prev) => ({ ...prev, contracts: [...prev.contracts.filter((x) => x.id !== c.id), c] }));
   }, []);
 
   const addUnit = useCallback((u: PortfolioUnit) => {
