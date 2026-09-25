@@ -1471,13 +1471,64 @@ const touchedIds = new Set<string>();
   try { (JSON.parse(window.localStorage.getItem(TENANT_STORE_KEY) || '[]') as TenantContract[]).forEach(c => touchedIds.add(c.id)); } catch { /* ignore */ }
 })();
 
+const REMOVED_STORE_KEY = 'patria:tenant-contracts-removed:v1';
+const removedIds = new Set<string>();
+(function applyRemoved() {
+  if (typeof window === 'undefined') return;
+  try {
+    (JSON.parse(window.localStorage.getItem(REMOVED_STORE_KEY) || '[]') as string[]).forEach(id => removedIds.add(id));
+    for (let i = mockTenantContracts.length - 1; i >= 0; i--) if (removedIds.has(mockTenantContracts[i].id)) mockTenantContracts.splice(i, 1);
+  } catch { /* ignore */ }
+})();
+
+/** Ocupação derivada das unidades (área locada / área total) — mesmo número em todas as telas. */
+export function syncBuildingOccupancy(buildingId?: string) {
+  const ids = buildingId ? [buildingId] : Array.from(new Set(mockTenantContracts.map(c => c.building_id)));
+  ids.forEach(id => {
+    const b = mockBuildings.find(x => x.id === id);
+    const units = mockTenantContracts.filter(c => c.building_id === id);
+    if (!b || units.length === 0) return;
+    const total = units.reduce((s, u) => s + u.area_m2, 0);
+    const leased = units.filter(u => u.status !== 'vacant' && u.tenant_name).reduce((s, u) => s + u.area_m2, 0);
+    const pct = total > 0 ? Math.round((leased / total) * 1000) / 10 : 0;
+    b.occupancy_pct = pct;
+    b.occupancy_rate = pct;
+  });
+}
+syncBuildingOccupancy();
+
+function persistTenantStore() {
+  try {
+    const list = mockTenantContracts.filter(x => touchedIds.has(x.id));
+    window.localStorage.setItem(TENANT_STORE_KEY, JSON.stringify(list));
+    window.localStorage.setItem(REMOVED_STORE_KEY, JSON.stringify(Array.from(removedIds)));
+    window.dispatchEvent(new Event(TENANT_CONTRACTS_EVENT));
+  } catch { /* ignore */ }
+}
+
 export function upsertTenantContract(c: TenantContract) {
   const i = mockTenantContracts.findIndex(x => x.id === c.id);
   if (i >= 0) mockTenantContracts[i] = c; else mockTenantContracts.push(c);
   touchedIds.add(c.id);
-  try {
-    const list = mockTenantContracts.filter(x => touchedIds.has(x.id));
-    window.localStorage.setItem(TENANT_STORE_KEY, JSON.stringify(list));
-    window.dispatchEvent(new Event(TENANT_CONTRACTS_EVENT));
-  } catch { /* ignore */ }
+  removedIds.delete(c.id);
+  syncBuildingOccupancy(c.building_id);
+  persistTenantStore();
+}
+
+/** Apaga a unidade (conjunto) inteira do ativo. */
+export function removeTenantContract(id: string) {
+  const i = mockTenantContracts.findIndex(x => x.id === id);
+  if (i < 0) return;
+  const [c] = mockTenantContracts.splice(i, 1);
+  touchedIds.delete(id);
+  removedIds.add(id);
+  syncBuildingOccupancy(c.building_id);
+  persistTenantStore();
+}
+
+/** Desocupa a unidade: remove locatário e contrato, mantém o conjunto como vago. */
+export function vacateTenantContract(id: string) {
+  const c = mockTenantContracts.find(x => x.id === id);
+  if (!c) return;
+  upsertTenantContract({ id: c.id, building_id: c.building_id, unit_id: c.unit_id, floor: c.floor, tenant_name: null, area_m2: c.area_m2, price_per_m2: null, contract_type: null, status: 'vacant' });
 }
