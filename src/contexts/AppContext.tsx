@@ -29,7 +29,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const savedUserId = window.localStorage.getItem(CURRENT_USER_STORAGE_KEY);
     return mockUsers.some((u) => u.id === savedUserId) ? savedUserId! : mockUsers[0].id;
   });
-  const [selectedBuildingId, setSelectedBuildingId] = useState(mockBuildings[0].id);
+  const [selectedBuildingId, setSelectedBuildingId] = useState('b12'); // Chucri Zaidan — ativo modelo HGRE11
   const [isDark, setIsDark] = useState(false);
 
   const toggleDark = () => {

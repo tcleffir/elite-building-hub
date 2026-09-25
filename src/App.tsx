@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/contexts/AppContext";
 import { FundProvider } from "@/contexts/FundContext";
 import { FinanceProvider } from "@/contexts/FinanceContext";
+import { PortfolioProvider } from "@/contexts/PortfolioContext";
 import Layout from "@/components/Layout";
 import RoleGuard from "@/components/RoleGuard";
 import Login from "@/pages/Login";
@@ -78,6 +79,7 @@ const App = () => (
         <AppProvider>
         <FundProvider>
         <FinanceProvider>
+        <PortfolioProvider>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
@@ -135,6 +137,7 @@ const App = () => (
           <Route path="/calendario" element={<AppLayout><CalendarPage /></AppLayout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </PortfolioProvider>
         </FinanceProvider>
         </FundProvider>
         </AppProvider>
