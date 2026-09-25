@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { getHGRE11PortfolioBuildings, mockTenantContracts, upsertTenantContract, TENANT_CONTRACTS_EVENT, type TenantContract } from "@/lib/mock-data";
 import {
   mockGuarantees, mockInsurances, mockIPTUs, mockCommonAreaContracts,

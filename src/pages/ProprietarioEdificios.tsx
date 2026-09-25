@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Building2, Upload, Download, Edit, RefreshCw, Info, FileText, Ticket as TicketIcon, Wrench, Mail, ListChecks, Plus, UserPlus } from "lucide-react";
+import { ArrowLeft, Building2, Upload, Download, Edit, RefreshCw, Info, FileText, Ticket as TicketIcon, Wrench, Mail, ListChecks, Plus, UserPlus, Trash2, UserMinus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatusBadge from "@/components/StatusBadge";
 import StackingPlan from "@/components/assets/StackingPlan";
 
-import { mockBuildings, mockTenantContracts, mockTickets, mockUsers, isHGRE11Asset, TenantContract, upsertTenantContract, floorOfContract, TENANT_CONTRACTS_EVENT } from "@/lib/mock-data";
+import { mockBuildings, mockTenantContracts, mockTickets, mockUsers, isHGRE11Asset, TenantContract, upsertTenantContract, removeTenantContract, vacateTenantContract, floorOfContract, TENANT_CONTRACTS_EVENT } from "@/lib/mock-data";
 import { getContractHealth, getOccupancyStatus, daysUntil, healthColors, healthLabels } from "@/lib/health-utils";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
@@ -83,6 +83,19 @@ const ProprietarioEdificios = () => {
     window.addEventListener(TENANT_CONTRACTS_EVENT, h);
     return () => window.removeEventListener(TENANT_CONTRACTS_EVENT, h);
   }, []);
+  const [unitEdit, setUnitEdit] = useState<{ c: TenantContract; unit: string; floor: string; area: string } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<TenantContract | null>(null);
+  const saveUnitEdit = () => {
+    if (!unitEdit) return;
+    const label = unitEdit.unit.trim();
+    const unit_id = /^\d+$/.test(label) ? `Conjunto ${label}` : label;
+    const floor = parseInt(unitEdit.floor); const area = parseFloat(unitEdit.area);
+    if (!unit_id || !floor || !area) { toast.error('Informe conjunto, andar e área.'); return; }
+    if (contracts.some(c => c.id !== unitEdit.c.id && c.unit_id.toLowerCase() === unit_id.toLowerCase())) { toast.error(`${unit_id} já existe.`); return; }
+    upsertTenantContract({ ...unitEdit.c, unit_id, floor, area_m2: area });
+    toast.success(`${unit_id} atualizado.`);
+    setUnitEdit(null); setSelectedContract(null);
+  };
   const [editForm, setEditForm] = useState({ tenant: '', type: 'net', area: '', price: '', start: '', end: '' });
   const [renewForm, setRenewForm] = useState({ endDate: '', value: '', index: '4.82' });
 
@@ -185,9 +198,12 @@ const ProprietarioEdificios = () => {
   const partialCount = synthFloors.filter(f => f.status === 'partial').length;
   const vacantCount = synthFloors.filter(f => f.status === 'vacant').length;
   const totalUnits = contracts.length;
-  const occupiedUnits = contracts.filter(c => c.status !== 'vacant').length;
+  const occupiedUnits = contracts.filter(c => c.status !== 'vacant' && c.tenant_name).length;
 
   const openEdit = (c: TenantContract) => {
+    setNewTenant({ ...emptyTenant, target: c.id, name: c.tenant_name || '', cnpj: c.tenant_cnpj || '', area: String(c.area_m2), pricePerM2: String(c.price_per_m2 ?? ''), start: c.contract_start || '', end: c.contract_end || '', contact: c.tenant_contact || '', email: c.tenant_email || '', dueDay: String(c.dia_vencimento ?? 10), index: c.indice_reajuste || 'IPCA', garantia: c.garantia || 'Fiança bancária' });
+    setSelectedContract(null); setShowNewTenant(true);
+    return;
     setEditForm({
       tenant: c.tenant_name,
       type: c.contract_type || 'net',
@@ -235,7 +251,7 @@ const ProprietarioEdificios = () => {
           </Select>
           {building && (
             <Badge className={`${healthColors[getOccupancyStatus(building.occupancy_pct || 0)].badge} text-xs`}>
-              {building.occupancy_pct}% ocupação
+              {(building.occupancy_pct ?? 0).toLocaleString('pt-BR')}% ocupação · {occupiedUnits}/{totalUnits} conjuntos
             </Badge>
           )}
           <div className="grid grid-cols-1 gap-2 sm:ml-auto sm:flex sm:items-center sm:flex-wrap">
@@ -280,7 +296,7 @@ const ProprietarioEdificios = () => {
                       <p className="text-xs text-muted-foreground mt-1">{b.city}/{b.state}</p>
                     </div>
                     <Badge className={`${healthColors[getOccupancyStatus(b.occupancy_pct || 0)].badge} text-[10px]`}>
-                      {b.occupancy_pct}% ocup.
+                      {(b.occupancy_pct ?? 0).toLocaleString('pt-BR')}% ocup.
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-3">
@@ -306,7 +322,7 @@ const ProprietarioEdificios = () => {
               contracts={contracts}
               tickets={buildingTickets as any}
               levelLabel={building.segment === 'logistics' ? 'conjunto' : 'andar'}
-              onOpenContract={(c) => (c.status === 'vacant' || !c.tenant_name) ? openNewTenant(c) : setSelectedContract(c)}
+              onOpenContract={(c) => setSelectedContract(c)}
             />
 
             {vacantUnits.length > 0 && (
@@ -475,7 +491,8 @@ const ProprietarioEdificios = () => {
                           <Label className="text-xs">Valor de mercado estimado (R$/m²)</Label>
                           <Input type="number" defaultValue="135" className="mt-1" />
                         </div>
-                        <Button className="w-full gap-2"><Mail size={16} /> Enviar Proposta</Button>
+                        <Button className="w-full gap-2" onClick={() => { const u = selectedContract; setSelectedContract(null); openNewTenant(u); }}><UserPlus size={16} /> Adicionar locatário</Button>
+                        <Button variant="outline" className="w-full gap-2" onClick={() => toast.success('Proposta enviada à equipe de locação.')}><Mail size={16} /> Enviar Proposta</Button>
                       </div>
                     ) : (
                       <>
@@ -556,12 +573,50 @@ const ProprietarioEdificios = () => {
                         </div>
                       </>
                     )}
+                    <div className="border-t pt-4 space-y-2">
+                      <h4 className="text-xs font-semibold text-muted-foreground uppercase">Unidade</h4>
+                      <Button variant="outline" className="w-full gap-2 text-sm" onClick={() => setUnitEdit({ c: selectedContract, unit: selectedContract.unit_id.replace(/^Conjunto\s+/i, ''), floor: String(floorOfContract(selectedContract)), area: String(selectedContract.area_m2) })}><Edit size={16} /> Editar unidade (conjunto, andar, área)</Button>
+                      {!isVacant && (
+                        <Button variant="outline" className="w-full gap-2 text-sm" onClick={() => { vacateTenantContract(selectedContract.id); toast.success(`${selectedContract.unit_id} agora está vago.`); setSelectedContract(null); }}><UserMinus size={16} /> Remover locatário (deixar vago)</Button>
+                      )}
+                      <Button variant="destructive" className="w-full gap-2 text-sm" onClick={() => setConfirmDelete(selectedContract)}><Trash2 size={16} /> Apagar unidade</Button>
+                    </div>
                   </div>
                 </>
               );
             })()}
           </SheetContent>
         </Sheet>
+
+        <Dialog open={!!unitEdit} onOpenChange={(o) => !o && setUnitEdit(null)}>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Editar unidade — {unitEdit?.c.unit_id}</DialogTitle></DialogHeader>
+            {unitEdit && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div><Label className="text-xs">Conjunto</Label><Input value={unitEdit.unit} onChange={e => setUnitEdit(p => p && ({ ...p, unit: e.target.value }))} /></div>
+                <div><Label className="text-xs">Andar</Label><Input type="number" value={unitEdit.floor} onChange={e => setUnitEdit(p => p && ({ ...p, floor: e.target.value }))} /></div>
+                <div><Label className="text-xs">Área (m²)</Label><Input type="number" value={unitEdit.area} onChange={e => setUnitEdit(p => p && ({ ...p, area: e.target.value }))} /></div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setUnitEdit(null)}>Cancelar</Button>
+              <Button onClick={saveUnitEdit}>Salvar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Apagar {confirmDelete?.unit_id}?</DialogTitle>
+              <DialogDescription>A unidade{confirmDelete?.tenant_name ? `, o locatário ${confirmDelete.tenant_name} e o contrato` : ''} serão removidos do ativo em todas as telas.</DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setConfirmDelete(null)}>Cancelar</Button>
+              <Button variant="destructive" onClick={() => { if (confirmDelete) { removeTenantContract(confirmDelete.id); toast.success(`${confirmDelete.unit_id} apagado.`); } setConfirmDelete(null); setSelectedContract(null); }}>Apagar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Edit Dialog */}
         <Dialog open={showEdit} onOpenChange={setShowEdit}>
@@ -572,6 +627,7 @@ const ProprietarioEdificios = () => {
                 <Select value={newTenant.target} onValueChange={v => setNewTenant(p => ({ ...p, target: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
+                    {contracts.filter(u => u.id === newTenant.target && u.tenant_name).map(u => <SelectItem key={u.id} value={u.id}>{u.unit_id} — {floorOfContract(u)}º andar · {u.tenant_name}</SelectItem>)}
                     {vacantUnits.map(u => <SelectItem key={u.id} value={u.id}>{u.unit_id} — {floorOfContract(u)}º andar · {u.area_m2.toLocaleString('pt-BR')} m² (vago)</SelectItem>)}
                     <SelectItem value="new">+ Nova unidade</SelectItem>
                   </SelectContent>
