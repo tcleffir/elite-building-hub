@@ -36,11 +36,18 @@ import RevisionaisTab from "@/components/contratos/RevisionaisTab";
 import CompetenciaTab from "@/components/contratos/CompetenciaTab";
 import ContractManagementSection from "@/components/contratos/ContractManagementSection";
 import IptuTab from "@/components/contratos/IptuTab";
+import { MesReajusteChart, ConcentracaoRevisionaisChart } from "@/components/contratos/PatriaContractCharts";
 
-type ContractStatus = 'all' | 'active' | 'expiring' | 'expired' | 'negotiation';
-type SortKey = 'tenant' | 'area' | 'rpsm2' | 'value' | 'monthsRemaining';
+type ContractStatus = 'all' | 'active' | 'expiring' | 'expired' | 'negotiation' | 'inactive';
+type SortKey = 'tenant' | 'unit' | 'area' | 'rpsm2' | 'value' | 'monthsRemaining';
 type SortDir = 'asc' | 'desc';
 type GuaranteeFilter = 'all' | 'fianca_bancaria' | 'caucao' | 'seguro_fianca' | 'titulo_capitalizacao' | 'expiring' | 'expired';
+
+const INACTIVE_KEY = 'patria:inactive-contracts:v1';
+function unitNumber(u: string): number {
+  const n = parseInt((u.match(/\d+/g) || []).join('') || '', 10);
+  return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
+}
 
 const statusFilters: { value: ContractStatus; label: string }[] = [
   { value: 'all', label: 'Todos' },
@@ -48,6 +55,7 @@ const statusFilters: { value: ContractStatus; label: string }[] = [
   { value: 'expiring', label: 'Vencendo' },
   { value: 'expired', label: 'Vencidos' },
   { value: 'negotiation', label: 'Em Negociação' },
+  { value: 'inactive', label: 'Inativos' },
 ];
 
 const guaranteeFilters: { value: GuaranteeFilter; label: string }[] = [
@@ -146,6 +154,19 @@ export default function ProprietarioContratos() {
   const [applyAdjValue, setApplyAdjValue] = useState('');
   const [applyAdjReason, setApplyAdjReason] = useState('');
 
+  // ── Inativos (manual) ──
+  const [inactiveIds, setInactiveIds] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem(INACTIVE_KEY) || '[]'); } catch { return []; }
+  });
+  const toggleInactive = (id: string) => {
+    setInactiveIds(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+      localStorage.setItem(INACTIVE_KEY, JSON.stringify(next));
+      toast.success(prev.includes(id) ? 'Contrato reativado' : 'Contrato marcado como inativo');
+      return next;
+    });
+  };
+
   // ── Tenant contracts filtered ──
   const tenantContracts = useMemo(() => {
     let filtered = mockTenantContracts.filter(c => c.tenant_name);
@@ -154,7 +175,12 @@ export default function ProprietarioContratos() {
     } else {
       filtered = filtered.filter(c => portfolioBuildingIds.has(c.building_id));
     }
-    if (statusFilter !== 'all') {
+    if (statusFilter === 'inactive') {
+      filtered = filtered.filter(c => inactiveIds.includes(c.id));
+    } else {
+      filtered = filtered.filter(c => !inactiveIds.includes(c.id));
+    }
+    if (statusFilter !== 'all' && statusFilter !== 'inactive') {
       filtered = filtered.filter(c => {
         const info = getContractStatusInfo(c);
         if (statusFilter === 'expiring') return info.status === 'warning';
@@ -178,6 +204,11 @@ export default function ProprietarioContratos() {
           const cmp = (a.tenant_name || '').localeCompare(b.tenant_name || '');
           return sortDir === 'asc' ? cmp : -cmp;
         }
+        case 'unit': {
+          const na = unitNumber(a.unit_id), nb = unitNumber(b.unit_id);
+          const cmp = na !== nb ? na - nb : a.unit_id.localeCompare(b.unit_id, 'pt-BR', { numeric: true });
+          return sortDir === 'asc' ? cmp : -cmp;
+        }
         case 'area': va = a.area_m2; vb = b.area_m2; break;
         case 'rpsm2': va = a.price_per_m2 || 0; vb = b.price_per_m2 || 0; break;
         case 'value': va = getContractMonthlyValue(a); vb = getContractMonthlyValue(b); break;
@@ -190,7 +221,7 @@ export default function ProprietarioContratos() {
       return sortDir === 'asc' ? va - vb : vb - va;
     });
     return filtered;
-  }, [selectedBuildingId, statusFilter, searchQuery, sortKey, sortDir, showAllBuildings, portfolioBuildingIds]);
+  }, [selectedBuildingId, statusFilter, searchQuery, sortKey, sortDir, showAllBuildings, portfolioBuildingIds, inactiveIds]);
 
   // ── Common area contracts ──
   const commonContracts = useMemo(() => {
@@ -621,6 +652,14 @@ export default function ProprietarioContratos() {
                 {f.label}
               </Button>
             ))}
+            <Select value={sortKey === 'unit' ? sortDir : 'none'} onValueChange={v => { if (v !== 'none') { setSortKey('unit'); setSortDir(v as SortDir); } }}>
+              <SelectTrigger className="h-9 w-full sm:w-52"><SelectValue placeholder="Ordenar por conjunto" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Ordenar por conjunto</SelectItem>
+                <SelectItem value="asc">Conjunto: menor → maior</SelectItem>
+                <SelectItem value="desc">Conjunto: maior → menor</SelectItem>
+              </SelectContent>
+            </Select>
             <div className="relative w-full sm:ml-auto sm:w-auto">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Buscar locatário, CNPJ ou unidade..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-9 sm:w-72" />
@@ -636,7 +675,9 @@ export default function ProprietarioContratos() {
                     <TableHead className="cursor-pointer select-none" onClick={() => handleSort('tenant')}>
                       <span className="flex items-center">Locatário <SortIcon k="tenant" /></span>
                     </TableHead>
-                    <TableHead>Unidade</TableHead>
+                    <TableHead className="cursor-pointer select-none" onClick={() => handleSort('unit')}>
+                      <span className="flex items-center">Conjunto <SortIcon k="unit" /></span>
+                    </TableHead>
                     <TableHead className="text-right cursor-pointer select-none" onClick={() => handleSort('area')}>
                       <span className="flex items-center justify-end">Área (m²) <SortIcon k="area" /></span>
                     </TableHead>
@@ -702,7 +743,9 @@ export default function ProprietarioContratos() {
                           ) : <span className="text-muted-foreground text-xs">—</span>}
                         </TableCell>
                         <TableCell>
-                          <Badge className={healthColors[info.status].badge}>{info.label}</Badge>
+                          {inactiveIds.includes(c.id)
+                            ? <Badge variant="secondary">Inativo</Badge>
+                            : <Badge className={healthColors[info.status].badge}>{info.label}</Badge>}
                         </TableCell>
                         <TableCell onClick={e => e.stopPropagation()}>
                           <DropdownMenu>
@@ -723,6 +766,9 @@ export default function ProprietarioContratos() {
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => openContract(c.id, null)}>
                                 <History className="h-3.5 w-3.5 mr-2" /> Ver histórico
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => toggleInactive(c.id)}>
+                                <Shield className="h-3.5 w-3.5 mr-2" /> {inactiveIds.includes(c.id) ? 'Reativar contrato' : 'Marcar como inativo'}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem onClick={() => handleUploadOpen(c)}>
@@ -964,6 +1010,7 @@ export default function ProprietarioContratos() {
 
         {/* ══════ TAB REAJUSTES ══════ */}
         <TabsContent value="reajustes" className="space-y-4 mt-4">
+          <MesReajusteChart contracts={tenantContracts} />
           <h3 className="text-lg font-semibold">Calendário de Reajustes Contratuais</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <KpiCard
@@ -1291,6 +1338,7 @@ export default function ProprietarioContratos() {
 
         {/* ══════ TAB REVISIONAIS ══════ */}
         <TabsContent value="revisionais" className="space-y-4 mt-4">
+          <ConcentracaoRevisionaisChart contracts={tenantContracts} />
           <RevisionaisTab
             tenantContracts={tenantContracts}
             buildings={buildings}
